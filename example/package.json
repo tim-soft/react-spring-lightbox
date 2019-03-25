@@ -1,0 +1,28 @@
+{
+  "name": "react-spring-lightbox-example",
+  "homepage": "https://tim-soft.github.io/react-spring-lightbox",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "prop-types": "^15.6.2",
+    "react": "link:../node_modules/react",
+    "react-dom": "link:../node_modules/reac-dom",
+    "react-scripts": "^2.1.8",
+    "react-spring-lightbox": "link:..",
+    "styled-components": "^4.2.0",
+    "styled-normalize": "^8.0.6"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
