@@ -1,7 +1,7 @@
 {
   "name": "react-spring-lightbox",
   "version": "0.0.1",
-  "description": "A flexible image gallery lightbox with native-feeling touch gestures and animations built with react-spring",
+  "description": "A flexible image gallery lightbox with native-feeling touch gestures and buttery smooth animations, built with react-spring.",
   "author": "Tim Ellenberger <timellenberger@gmail.com>",
   "license": "MIT",
   "repository": "tim-soft/react-spring-lightbox",
