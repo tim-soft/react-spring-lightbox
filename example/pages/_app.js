@@ -1,21 +1,29 @@
-/* eslint-disable react/prefer-stateless-function */
+import App, { Container } from 'next/app';
 import React from 'react';
-import styled, { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import styledNormalize from 'styled-normalize';
-import Lightbox from 'react-spring-lightbox';
 
-/**
- * A demo showcasing react-spring-lightbox
- */
-export default class LightboxDemo extends React.Component {
+export default class MyApp extends App {
   render() {
+    const { Component, pageProps } = this.props;
     return (
       <Container>
         {/* Adds some basic body styles */}
         <DefaultStyles />
 
         {/* The Lightbox component */}
-        <Lightbox />
+        <ThemeProvider
+          theme={{
+            pageBackgroundColor: '#101010',
+            pageContentFontColor: '#e2e5ec',
+            pageContentLinkHoverColor: 'aquamarine',
+            pageContentSelectionColor: 'aquamarine',
+            headerNavFontColor: '#e2e5ec',
+            accentColor: '#1f1f1f'
+          }}
+        >
+          <Component {...pageProps} />
+        </ThemeProvider>
       </Container>
     );
   }
@@ -38,16 +46,4 @@ const DefaultStyles = createGlobalStyle`
    -moz-osx-font-smoothing: grayscale;
    -webkit-font-smoothing: antialiased;
  }
-`;
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  height: 100vh;
-  user-select: none;
-  overflow: hidden;
-  background: #272727;
 `;

@@ -3,5 +3,6 @@
   "files.eol": "\n",
   "javascript.validate.enable": false,
   "editor.tabSize": 2,
-  "editor.detectIndentation": false
+  "editor.detectIndentation": false,
+  "eslint.enable": true
 }

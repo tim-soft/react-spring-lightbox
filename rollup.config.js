@@ -1,12 +1,15 @@
+import path from 'path';
 import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
-import external from 'rollup-plugin-peer-deps-external';
+import filesize from 'rollup-plugin-filesize';
 import resolve from 'rollup-plugin-node-resolve';
 
 import pkg from './package.json';
 
+const root = process.platform === 'win32' ? path.resolve('/') : '/';
+
 export default {
-  input: 'src/index.js',
+  input: './src/index.js',
   output: [
     {
       file: pkg.main,
@@ -19,14 +22,16 @@ export default {
       sourcemap: true
     }
   ],
+  external: id => !id.startsWith('.') && !id.startsWith(root),
   plugins: [
-    external(),
     babel({
-      babelrc: true,
       exclude: 'node_modules/**',
       runtimeHelpers: true
     }),
     resolve(),
-    commonjs()
+    commonjs({
+      include: 'node_modules/**'
+    }),
+    filesize()
   ]
 };

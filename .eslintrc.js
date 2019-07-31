@@ -5,15 +5,15 @@
  */
 module.exports = {
   parser: 'babel-eslint',
-  extends: ['airbnb', 'prettier', 'prettier/react', 'plugin:import/warnings'],
   env: {
+    browser: true,
     es6: true
   },
-  plugins: ['prettier', 'import', 'react-hooks'],
+  extends: ['airbnb', 'prettier', 'prettier/react', 'plugin:import/warnings'],
+  plugins: ['prettier', 'jsx-a11y', 'react-hooks'],
   globals: {
     document: true,
-    window: true,
-    process: true
+    window: true
   },
   parserOptions: {
     sourceType: 'module'
@@ -27,7 +27,6 @@ module.exports = {
     'react/no-unused-prop-types': 0,
     'consistent-return': 0,
     'jsx-a11y/anchor-is-valid': 0,
-    'import/no-extraneous-dependencies': 0,
     'prettier/prettier': 'error',
     'react/destructuring-assignment': 0,
     // Enforce React Hooks rules
