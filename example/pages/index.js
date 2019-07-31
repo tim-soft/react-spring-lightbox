@@ -23,13 +23,6 @@ export default () => (
           width: 1200,
           height: 1218
         },
-        // {
-        //   src: '/static/blog-content/dark-mode/ios-13-dark-mode-crop.jpg',
-        //   caption: 'iOS 13 Dark Mode Setting',
-        //   alt: 'iOS 13 Dark Mode Setting',
-        //   width: 748,
-        //   height: 750
-        // },
         {
           src:
             'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
@@ -44,12 +37,9 @@ export default () => (
 );
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   overflow: hidden;
   height: 100vh;
+  width: 100%;
   user-select: none;
   overflow: hidden;
   background: #272727;

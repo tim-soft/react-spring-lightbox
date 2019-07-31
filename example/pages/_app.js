@@ -11,7 +11,6 @@ export default class MyApp extends App {
         {/* Adds some basic body styles */}
         <DefaultStyles />
 
-        {/* The Lightbox component */}
         <ThemeProvider
           theme={{
             pageBackgroundColor: '#101010',
