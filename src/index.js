@@ -7,8 +7,8 @@ import { ImageStage, PageContainer, CreatePortal } from './components';
  *
  * @param {boolean} isOpen Flag that dictates if the lightbox is open or closed
  * @param {function} onClose Function that closes the Lightbox
- * @param {function} onClickPrev True if this image is currently shown in pager, otherwise false
- * @param {function} onClickNext Function that can be called to disable dragging in the pager
+ * @param {function} onClickPrev Function that changes currentIndex to previous image in images
+ * @param {function} onClickNext Function that changes currentIndex to next image in images
  * @param {number} currentIndex Index of image in images array that is currently shown
  * @param {function} renderHeader A React component that renders above the image pager
  * @param {function} renderFooter A React component that renders below the image pager
