@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSprings, animated } from 'react-spring';
 import { useDrag } from 'react-use-gesture';

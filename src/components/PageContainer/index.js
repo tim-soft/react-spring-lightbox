@@ -1,3 +1,4 @@
+import React from 'react';
 import PropTypes from 'prop-types';
 import { useTransition, animated, config } from 'react-spring';
 import merge from 'lodash.merge';
