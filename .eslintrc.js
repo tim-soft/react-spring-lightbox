@@ -10,7 +10,7 @@ module.exports = {
     es6: true
   },
   extends: ['airbnb', 'prettier', 'prettier/react', 'plugin:import/warnings'],
-  plugins: ['prettier', 'jsx-a11y', 'react-hooks'],
+  plugins: ['prettier', 'jsx-a11y', 'react-hooks', 'import'],
   globals: {
     document: true,
     window: true
