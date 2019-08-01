@@ -24,86 +24,69 @@ yarn add react-spring-lightbox
 ## Usage
 
 ```jsx
-import React from 'react';
-import Lightbox from 'react-spring-lightbox';
+import React, { useState } from "react";
+import Lightbox from "react-spring-lightbox";
 
-class CoolLightbox extends React.Component {
-  state = {
-    currentImageIndex: 0,
-    lightboxIsOpen: false, {
-    images: [
-      {
-        src:
-          'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
-        alt: 'Windows 10 Dark Mode Setting'
-      },
-      {
-        src:
-          'https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png',
-        alt: 'macOS Mojave Dark Mode Setting'
-      },
-      {
-        src:
-          'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
-        alt: 'Android 9.0 Dark Mode Setting'
-      }
-    ]
+const images = [
+  {
+    src:
+      "https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg",
+    alt: "Windows 10 Dark Mode Setting"
+  },
+  {
+    src:
+      "https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png",
+    alt: "macOS Mojave Dark Mode Setting"
+  },
+  {
+    src:
+      "https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg",
+    alt: "Android 9.0 Dark Mode Setting"
   }
-  
-  openLightbox = (e, { index }) => {
-    this.setState({
-      currentImageIndex: index,
-      lightboxIsOpen: true
-    });
-  };
+];
 
-  closeLightbox = () => {
-    this.setState({
-      lightboxIsOpen: false
-    });
-  };
+const CoolLightbox = () => {
+  const [currentImageIndex, setCurrentIndex] = useState(0);
 
-  gotoPrevious = () => {
-    const { currentImageIndex } = this.state;
+  const gotoPrevious = () =>
+    currentImageIndex > 0 && setCurrentIndex(currentImageIndex - 1);
 
-    // If the current image isn't the first in the list, go to the previous
-    if (currentImageIndex > 0) {
-      this.setState({
-        currentImageIndex: currentImageIndex - 1
-      });
-    }
-  };
+  const gotoNext = () =>
+    currentImageIndex + 1 < images.length &&
+    setCurrentIndex(currentImageIndex + 1);
 
-  gotoNext = () => {
-    const { currentImageIndex, images } = this.state;
+  return (
+    <Lightbox
+      isOpen={true}
+      onClickPrev={gotoPrevious}
+      onClickNext={gotoNext}
+      images={images}
+      currentIndex={currentImageIndex}
+      /* Add your own UI */
+      // renderHeader={() => (<CustomHeader />)}
+      // renderFooter={() => (<CustomFooter />)}
+      // renderPrevButton={() => (<CustomLeftArrowButton />)}
+      // renderNextButton={() => (<CustomRightArrowButton />)}
 
-    // If the current image isn't the list in the list, go to the next
-    if (currentImageIndex + 1 < images.length) {
-      this.setState({
-        currentImageIndex: currentImageIndex + 1
-      });
-    }
-  };
-  
-  render() {
-    const { currentImageIndex, lightboxIsOpen, images } = this.state;
-    
-    return (
-      <Lightbox
-        isOpen={lightboxIsOpen}
-        onClose={this.closeLightbox}
-        onClickPrev={this.gotoPrevious}
-        onClickNext={this.gotoNext}
-        images={images}
-        currentIndex={currentImageIndex}
-        renderHeader={() => (<CustomHeader />)}
-        renderFooter={() => (<CustomFooter />)}
-        renderPrevButton={() => (<CustomLeftArrowButton />)}
-        renderNextButton={() => (<CustomRightArrowButton />)}
-      />
-    )
-  }
-}
+      /* Add styling */
+      // className="cool-class"
+      // style={{ background: "grey" }}
+
+      /* Handle closing */
+      // onClose={handleClose}
+
+      /* react-spring config for open/close animation */
+      // pageTransitionConfig={{
+      //   from: { transform: "scale(0.75)", opacity: 0 },
+      //   enter: { transform: "scale(1)", opacity: 1 },
+      //   leave: { transform: "scale(0.75)", opacity: 0 },
+      //   config: { mass: 1, tension: 320, friction: 32 }
+      // }}
+    />
+  );
+};
+
+export default CoolLightbox;
 ```
 
 ## Props
