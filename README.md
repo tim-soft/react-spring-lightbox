@@ -24,24 +24,24 @@ yarn add react-spring-lightbox
 ## Usage
 
 ```jsx
-import React, { useState } from "react";
-import Lightbox from "react-spring-lightbox";
+import React, { useState } from 'react';
+import Lightbox from 'react-spring-lightbox';
 
 const images = [
   {
     src:
-      "https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg",
-    alt: "Windows 10 Dark Mode Setting"
+      'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
+    alt: 'Windows 10 Dark Mode Setting'
   },
   {
     src:
-      "https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png",
-    alt: "macOS Mojave Dark Mode Setting"
+      'https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png',
+    alt: 'macOS Mojave Dark Mode Setting'
   },
   {
     src:
-      "https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg",
-    alt: "Android 9.0 Dark Mode Setting"
+      'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
+    alt: 'Android 9.0 Dark Mode Setting'
   }
 ];
 
@@ -58,8 +58,8 @@ const CoolLightbox = () => {
   return (
     <Lightbox
       isOpen={true}
-      onClickPrev={gotoPrevious}
-      onClickNext={gotoNext}
+      onPrev={gotoPrevious}
+      onNext={gotoNext}
       images={images}
       currentIndex={currentImageIndex}
       /* Add your own UI */
@@ -90,12 +90,13 @@ export default CoolLightbox;
 ```
 
 ## Props
+
 | Prop                 | Description                                                       |
-|----------------------|-------------------------------------------------------------------|
+| -------------------- | ----------------------------------------------------------------- |
 | isOpen               | Flag that dictates if the lightbox is open or closed              |
 | onClose              | Function that closes the Lightbox                                 |
-| onClickPrev          | Function that changes currentIndex to previous image in images    |
-| onClickNext          | Function that changes currentIndex to next image in images        |
+| onPrev               | Function that changes currentIndex to previous image in images    |
+| onNext               | Function that changes currentIndex to next image in images        |
 | currentIndex         | Index of image in images array that is currently shown            |
 | renderHeader         | A React component that renders above the image pager              |
 | renderFooter         | A React component that renders below the image pager              |
@@ -105,7 +106,6 @@ export default CoolLightbox;
 | className            | Classes are applied to the root lightbox component                |
 | style                | Inline styles are applied to the root lightbox component          |
 | pageTransitionConfig | React-Spring useTransition config for page open/close animation   |
-
 
 ## Local Development
 

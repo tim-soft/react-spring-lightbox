@@ -8,16 +8,16 @@ import ImagePager from './components/ImagePager';
  *
  * @param {array} images Array of image objects to be shown in Lightbox
  * @param {number} currentIndex Index of image in images array that is currently shown
- * @param {function} onClickPrev True if this image is currently shown in pager, otherwise false
- * @param {function} onClickNext Function that can be called to disable dragging in the pager
+ * @param {function} onPrev True if this image is currently shown in pager, otherwise false
+ * @param {function} onNext Function that can be called to disable dragging in the pager
  * @param {function} renderPrevButton A React component that is used for previous button in image pager
  * @param {function} renderNextButton A React component that is used for next button in image pager
  */
 const ImageStage = ({
   images,
   currentIndex,
-  onClickPrev,
-  onClickNext,
+  onPrev,
+  onNext,
   onClose,
   renderPrevButton,
   renderNextButton
@@ -25,8 +25,8 @@ const ImageStage = ({
   // Extra sanity check that the next/prev image exists before moving to it
   const canPrev = currentIndex > 0;
   const canNext = currentIndex + 1 < images.length;
-  const prev = () => canPrev && onClickPrev();
-  const next = () => canNext && onClickNext();
+  const prev = () => canPrev && onPrev();
+  const next = () => canNext && onNext();
 
   return (
     <div
@@ -46,8 +46,8 @@ const ImageStage = ({
         images={images}
         currentIndex={currentIndex}
         onClose={onClose}
-        onClickNext={next}
-        onClickPrev={prev}
+        onNext={next}
+        onPrev={prev}
       />
 
       {renderNextButton({ canNext })}
@@ -57,8 +57,8 @@ const ImageStage = ({
 
 ImageStage.propTypes = {
   onClose: PropTypes.func.isRequired,
-  onClickPrev: PropTypes.func.isRequired,
-  onClickNext: PropTypes.func.isRequired,
+  onPrev: PropTypes.func.isRequired,
+  onNext: PropTypes.func.isRequired,
   currentIndex: PropTypes.number.isRequired,
   images: PropTypes.arrayOf(
     PropTypes.shape({

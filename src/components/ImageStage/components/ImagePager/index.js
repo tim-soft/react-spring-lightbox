@@ -12,20 +12,14 @@ import Image from '../Image';
  *
  * @param {array} images Array of image objects to be shown in Lightbox
  * @param {number} currentIndex Index of image in images array that is currently shown
- * @param {function} onClickPrev True if this image is currently shown in pager, otherwise false
- * @param {function} onClickNext Function that can be called to disable dragging in the pager
+ * @param {function} onPrev True if this image is currently shown in pager, otherwise false
+ * @param {function} onNext Function that can be called to disable dragging in the pager
  * @param {function} onClose Function that closes the Lightbox
  *
  * @see https://github.com/react-spring/react-use-gesture
  * @see https://github.com/react-spring/react-spring
  */
-const ImagePager = ({
-  images,
-  currentIndex,
-  onClickPrev,
-  onClickNext,
-  onClose
-}) => {
+const ImagePager = ({ images, currentIndex, onPrev, onNext, onClose }) => {
   const firstRender = useRef(true);
   const { width: pageWidth } = useWindowSize();
   const [disableDrag, setDisableDrag] = useState(false);
@@ -89,8 +83,8 @@ const ImagePager = ({
         // Cancel gesture animation
         cancel();
 
-        if (goToIndex > currentIndex) onClickNext();
-        if (goToIndex < currentIndex) onClickPrev();
+        if (goToIndex > currentIndex) onNext();
+        if (goToIndex < currentIndex) onPrev();
       }
 
       // Don't move pager during two+ finger touch events, i.e. pinch-zoom
@@ -148,9 +142,9 @@ ImagePager.propTypes = {
   /* Function that closes the Lightbox */
   onClose: PropTypes.func.isRequired,
   /* Function that triggers ImagePager to move to the previous image */
-  onClickPrev: PropTypes.func.isRequired,
+  onPrev: PropTypes.func.isRequired,
   /* Function that triggers ImagePager to move to the next image */
-  onClickNext: PropTypes.func.isRequired,
+  onNext: PropTypes.func.isRequired,
   /* Index of image in images array that is currently shown */
   currentIndex: PropTypes.number.isRequired,
   /* Array of images to be shown in Lightbox */

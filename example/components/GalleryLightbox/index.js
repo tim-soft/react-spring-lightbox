@@ -110,8 +110,8 @@ class BlogImageGallery extends React.Component {
         <StyledLightbox
           isOpen={lightboxIsOpen}
           onClose={this.closeLightbox}
-          onClickPrev={this.gotoPrevious}
-          onClickNext={this.gotoNext}
+          onPrev={this.gotoPrevious}
+          onNext={this.gotoNext}
           images={images}
           currentIndex={currentImageIndex}
           galleryTitle={galleryTitle}

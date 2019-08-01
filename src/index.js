@@ -7,8 +7,8 @@ import { ImageStage, PageContainer, CreatePortal } from './components';
  *
  * @param {boolean} isOpen Flag that dictates if the lightbox is open or closed
  * @param {function} onClose Function that closes the Lightbox
- * @param {function} onClickPrev Function that changes currentIndex to previous image in images
- * @param {function} onClickNext Function that changes currentIndex to next image in images
+ * @param {function} onPrev Function that changes currentIndex to previous image in images
+ * @param {function} onNext Function that changes currentIndex to next image in images
  * @param {number} currentIndex Index of image in images array that is currently shown
  * @param {function} renderHeader A React component that renders above the image pager
  * @param {function} renderFooter A React component that renders below the image pager
@@ -27,8 +27,8 @@ const Lightbox = ({
   onClose,
   images,
   currentIndex,
-  onClickPrev,
-  onClickNext,
+  onPrev,
+  onNext,
   renderHeader,
   renderFooter,
   renderPrevButton,
@@ -63,10 +63,10 @@ const Lightbox = ({
       if (isOpen) {
         switch (e.key) {
           case 'ArrowLeft':
-            onClickPrev();
+            onPrev();
             break;
           case 'ArrowRight':
-            onClickNext();
+            onNext();
             break;
           case 'Escape':
             onClose();
@@ -100,8 +100,8 @@ const Lightbox = ({
           images={images}
           onClose={onClose}
           currentIndex={currentIndex}
-          onClickPrev={onClickPrev}
-          onClickNext={onClickNext}
+          onPrev={onPrev}
+          onNext={onNext}
           renderPrevButton={renderPrevButton}
           renderNextButton={renderNextButton}
         />
@@ -114,8 +114,8 @@ const Lightbox = ({
 Lightbox.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  onClickPrev: PropTypes.func.isRequired,
-  onClickNext: PropTypes.func.isRequired,
+  onPrev: PropTypes.func.isRequired,
+  onNext: PropTypes.func.isRequired,
   currentIndex: PropTypes.number.isRequired,
   images: PropTypes.arrayOf(
     PropTypes.shape({
