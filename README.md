@@ -6,6 +6,14 @@
 
 React-spring-lightbox is a flexible image gallery lightbox with native-feeling touch gestures and buttery smooth animations.
 
+<p align="middle">
+  <a href="https://codesandbox.io/s/react-spring-lightbox-basic-iy0qq" target="_blank">
+    <img src="https://thumbs.gfycat.com/CrispGeneralEquestrian-size_restricted.gif" />
+  </a>
+  <br />
+  <a href="https://codesandbox.io/s/react-spring-lightbox-basic-iy0qq" target="_blank">Checkout on Codesandbox</a>
+</p>
+
 ## ✨ Features
 
 - :point_up: &nbsp;&nbsp;&nbsp;Swipe or click+drag to page photos
