@@ -25,6 +25,7 @@ export default class CreatePortal extends React.Component {
 
     // Create a container <div /> for React Portal
     this.portalContainer = document.createElement('div');
+    this.portalContainer.setAttribute('class', 'lightbox-portal');
 
     // Append the container to the document body
     this.body.appendChild(this.portalContainer);

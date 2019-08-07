@@ -30,6 +30,7 @@ const ImageStage = ({
 
   return (
     <div
+      className="lightbox-image-stage"
       style={{
         flexGrow: 1,
         margin: '25px 0',

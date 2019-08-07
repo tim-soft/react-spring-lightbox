@@ -99,6 +99,7 @@ const ImagePager = ({ images, currentIndex, onPrev, onNext, onClose }) => {
     <animated.div
       {...bind()}
       key={i}
+      className="lightbox-image-pager"
       style={{
         display,
         transform: x.to(xInterp => `translateX(${xInterp}px)`),
@@ -111,6 +112,7 @@ const ImagePager = ({ images, currentIndex, onPrev, onNext, onClose }) => {
     >
       <div
         role="presentation"
+        className="lightbox-image-container"
         style={{
           position: 'relative',
           display: 'flex',

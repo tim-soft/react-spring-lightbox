@@ -39,7 +39,7 @@ const PageContainer = ({
       item && (
         <animated.div
           key={key}
-          className={className}
+          className={`lightbox-container ${className}`}
           style={{
             ...props,
             display: 'flex',

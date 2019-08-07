@@ -154,6 +154,7 @@ const Image = ({ src, alt, isCurrentImage, setDisableDrag }) => {
     <animated.img
       {...bind()}
       ref={imageRef}
+      className="lightbox-image"
       style={{
         transform: to(
           [scale, translateX, translateY],
