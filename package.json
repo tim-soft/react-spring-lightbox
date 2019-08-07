@@ -27,8 +27,8 @@
     "npm": ">=5"
   },
   "scripts": {
-    "test": "cross-env CI=1 react-scripts test --env=jsdom",
-    "test:watch": "react-scripts test --env=jsdom",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "build": "rollup -c",
     "start": "rollup -c -w",
     "prepare": "yarn run build"
@@ -61,8 +61,11 @@
     "@babel/plugin-transform-runtime": "^7.5.0",
     "@babel/preset-env": "^7.5.4",
     "@babel/preset-react": "^7.0.0",
+    "@testing-library/jest-dom": "^4.0.0",
+    "@testing-library/react": "^8.0.8",
     "babel-eslint": "10.0.2",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+    "babel-polyfill": "^6.26.0",
     "cross-env": "^5.2.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.1",
@@ -73,6 +76,7 @@
     "eslint-plugin-react": "^7.14.2",
     "eslint-plugin-react-hooks": "^1.6.1",
     "husky": "^3.0.0",
+    "jest": "^24.8.0",
     "lint-staged": "^9.2.0",
     "prettier": "^1.18.2",
     "react": "^16.8.6",

@@ -7,7 +7,8 @@ module.exports = {
   parser: 'babel-eslint',
   env: {
     browser: true,
-    es6: true
+    es6: true,
+    jest: true
   },
   extends: ['airbnb', 'prettier', 'prettier/react', 'plugin:import/warnings'],
   plugins: ['prettier', 'jsx-a11y', 'react-hooks', 'import'],
