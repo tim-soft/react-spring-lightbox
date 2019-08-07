@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.1] - 2019-08-7
+
+Add testing suite and travis-ci config
+
 ## [1.0.0] - 2019-08-5
 
 Upgrade deps and release as stable
