@@ -5026,10 +5026,10 @@ react-spring@^9.0.0-beta.31:
     "@react-spring/web" "^9.0.0-beta.31"
     "@react-spring/zdog" "^9.0.0-beta.31"
 
-react-use-gesture@^5.2.3:
-  version "5.2.3"
-  resolved "https://registry.yarnpkg.com/react-use-gesture/-/react-use-gesture-5.2.3.tgz#3505b45f1076963040ed6204a81ee5f252d55b36"
-  integrity sha512-aXpit9o3EhmlM/erBu9wzWNrx7Wbms/ha38I/XSF+ybUdZ9idhWjy4LODGfj+wqMNNdmphLfYLPO+WfApYXAiA==
+react-use-gesture@^5.2.4:
+  version "5.2.4"
+  resolved "https://registry.yarnpkg.com/react-use-gesture/-/react-use-gesture-5.2.4.tgz#c84ebe0d79703fd90cb26a220812c2f430d3e40d"
+  integrity sha512-oay95IPKBTAIqsZWwPAXJVVlDCpXdg4y2kEKz8oGLSqewpmXsXC4vKlAZq/ZDwZa4djzWlK1pnSIJY2iylx4QQ==
 
 react@^16.9.0:
   version "16.9.0"
