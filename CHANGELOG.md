@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2019-08-14
+
+### Fixed
+
+- Adjusted "pan out of bounds" threshold
+
 ## [1.1.0] - 2019-08-14
 
 ### Added
