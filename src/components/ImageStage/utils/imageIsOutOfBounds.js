@@ -15,10 +15,10 @@ const imageIsOutOfBounds = imageRef => {
   const { innerHeight: windowHeight, innerWidth: windowWidth } = window;
 
   if (
-    topLeftX > windowWidth * (1 / 3) ||
-    topLeftY > windowHeight * (1 / 3) ||
-    bottomRightX < windowWidth * (2 / 3) ||
-    bottomRightY < windowHeight * (2 / 3)
+    topLeftX > windowWidth * (1 / 2) ||
+    topLeftY > windowHeight * (1 / 2) ||
+    bottomRightX < windowWidth * (1 / 2) ||
+    bottomRightY < windowHeight * (1 / 2)
   )
     return true;
 
