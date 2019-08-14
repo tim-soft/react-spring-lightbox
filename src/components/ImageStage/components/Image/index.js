@@ -62,7 +62,9 @@ const Image = ({ src, alt, isCurrentImage, setDisableDrag }) => {
     {
       onPinch: ({
         delta: [deltaDist],
-        origin: [touchOriginX, touchOriginY]
+        origin: [touchOriginX, touchOriginY],
+        event: { clientX, clientY },
+        ctrlKey
       }) => {
         const pinchScale = scale.value + deltaDist * 0.004;
         const pinchDelta = pinchScale - scale.value;
@@ -74,7 +76,11 @@ const Image = ({ src, alt, isCurrentImage, setDisableDrag }) => {
           scale: scale.value,
           pinchDelta,
           currentTranslate: [translateX.value, translateY.value],
-          touchOrigin: [touchOriginX, touchOriginY]
+          // Use the [x, y] coords of mouse if a trackpad or ctrl + wheel event
+          // Otherwise use touch origin
+          touchOrigin: ctrlKey
+            ? [clientX, clientY]
+            : [touchOriginX, touchOriginY]
         });
 
         // Restrict the amount of zoom between half and 3x image size
@@ -109,8 +115,15 @@ const Image = ({ src, alt, isCurrentImage, setDisableDrag }) => {
      * useGesture config
      * @see https://github.com/react-spring/react-use-gesture#usegesture-config
      */
-    { domTarget: imageRef }
+    {
+      domTarget: imageRef,
+      event: {
+        passive: false
+      }
+    }
   );
+
+  useEffect(bind, [bind]);
 
   // Handle double-tap on image
   useDoubleClick({
@@ -152,7 +165,6 @@ const Image = ({ src, alt, isCurrentImage, setDisableDrag }) => {
 
   return (
     <animated.img
-      {...bind()}
       ref={imageRef}
       className="lightbox-image"
       style={{
