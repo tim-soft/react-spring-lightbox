@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2019-08-14
+
+### Added
+
+- Implement proper <kbd>Ctrl</kbd> + `Mousewheel` and `Trackpad Pinch` zooming
+
 ## [1.0.1] - 2019-08-7
 
 Add testing suite and travis-ci config
