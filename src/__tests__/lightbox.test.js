@@ -2,14 +2,9 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import Lightbox from './components/SimpleLightbox';
 
-test('creates portal on render', async () => {
+test('creates portal on render', () => {
   render(<Lightbox />);
-
   const portalEl = document.body.querySelector('.lightbox-portal');
-
-  // Wait for opening animation to finish
-  await new Promise(r => setTimeout(r, 600));
-
   expect(portalEl).toBeTruthy();
 });
 
@@ -55,7 +50,7 @@ test('renders custom prev/next buttons', () => {
   expect(lightboxImageStage.lastChild.id).toBe('next-button');
 });
 
-test('calls onNext() callback on ArrowRight keypress', async () => {
+test('calls onNext() callback on ArrowRight keypress', () => {
   const onNext = jest.fn();
   render(<Lightbox onNext={onNext} />);
 
@@ -65,7 +60,7 @@ test('calls onNext() callback on ArrowRight keypress', async () => {
   expect(onNext).toHaveBeenCalledTimes(1);
 });
 
-test('calls onPrev() callback on ArrowLeft keypress', async () => {
+test('calls onPrev() callback on ArrowLeft keypress', () => {
   const onPrev = jest.fn();
   render(<Lightbox onPrev={onPrev} currentIndex={2} />);
 
@@ -75,7 +70,7 @@ test('calls onPrev() callback on ArrowLeft keypress', async () => {
   expect(onPrev).toHaveBeenCalledTimes(1);
 });
 
-test('calls onClose() callback on Esc keypress', async () => {
+test('calls onClose() callback on Esc keypress', () => {
   const onClose = jest.fn();
   render(<Lightbox onClose={onClose} />);
 
