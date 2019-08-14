@@ -20,6 +20,7 @@ React-spring-lightbox is a flexible image gallery lightbox with native-feeling t
 
 - :point_up: &nbsp;&nbsp;&nbsp;Swipe or click+drag to page photos
 - :keyboard: &nbsp;Keyboard controls <kbd>&leftarrow;</kbd> <kbd>&rightarrow;</kbd> <kbd>Esc</kbd>
+- :mouse2: &nbsp;<kbd>Ctrl</kbd> + `Mousewheel` or `Trackpad Pinch` to zoom
 - :mag_right: &nbsp;Double-tap or double-click to zoom in/out
 - :ok_hand: &nbsp;&nbsp;&nbsp;Pinch to zoom
 - :point_left: &nbsp;Panning on zoomed-in images
