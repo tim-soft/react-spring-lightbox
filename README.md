@@ -9,11 +9,13 @@
 React-spring-lightbox is a flexible image gallery lightbox with native-feeling touch gestures and buttery smooth animations.
 
 <p align="middle">
-  <a href="https://codesandbox.io/s/react-spring-lightbox-custom-ui-iy0qq?fontsize=14&module=%2Fsrc%2FCoolLightbox%2Findex.js">
+  <a href="https://71hts.csb.app/">
     <img src="https://thumbs.gfycat.com/CrispGeneralEquestrian-size_restricted.gif" />
   </a>
   <br />
-  <a href="https://codesandbox.io/s/react-spring-lightbox-custom-ui-iy0qq?fontsize=14&module=%2Fsrc%2FCoolLightbox%2Findex.js">Check out on Codesandbox</a>
+  <a href="https://71hts.csb.app/">Demo</a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="https://codesandbox.io/s/react-spring-lightbox-mosaic-71hts?fontsize=14&module=%2Fsrc%2FImageGallery%2Findex.js">Codesandbox</a>
 </p>
 
 ## ✨ Features
