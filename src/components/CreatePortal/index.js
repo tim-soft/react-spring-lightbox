@@ -36,16 +36,18 @@ export default class CreatePortal extends React.Component {
 
     // Add event listener to prevent trackpad/ctrl+mousewheel zooming of lightbox
     // Zooming is handled specifically within /ImageStage/components/Image
-    this.portalContainer.addEventListener('wheel', e => e.preventDefault());
+    this.portalContainer.addEventListener('wheel', this.preventWheel);
   }
 
   componentWillUnmount() {
     // Remove wheel event listener
-    this.portalContainer.removeEventListener('wheel', e => e.preventDefault());
+    this.portalContainer.removeEventListener('wheel', this.preventWheel);
 
     // Cleanup Portal from DOM
     this.body.removeChild(this.portalContainer);
   }
+
+  preventWheel = e => e.preventDefault();
 
   render() {
     // Return null during SSR
