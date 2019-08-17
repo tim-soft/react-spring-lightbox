@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.2] - 2019-08-17
+
+### Fixed
+
+- Properly dispose wheel event listener
+
 ## [1.1.1] - 2019-08-14
 
 ### Fixed
