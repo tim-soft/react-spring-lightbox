@@ -69,8 +69,10 @@ const ImagePager = ({ images, currentIndex, onPrev, onNext, onClose }) => {
       // Disable drag if Image has been zoomed in to allow for panning
       if (disableDrag) return;
 
-      const draggedFarEnough = down && distance > pageWidth / 4;
-      const draggedFastEnough = down && velocity > 2.5;
+      const isHorizontalDrag = Math.abs(xDir) > 0.7;
+      const draggedFarEnough =
+        down && isHorizontalDrag && distance > pageWidth / 3;
+      const draggedFastEnough = down && isHorizontalDrag && velocity > 2.5;
 
       // Handle next/prev image from valid drag
       if (draggedFarEnough || draggedFastEnough) {
