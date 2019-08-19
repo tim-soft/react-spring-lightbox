@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useSprings, animated } from 'react-spring';
+import { useSprings, animated } from '@react-spring/web';
 import { useDrag } from 'react-use-gesture';
 import clamp from 'lodash.clamp';
 import { useWindowSize } from '../../utils';
