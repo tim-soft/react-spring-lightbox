@@ -59,18 +59,9 @@ const ImagePager = ({ images, currentIndex, onPrev, onNext, onClose }) => {
    */
   const bind = useGesture(
     {
-      onWheel: ({
-        distance,
-        velocity,
-        direction: [xDir, yDir],
-        ctrlKey,
-        cancel
-      }) => {
+      onWheel: ({ distance, velocity, direction: [xDir, yDir], ctrlKey }) => {
         // Disable drag if Image has been zoomed in to allow for panning
-        if (ctrlKey || disableDrag || velocity === 0) {
-          cancel();
-          return;
-        }
+        if (ctrlKey || disableDrag || velocity === 0) return;
 
         const draggedFarEnough = distance > pageWidth / 4;
         const draggedFastEnough = velocity > 1 && distance <= pageWidth / 4;
@@ -83,18 +74,11 @@ const ImagePager = ({ images, currentIndex, onPrev, onNext, onClose }) => {
             images.length - 1
           );
 
-          // Cancel gesture animation
-          cancel();
-
           if (goToIndex > currentIndex) onNext();
           if (goToIndex < currentIndex) onPrev();
           if (goToIndex === currentIndex)
             set(i => getPagePositions(i, false, 0));
-
-          return;
         }
-        // Update page x-coordinates from wheel
-        set(i => getPagePositions(i, true, -distance));
       },
       onWheelEnd: () => {
         set(i => getPagePositions(i, false, 0));
