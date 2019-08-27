@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.4] - 2019-08-27
+
+### Added
+
+- Implement mousewheel paging of images
+
 ## [1.1.3] - 2019-08-19
 
 ### Fixed
