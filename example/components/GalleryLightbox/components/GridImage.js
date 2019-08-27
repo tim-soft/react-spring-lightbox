@@ -8,7 +8,7 @@ const GridImage = ({ key, index, left, top, photo, onClick }) => {
   const { height, width, src, alt, caption } = photo;
   return (
     <ImageContainer
-      key={key}
+      key={`${key}-${index}`}
       index={index}
       onClick={e => onClick(e, { index })}
       style={{ left, top, height, width }}

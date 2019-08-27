@@ -146,7 +146,9 @@ class BlogImageGallery extends React.Component {
 export default BlogImageGallery;
 
 const GalleryContainer = styled.section`
-  margin: 2em 0;
+  overflow-y: auto;
+  max-height: calc(100% - 4em);
+  padding: 2em;
 `;
 
 const StyledLightbox = styled(Lightbox)`
