@@ -1,4 +1,4 @@
-import App, { Container } from 'next/app';
+import App from 'next/app';
 import React from 'react';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import styledNormalize from 'styled-normalize';
@@ -7,7 +7,7 @@ export default class MyApp extends App {
   render() {
     const { Component, pageProps } = this.props;
     return (
-      <Container>
+      <>
         {/* Adds some basic body styles */}
         <DefaultStyles />
 
@@ -23,7 +23,7 @@ export default class MyApp extends App {
         >
           <Component {...pageProps} />
         </ThemeProvider>
-      </Container>
+      </>
     );
   }
 }
