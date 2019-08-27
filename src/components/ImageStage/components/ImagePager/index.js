@@ -21,7 +21,9 @@ import Image from '../Image';
  */
 const ImagePager = ({ images, currentIndex, onPrev, onNext, onClose }) => {
   const firstRender = useRef(true);
-  const imageStageRef = useRef([...Array(3)].map(() => React.createRef()));
+  const imageStageRef = useRef(
+    [...Array(images.length)].map(() => React.createRef())
+  );
   const { width: pageWidth } = useWindowSize();
   const [disableDrag, setDisableDrag] = useState(false);
 
