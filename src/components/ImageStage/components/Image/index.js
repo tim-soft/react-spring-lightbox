@@ -123,6 +123,9 @@ const Image = ({ src, alt, isCurrentImage, setDisableDrag }) => {
     }
   );
 
+  /**
+   * @see https://github.com/react-spring/react-use-gesture#adding-gestures-to-dom-nodes
+   */
   useEffect(bind, [bind]);
 
   // Handle double-tap on image

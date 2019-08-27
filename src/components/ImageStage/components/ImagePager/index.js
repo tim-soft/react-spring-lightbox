@@ -2,7 +2,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSprings, animated } from '@react-spring/web';
-import { useDrag } from 'react-use-gesture';
+import { useGesture } from 'react-use-gesture';
 import clamp from 'lodash.clamp';
 import { useWindowSize } from '../../utils';
 import Image from '../Image';
@@ -21,6 +21,7 @@ import Image from '../Image';
  */
 const ImagePager = ({ images, currentIndex, onPrev, onNext, onClose }) => {
   const firstRender = useRef(true);
+  const imageStageRef = useRef([...Array(3)].map(() => React.createRef()));
   const { width: pageWidth } = useWindowSize();
   const [disableDrag, setDisableDrag] = useState(false);
 
@@ -54,52 +55,110 @@ const ImagePager = ({ images, currentIndex, onPrev, onNext, onClose }) => {
   /**
    * Update each Image's visibility and translateX offset during dragging
    *
-   * https://github.com/react-spring/react-use-gesture
+   * @see https://github.com/react-spring/react-use-gesture
    */
-  const bind = useDrag(
-    ({
-      down,
-      delta: [xDelta],
-      direction: [xDir],
-      velocity,
-      distance,
-      cancel,
-      touches
-    }) => {
-      // Disable drag if Image has been zoomed in to allow for panning
-      if (disableDrag) return;
+  const bind = useGesture(
+    {
+      onWheel: ({
+        distance,
+        velocity,
+        direction: [xDir, yDir],
+        ctrlKey,
+        cancel
+      }) => {
+        // Disable drag if Image has been zoomed in to allow for panning
+        if (ctrlKey || disableDrag || velocity === 0) {
+          cancel();
+          return;
+        }
 
-      const isHorizontalDrag = Math.abs(xDir) > 0.7;
-      const draggedFarEnough =
-        down && isHorizontalDrag && distance > pageWidth / 3;
-      const draggedFastEnough = down && isHorizontalDrag && velocity > 2.5;
+        const draggedFarEnough = distance > pageWidth / 4;
+        const draggedFastEnough = velocity > 1 && distance <= pageWidth / 4;
 
-      // Handle next/prev image from valid drag
-      if (draggedFarEnough || draggedFastEnough) {
-        const goToIndex = clamp(
-          currentIndex + (xDir > 0 ? -1 : 1),
-          0,
-          images.length - 1
-        );
+        // Handle next/prev image from valid drag
+        if (draggedFarEnough || draggedFastEnough) {
+          const goToIndex = clamp(
+            currentIndex + (xDir + yDir > 0 ? -1 : 1),
+            0,
+            images.length - 1
+          );
 
-        // Cancel gesture animation
-        cancel();
+          // Cancel gesture animation
+          cancel();
 
-        if (goToIndex > currentIndex) onNext();
-        if (goToIndex < currentIndex) onPrev();
+          if (goToIndex > currentIndex) onNext();
+          if (goToIndex < currentIndex) onPrev();
+          if (goToIndex === currentIndex)
+            set(i => getPagePositions(i, false, 0));
+
+          return;
+        }
+        // Update page x-coordinates from wheel
+        set(i => getPagePositions(i, true, -distance));
+      },
+      onWheelEnd: () => {
+        set(i => getPagePositions(i, false, 0));
+      },
+      onDrag: ({
+        down,
+        delta: [xDelta],
+        direction: [xDir],
+        velocity,
+        distance,
+        cancel,
+        touches
+      }) => {
+        // Disable drag if Image has been zoomed in to allow for panning
+        if (disableDrag) return;
+
+        const isHorizontalDrag = Math.abs(xDir) > 0.7;
+        const draggedFarEnough =
+          down && isHorizontalDrag && distance > pageWidth / 3;
+        const draggedFastEnough = down && isHorizontalDrag && velocity > 2.5;
+
+        // Handle next/prev image from valid drag
+        if (draggedFarEnough || draggedFastEnough) {
+          const goToIndex = clamp(
+            currentIndex + (xDir > 0 ? -1 : 1),
+            0,
+            images.length - 1
+          );
+
+          // Cancel gesture animation
+          cancel();
+
+          if (goToIndex > currentIndex) onNext();
+          if (goToIndex < currentIndex) onPrev();
+        }
+
+        // Don't move pager during two+ finger touch events, i.e. pinch-zoom
+        if (touches > 1) return;
+
+        // Update page x-coordinates for single finger/mouse gestures
+        set(i => getPagePositions(i, down, xDelta));
       }
-
-      // Don't move pager during two+ finger touch events, i.e. pinch-zoom
-      if (touches > 1) return;
-
-      // Update page x-coordinates for single finger/mouse gestures
-      set(i => getPagePositions(i, down, xDelta));
+    },
+    /**
+     * useGesture config
+     * @see https://github.com/react-spring/react-use-gesture#usegesture-config
+     */
+    {
+      domTarget: imageStageRef.current[currentIndex],
+      event: {
+        passive: true,
+        capture: false
+      }
     }
   );
 
+  /**
+   * @see https://github.com/react-spring/react-use-gesture#adding-gestures-to-dom-nodes
+   */
+  useEffect(bind, [bind, currentIndex]);
+
   return props.map(({ x, display }, i) => (
     <animated.div
-      {...bind()}
+      ref={imageStageRef.current[i]}
       key={i}
       className="lightbox-image-pager"
       style={{
