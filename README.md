@@ -13,7 +13,7 @@ React-spring-lightbox is a flexible image gallery lightbox with native-feeling t
     <img src="https://thumbs.gfycat.com/CrispGeneralEquestrian-size_restricted.gif" />
   </a>
   <br />
-  <a href="https://71hts.csb.app/">Demo</a>
+  <a href="https://timellenberger.com/libraries/react-spring-lightbox">Docs</a>
   &nbsp;&nbsp;&nbsp;
   <a href="https://codesandbox.io/s/react-spring-lightbox-mosaic-71hts?fontsize=14&module=%2Fsrc%2FImageGallery%2Findex.js">Codesandbox</a>
 </p>
