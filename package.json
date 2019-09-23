@@ -94,6 +94,6 @@
     "@react-spring/web": "^9.0.0-beta.34",
     "lodash.clamp": "^4.0.3",
     "lodash.merge": "^4.6.2",
-    "react-use-gesture": "^5.2.4"
+    "react-use-gesture": "^6.0.1"
   }
 }
