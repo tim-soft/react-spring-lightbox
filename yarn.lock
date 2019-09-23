@@ -1042,10 +1042,10 @@
     "@babel/runtime" "^7.3.1"
     tiny-invariant "^1.0.4"
 
-"@react-spring/web@^9.0.0-beta.33":
-  version "9.0.0-beta.33"
-  resolved "https://registry.yarnpkg.com/@react-spring/web/-/web-9.0.0-beta.33.tgz#d1dbe05dfa888ab0c46fe3fac8790cd3a7dfb8d5"
-  integrity sha512-IIKF+wwnDahMOB7Llr/HdLUHrzL9LEGHGPmnv9bJsdxmMdn28Dydbk3ekbpZrbjYnduKCeFVqtTl/TZcnQDVdw==
+"@react-spring/web@^9.0.0-beta.34":
+  version "9.0.0-beta.34"
+  resolved "https://registry.yarnpkg.com/@react-spring/web/-/web-9.0.0-beta.34.tgz#d71fef11416a6be8b07d22faea16c8597e9487f3"
+  integrity sha512-K5kF2e0BgUE6ehY81NF9C8eYiopFx9YrWQvxRXVUbXUYOgLjZ5JsKFlAbM52PAl3AgP5c1pMP9ir6yzn144nig==
   dependencies:
     "@babel/runtime" "^7.3.1"
     "@react-spring/animated" "^9.0.0-beta.33"
