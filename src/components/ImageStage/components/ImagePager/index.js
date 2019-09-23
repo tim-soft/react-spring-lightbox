@@ -65,8 +65,8 @@ const ImagePager = ({ images, currentIndex, onPrev, onNext, onClose }) => {
         // Disable drag if Image has been zoomed in to allow for panning
         if (ctrlKey || disableDrag || velocity === 0) return;
 
-        const draggedFarEnough = distance > pageWidth / 4;
-        const draggedFastEnough = velocity > 1 && distance <= pageWidth / 4;
+        const draggedFarEnough = distance > pageWidth / 3;
+        const draggedFastEnough = velocity > 1 && distance <= pageWidth / 3;
 
         // Handle next/prev image from valid drag
         if (draggedFarEnough || draggedFastEnough) {
@@ -87,7 +87,7 @@ const ImagePager = ({ images, currentIndex, onPrev, onNext, onClose }) => {
       },
       onDrag: ({
         down,
-        delta: [xDelta],
+        movement: [xMovement],
         direction: [xDir],
         velocity,
         distance,
@@ -121,7 +121,7 @@ const ImagePager = ({ images, currentIndex, onPrev, onNext, onClose }) => {
         if (touches > 1) return;
 
         // Update page x-coordinates for single finger/mouse gestures
-        set(i => getPagePositions(i, down, xDelta));
+        set(i => getPagePositions(i, down, xMovement));
       }
     },
     /**

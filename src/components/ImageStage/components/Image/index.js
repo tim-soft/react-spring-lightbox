@@ -61,13 +61,24 @@ const Image = ({ src, alt, isCurrentImage, setDisableDrag }) => {
   const bind = useGesture(
     {
       onPinch: ({
-        delta: [deltaDist],
+        movement: [xMovement],
         origin: [touchOriginX, touchOriginY],
-        event: { clientX, clientY },
-        ctrlKey
+        event,
+        ctrlKey,
+        last,
+        cancel
       }) => {
-        const pinchScale = scale.value + deltaDist * 0.004;
+        // Don't calculate new translate offsets on final frame
+        if (last) {
+          cancel();
+          return;
+        }
+
+        // Speed up pinch zoom when using mouse versus touch
+        const SCALE_FACTOR = ctrlKey ? 1000 : 250;
+        const pinchScale = scale.value + xMovement / SCALE_FACTOR;
         const pinchDelta = pinchScale - scale.value;
+        const { clientX, clientY } = event;
 
         // Calculate the amount of x, y translate offset needed to
         // zoom-in to point as image scale grows
@@ -98,17 +109,35 @@ const Image = ({ src, alt, isCurrentImage, setDisableDrag }) => {
         if (scale.value > 1) setDisableDrag(true);
         else set(defaultImageTransform);
       },
-      onDrag: ({ delta: [xDelta, yDelta], pinching, event, cancel }) => {
+      onDrag: ({
+        movement: [xMovement, yMovement],
+        pinching,
+        event,
+        cancel,
+        first,
+        memo = null
+      }) => {
         if (event.touches && event.touches.length > 1) return;
         if (pinching || scale.value <= 1) return;
 
         // Prevent dragging image out of viewport
         if (scale.value > 1 && imageIsOutOfBounds(imageRef)) cancel();
-        else
+        else {
+          if (first) {
+            return {
+              initialTranslateX: translateX.value,
+              initialTranslateY: translateY.value
+            };
+          }
+
+          // Translate image from dragging
           set({
-            translateX: translateX.value + xDelta / 3,
-            translateY: translateY.value + yDelta / 3
+            translateX: memo.initialTranslateX + xMovement,
+            translateY: memo.initialTranslateY + yMovement
           });
+
+          return memo;
+        }
       }
     },
     /**
