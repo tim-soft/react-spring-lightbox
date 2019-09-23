@@ -2,8 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.1.4] - 2019-08-27
+## [1.1.7] - 2019-09-23
 
+### Fixed
+ - Improved panning performance
+ - Tweaked mousewheel swiping threshold
+ - Upgrade to react-use-gesture v6
+
+## [1.1.4] - 2019-08-27
+   
 ### Added
 
 - Implement mousewheel paging of images
