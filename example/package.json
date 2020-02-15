@@ -9,15 +9,15 @@
     "color": "^3.1.2",
     "lodash.clamp": "^4.0.3",
     "lodash.merge": "^4.6.2",
-    "next": "^9.0.6",
+    "next": "^9.2.1",
     "prop-types": "^15.6.2",
     "react": "link:../node_modules/react",
     "react-dom": "link:../node_modules/react-dom",
-    "react-icons": "^3.7.0",
+    "react-icons": "^3.9.0",
     "react-photo-gallery": "^8.0.0",
     "react-spring-lightbox": "link:..",
-    "styled-components": "^4.4.0",
-    "styled-normalize": "^8.0.6"
+    "styled-components": "^5.0.1",
+    "styled-normalize": "^8.0.7"
   },
   "scripts": {
     "dev": "next",
@@ -31,6 +31,6 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "babel-plugin-styled-components": "^1.10.6"
+    "babel-plugin-styled-components": "^1.10.7"
   }
 }
