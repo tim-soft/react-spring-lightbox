@@ -23,126 +23,126 @@ import { ImageStage, PageContainer, CreatePortal } from './components';
  * @see https://github.com/react-spring/react-spring
  */
 const Lightbox = ({
-  isOpen,
-  onClose,
-  images,
-  currentIndex,
-  onPrev,
-  onNext,
-  renderHeader,
-  renderFooter,
-  renderPrevButton,
-  renderNextButton,
-  className,
-  style,
-  pageTransitionConfig
+    isOpen,
+    onClose,
+    images,
+    currentIndex,
+    onPrev,
+    onNext,
+    renderHeader,
+    renderFooter,
+    renderPrevButton,
+    renderNextButton,
+    className,
+    style,
+    pageTransitionConfig
 }) => {
-  // Handle event listeners for keyboard
-  useEffect(() => {
-    /**
-     * Prevent keyboard from controlling background page
-     * when lightbox is open
-     */
-    const preventBackgroundScroll = e => {
-      const keysToIgnore = [
-        'ArrowUp',
-        'ArrowDown',
-        'End',
-        'Home',
-        'PageUp',
-        'PageDown'
-      ];
+    // Handle event listeners for keyboard
+    useEffect(() => {
+        /**
+         * Prevent keyboard from controlling background page
+         * when lightbox is open
+         */
+        const preventBackgroundScroll = e => {
+            const keysToIgnore = [
+                'ArrowUp',
+                'ArrowDown',
+                'End',
+                'Home',
+                'PageUp',
+                'PageDown'
+            ];
 
-      if (isOpen && keysToIgnore.includes(e.key)) e.preventDefault();
-    };
+            if (isOpen && keysToIgnore.includes(e.key)) e.preventDefault();
+        };
 
-    /**
-     * Navigate images with arrow keys, close on Esc key
-     */
-    const handleKeyboardInput = e => {
-      if (isOpen) {
-        switch (e.key) {
-          case 'ArrowLeft':
-            onPrev();
-            break;
-          case 'ArrowRight':
-            onNext();
-            break;
-          case 'Escape':
-            onClose();
-            break;
-          default:
-            e.preventDefault();
-            break;
-        }
-      }
-    };
+        /**
+         * Navigate images with arrow keys, close on Esc key
+         */
+        const handleKeyboardInput = e => {
+            if (isOpen) {
+                switch (e.key) {
+                    case 'ArrowLeft':
+                        onPrev();
+                        break;
+                    case 'ArrowRight':
+                        onNext();
+                        break;
+                    case 'Escape':
+                        onClose();
+                        break;
+                    default:
+                        e.preventDefault();
+                        break;
+                }
+            }
+        };
 
-    document.addEventListener('keyup', handleKeyboardInput);
-    document.addEventListener('keydown', preventBackgroundScroll);
+        document.addEventListener('keyup', handleKeyboardInput);
+        document.addEventListener('keydown', preventBackgroundScroll);
 
-    return () => {
-      document.removeEventListener('keyup', handleKeyboardInput);
-      document.removeEventListener('keydown', preventBackgroundScroll);
-    };
-  });
+        return () => {
+            document.removeEventListener('keyup', handleKeyboardInput);
+            document.removeEventListener('keydown', preventBackgroundScroll);
+        };
+    });
 
-  return (
-    <CreatePortal>
-      <PageContainer
-        isOpen={isOpen}
-        className={className}
-        style={style}
-        pageTransitionConfig={pageTransitionConfig}
-      >
-        {renderHeader()}
-        <ImageStage
-          images={images}
-          onClose={onClose}
-          currentIndex={currentIndex}
-          onPrev={onPrev}
-          onNext={onNext}
-          renderPrevButton={renderPrevButton}
-          renderNextButton={renderNextButton}
-        />
-        {renderFooter()}
-      </PageContainer>
-    </CreatePortal>
-  );
+    return (
+        <CreatePortal>
+            <PageContainer
+                isOpen={isOpen}
+                className={className}
+                style={style}
+                pageTransitionConfig={pageTransitionConfig}
+            >
+                {renderHeader()}
+                <ImageStage
+                    images={images}
+                    onClose={onClose}
+                    currentIndex={currentIndex}
+                    onPrev={onPrev}
+                    onNext={onNext}
+                    renderPrevButton={renderPrevButton}
+                    renderNextButton={renderNextButton}
+                />
+                {renderFooter()}
+            </PageContainer>
+        </CreatePortal>
+    );
 };
 
 Lightbox.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onPrev: PropTypes.func.isRequired,
-  onNext: PropTypes.func.isRequired,
-  currentIndex: PropTypes.number.isRequired,
-  images: PropTypes.arrayOf(
-    PropTypes.shape({
-      src: PropTypes.string.isRequired,
-      caption: PropTypes.string.isRequired,
-      alt: PropTypes.string.isRequired,
-      width: PropTypes.number,
-      height: PropTypes.number
-    })
-  ).isRequired,
-  renderHeader: PropTypes.func,
-  renderFooter: PropTypes.func,
-  renderPrevButton: PropTypes.func,
-  renderNextButton: PropTypes.func,
-  className: PropTypes.string,
-  style: PropTypes.object,
-  pageTransitionConfig: PropTypes.object
+    isOpen: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+    onPrev: PropTypes.func.isRequired,
+    onNext: PropTypes.func.isRequired,
+    currentIndex: PropTypes.number.isRequired,
+    images: PropTypes.arrayOf(
+        PropTypes.shape({
+            src: PropTypes.string.isRequired,
+            caption: PropTypes.string.isRequired,
+            alt: PropTypes.string.isRequired,
+            width: PropTypes.number,
+            height: PropTypes.number
+        })
+    ).isRequired,
+    renderHeader: PropTypes.func,
+    renderFooter: PropTypes.func,
+    renderPrevButton: PropTypes.func,
+    renderNextButton: PropTypes.func,
+    className: PropTypes.string,
+    style: PropTypes.object,
+    pageTransitionConfig: PropTypes.object
 };
 
 Lightbox.defaultProps = {
-  pageTransitionConfig: null,
-  className: null,
-  style: null,
-  renderHeader: () => null,
-  renderFooter: () => null,
-  renderPrevButton: () => null,
-  renderNextButton: () => null
+    pageTransitionConfig: null,
+    className: null,
+    style: null,
+    renderHeader: () => null,
+    renderFooter: () => null,
+    renderPrevButton: () => null,
+    renderNextButton: () => null
 };
 
 export default Lightbox;

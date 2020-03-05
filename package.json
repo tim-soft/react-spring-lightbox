@@ -1,99 +1,105 @@
 {
-  "name": "react-spring-lightbox",
-  "version": "1.2.0",
-  "description": "A flexible image gallery lightbox with native-feeling touch gestures and buttery smooth animations, built with react-spring.",
-  "author": "Tim Ellenberger <timellenberger@gmail.com>",
-  "license": "MIT",
-  "repository": "tim-soft/react-spring-lightbox",
-  "bugs": {
-    "url": "https://github.com/tim-soft/react-spring-lightbox/issues"
-  },
-  "homepage": "https://timellenberger.com",
-  "keywords": [
-    "react",
-    "spring",
-    "lightbox",
-    "modal",
-    "gallery",
-    "touch",
-    "gestures",
-    "images"
-  ],
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.es.js",
-  "jsnext:main": "dist/index.es.js",
-  "engines": {
-    "node": ">=8",
-    "npm": ">=5"
-  },
-  "scripts": {
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "build": "rollup -c",
-    "start": "rollup -c -w",
-    "prepare": "yarn run build"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{json,md}": [
-      "prettier --write",
-      "git add --force"
+    "name": "react-spring-lightbox",
+    "version": "1.2.0",
+    "description": "A flexible image gallery lightbox with native-feeling touch gestures and buttery smooth animations, built with react-spring.",
+    "author": "Tim Ellenberger <timellenberger@gmail.com>",
+    "license": "MIT",
+    "repository": "tim-soft/react-spring-lightbox",
+    "bugs": {
+        "url": "https://github.com/tim-soft/react-spring-lightbox/issues"
+    },
+    "homepage": "https://timellenberger.com",
+    "keywords": [
+        "react",
+        "spring",
+        "lightbox",
+        "modal",
+        "gallery",
+        "touch",
+        "gestures",
+        "images"
     ],
-    "*.{js, jsx}": [
-      "prettier --write",
-      "eslint --no-ignore --fix",
-      "git add --force"
-    ]
-  },
-  "peerDependencies": {
-    "prop-types": ">=15.5.4",
-    "react": ">=16.8",
-    "react-dom": ">=16.8"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.8.4",
-    "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
-    "@babel/plugin-transform-runtime": "^7.8.3",
-    "@babel/preset-env": "^7.8.4",
-    "@babel/preset-react": "^7.8.3",
-    "@testing-library/jest-dom": "^5.1.1",
-    "@testing-library/react": "^9.4.0",
-    "babel-eslint": "10.0.3",
-    "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
-    "babel-polyfill": "^6.26.0",
-    "cross-env": "^7.0.0",
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb": "^18.0.1",
-    "eslint-config-prettier": "^6.10.0",
-    "eslint-plugin-import": "^2.20.1",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-prettier": "^3.1.2",
-    "eslint-plugin-react": "^7.18.3",
-    "eslint-plugin-react-hooks": "^1.7.0",
-    "husky": "^4.2.3",
-    "jest": "^25.1.0",
-    "lint-staged": "^10.0.7",
-    "prettier": "^1.19.1",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
-    "rollup": "^1.31.1",
-    "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-filesize": "^6.2.1",
-    "rollup-plugin-node-resolve": "^5.2.0"
-  },
-  "files": [
-    "dist"
-  ],
-  "dependencies": {
-    "@react-spring/web": "^9.0.0-beta.34",
-    "lodash.clamp": "^4.0.3",
-    "lodash.merge": "^4.6.2",
-    "react-use-gesture": "^7.0.4"
-  }
+    "main": "dist/index.cjs.js",
+    "module": "dist/index.es.js",
+    "jsnext:main": "dist/index.es.js",
+    "engines": {
+        "node": ">=8",
+        "npm": ">=5"
+    },
+    "scripts": {
+        "fix": "yarn fix:eslint && yarn fix:prettier",
+        "fix:eslint": "eslint --fix \"**/*.*\"",
+        "fix:prettier": "prettier --write \"**/*.*\"",
+        "lint": "yarn lint:eslint && yarn lint:prettier",
+        "lint:eslint": "eslint \"**/*.*\"",
+        "lint:prettier": "prettier --check \"**/*.*\"",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "build": "rollup -c",
+        "start": "rollup -c -w",
+        "prepare": "yarn run build"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "lint-staged": {
+        "*.{json,md}": [
+            "prettier --write",
+            "git add --force"
+        ],
+        "*.{js, jsx}": [
+            "prettier --write",
+            "eslint --no-ignore --fix",
+            "git add --force"
+        ]
+    },
+    "peerDependencies": {
+        "prop-types": ">=15.5.4",
+        "react": ">=16.8",
+        "react-dom": ">=16.8"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.8.4",
+        "@babel/plugin-proposal-class-properties": "^7.8.3",
+        "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
+        "@babel/plugin-transform-runtime": "^7.8.3",
+        "@babel/preset-env": "^7.8.4",
+        "@babel/preset-react": "^7.8.3",
+        "@testing-library/jest-dom": "^5.1.1",
+        "@testing-library/react": "^9.4.0",
+        "babel-eslint": "10.0.3",
+        "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+        "babel-polyfill": "^6.26.0",
+        "cross-env": "^7.0.0",
+        "eslint": "^6.8.0",
+        "eslint-config-airbnb": "^18.0.1",
+        "eslint-config-prettier": "^6.10.0",
+        "eslint-plugin-import": "^2.20.1",
+        "eslint-plugin-jsx-a11y": "^6.2.3",
+        "eslint-plugin-prettier": "^3.1.2",
+        "eslint-plugin-react": "^7.18.3",
+        "eslint-plugin-react-hooks": "^1.7.0",
+        "husky": "^4.2.3",
+        "jest": "^25.1.0",
+        "lint-staged": "^10.0.7",
+        "prettier": "^1.19.1",
+        "react": "^16.12.0",
+        "react-dom": "^16.12.0",
+        "rollup": "^1.31.1",
+        "rollup-plugin-babel": "^4.3.3",
+        "rollup-plugin-commonjs": "^10.1.0",
+        "rollup-plugin-filesize": "^6.2.1",
+        "rollup-plugin-node-resolve": "^5.2.0"
+    },
+    "files": [
+        "dist"
+    ],
+    "dependencies": {
+        "@react-spring/web": "^9.0.0-beta.34",
+        "lodash.clamp": "^4.0.3",
+        "lodash.merge": "^4.6.2",
+        "react-use-gesture": "^7.0.4"
+    }
 }

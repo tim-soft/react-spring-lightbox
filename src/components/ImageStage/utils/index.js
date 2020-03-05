@@ -4,8 +4,8 @@ import useDoubleClick from './useDoubleClick';
 import useWindowSize from './useWindowSize';
 
 export {
-  getTranslateOffsetsFromScale,
-  imageIsOutOfBounds,
-  useDoubleClick,
-  useWindowSize
+    getTranslateOffsetsFromScale,
+    imageIsOutOfBounds,
+    useDoubleClick,
+    useWindowSize
 };

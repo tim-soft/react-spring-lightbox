@@ -4,47 +4,47 @@ All notable changes to this project will be documented in this file.
 
 ## [1.2.0] - 2020-02-14
 
-- Upgrade react-use-gesture v6 -> v7
-- Upgrade all deps
+-   Upgrade react-use-gesture v6 -> v7
+-   Upgrade all deps
 
 ## [1.1.7] - 2019-09-23
 
 ### Fixed
 
-- Improved panning performance
-- Tweaked mousewheel swiping threshold
-- Upgrade to react-use-gesture v6
+-   Improved panning performance
+-   Tweaked mousewheel swiping threshold
+-   Upgrade to react-use-gesture v6
 
 ## [1.1.4] - 2019-08-27
 
 ### Added
 
-- Implement mousewheel paging of images
+-   Implement mousewheel paging of images
 
 ## [1.1.3] - 2019-08-19
 
 ### Fixed
 
-- Prevent vertical dragging from paging images
-- Switch to @react-spring/web package
+-   Prevent vertical dragging from paging images
+-   Switch to @react-spring/web package
 
 ## [1.1.2] - 2019-08-17
 
 ### Fixed
 
-- Properly dispose wheel event listener
+-   Properly dispose wheel event listener
 
 ## [1.1.1] - 2019-08-14
 
 ### Fixed
 
-- Adjusted "pan out of bounds" threshold
+-   Adjusted "pan out of bounds" threshold
 
 ## [1.1.0] - 2019-08-14
 
 ### Added
 
-- Implement proper <kbd>Ctrl</kbd> + `Mousewheel` and `Trackpad Pinch` zooming
+-   Implement proper <kbd>Ctrl</kbd> + `Mousewheel` and `Trackpad Pinch` zooming
 
 ## [1.0.1] - 2019-08-7
 
@@ -58,8 +58,8 @@ Upgrade deps and release as stable
 
 ### Changed
 
-- Renamed onClickNext => onNext
-- Renamed onClickPrev => onPrev
+-   Renamed onClickNext => onNext
+-   Renamed onClickPrev => onPrev
 
 ## [0.0.2] - 2019-07-31
 

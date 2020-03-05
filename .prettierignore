@@ -1,2 +1,11 @@
 node_modules/**
+.next/**
+dist/**
+coverage/**
 example/node_modules/**
+example/.next/**
+yarn.lock
+.editorconfig
+.eslintignore
+.gitignore
+.prettierignore

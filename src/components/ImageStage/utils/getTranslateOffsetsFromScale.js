@@ -11,28 +11,29 @@
  * @returns {array} The next [x,y] translate values to apply to image
  */
 const getTranslateOffsetsFromScale = ({
-  imageRef,
-  scale,
-  pinchDelta,
-  touchOrigin: [touchOriginX, touchOriginY],
-  currentTranslate: [translateX, translateY]
+    imageRef,
+    scale,
+    pinchDelta,
+    touchOrigin: [touchOriginX, touchOriginY],
+    currentTranslate: [translateX, translateY]
 }) => {
-  const {
-    top: imageTopLeftY,
-    left: imageTopLeftX,
-    width: imageWidth,
-    height: imageHeight
-  } = imageRef.current.getBoundingClientRect();
+    const {
+        top: imageTopLeftY,
+        left: imageTopLeftX,
+        width: imageWidth,
+        height: imageHeight
+    } = imageRef.current.getBoundingClientRect();
 
-  // Get the (x,y) touch position relative to image origin at the current scale
-  const imageCoordX = (touchOriginX - imageTopLeftX - imageWidth / 2) / scale;
-  const imageCoordY = (touchOriginY - imageTopLeftY - imageHeight / 2) / scale;
+    // Get the (x,y) touch position relative to image origin at the current scale
+    const imageCoordX = (touchOriginX - imageTopLeftX - imageWidth / 2) / scale;
+    const imageCoordY =
+        (touchOriginY - imageTopLeftY - imageHeight / 2) / scale;
 
-  // Calculate translateX/Y offset at the next scale to zoom to touch position
-  const newTranslateX = -imageCoordX * pinchDelta + translateX;
-  const newTranslateY = -imageCoordY * pinchDelta + translateY;
+    // Calculate translateX/Y offset at the next scale to zoom to touch position
+    const newTranslateX = -imageCoordX * pinchDelta + translateX;
+    const newTranslateY = -imageCoordY * pinchDelta + translateY;
 
-  return [newTranslateX, newTranslateY];
+    return [newTranslateX, newTranslateY];
 };
 
 export default getTranslateOffsetsFromScale;

@@ -14,64 +14,64 @@ import ImagePager from './components/ImagePager';
  * @param {function} renderNextButton A React component that is used for next button in image pager
  */
 const ImageStage = ({
-  images,
-  currentIndex,
-  onPrev,
-  onNext,
-  onClose,
-  renderPrevButton,
-  renderNextButton
+    images,
+    currentIndex,
+    onPrev,
+    onNext,
+    onClose,
+    renderPrevButton,
+    renderNextButton
 }) => {
-  // Extra sanity check that the next/prev image exists before moving to it
-  const canPrev = currentIndex > 0;
-  const canNext = currentIndex + 1 < images.length;
-  const prev = () => canPrev && onPrev();
-  const next = () => canNext && onNext();
+    // Extra sanity check that the next/prev image exists before moving to it
+    const canPrev = currentIndex > 0;
+    const canNext = currentIndex + 1 < images.length;
+    const prev = () => canPrev && onPrev();
+    const next = () => canNext && onNext();
 
-  return (
-    <div
-      className="lightbox-image-stage"
-      style={{
-        flexGrow: 1,
-        margin: '25px 0',
-        position: 'relative',
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}
-    >
-      {renderPrevButton({ canPrev })}
+    return (
+        <div
+            className="lightbox-image-stage"
+            style={{
+                flexGrow: 1,
+                margin: '25px 0',
+                position: 'relative',
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}
+        >
+            {renderPrevButton({ canPrev })}
 
-      <ImagePager
-        images={images}
-        currentIndex={currentIndex}
-        onClose={onClose}
-        onNext={next}
-        onPrev={prev}
-      />
+            <ImagePager
+                images={images}
+                currentIndex={currentIndex}
+                onClose={onClose}
+                onNext={next}
+                onPrev={prev}
+            />
 
-      {renderNextButton({ canNext })}
-    </div>
-  );
+            {renderNextButton({ canNext })}
+        </div>
+    );
 };
 
 ImageStage.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  onPrev: PropTypes.func.isRequired,
-  onNext: PropTypes.func.isRequired,
-  currentIndex: PropTypes.number.isRequired,
-  images: PropTypes.arrayOf(
-    PropTypes.shape({
-      src: PropTypes.string.isRequired,
-      caption: PropTypes.string.isRequired,
-      alt: PropTypes.string.isRequired,
-      width: PropTypes.number,
-      height: PropTypes.number
-    })
-  ).isRequired,
-  renderPrevButton: PropTypes.func.isRequired,
-  renderNextButton: PropTypes.func.isRequired
+    onClose: PropTypes.func.isRequired,
+    onPrev: PropTypes.func.isRequired,
+    onNext: PropTypes.func.isRequired,
+    currentIndex: PropTypes.number.isRequired,
+    images: PropTypes.arrayOf(
+        PropTypes.shape({
+            src: PropTypes.string.isRequired,
+            caption: PropTypes.string.isRequired,
+            alt: PropTypes.string.isRequired,
+            width: PropTypes.number,
+            height: PropTypes.number
+        })
+    ).isRequired,
+    renderPrevButton: PropTypes.func.isRequired,
+    renderNextButton: PropTypes.func.isRequired
 };
 
 export default ImageStage;

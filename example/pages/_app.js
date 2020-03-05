@@ -4,28 +4,28 @@ import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import styledNormalize from 'styled-normalize';
 
 export default class MyApp extends App {
-  render() {
-    const { Component, pageProps } = this.props;
-    return (
-      <>
-        {/* Adds some basic body styles */}
-        <DefaultStyles />
+    render() {
+        const { Component, pageProps } = this.props;
+        return (
+            <>
+                {/* Adds some basic body styles */}
+                <DefaultStyles />
 
-        <ThemeProvider
-          theme={{
-            pageBackgroundColor: '#101010',
-            pageContentFontColor: '#e2e5ec',
-            pageContentLinkHoverColor: 'aquamarine',
-            pageContentSelectionColor: 'aquamarine',
-            headerNavFontColor: '#e2e5ec',
-            accentColor: '#1f1f1f'
-          }}
-        >
-          <Component {...pageProps} />
-        </ThemeProvider>
-      </>
-    );
-  }
+                <ThemeProvider
+                    theme={{
+                        pageBackgroundColor: '#101010',
+                        pageContentFontColor: '#e2e5ec',
+                        pageContentLinkHoverColor: 'aquamarine',
+                        pageContentSelectionColor: 'aquamarine',
+                        headerNavFontColor: '#e2e5ec',
+                        accentColor: '#1f1f1f'
+                    }}
+                >
+                    <Component {...pageProps} />
+                </ThemeProvider>
+            </>
+        );
+    }
 }
 
 /**

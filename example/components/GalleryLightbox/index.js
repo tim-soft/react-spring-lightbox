@@ -9,159 +9,159 @@ import LightboxHeader from './components/LightboxHeader';
 import LightboxArrowButton from './components/LightboxArrowButton';
 
 class BlogImageGallery extends React.Component {
-  static propTypes = {
-    galleryTitle: PropTypes.string.isRequired,
-    imageMasonryDirection: PropTypes.oneOf(['column', 'row']),
-    images: PropTypes.arrayOf(
-      PropTypes.shape({
-        src: PropTypes.string.isRequired,
-        caption: PropTypes.string.isRequired,
-        alt: PropTypes.string.isRequired,
-        width: PropTypes.number,
-        height: PropTypes.number
-      })
-    ).isRequired
-  };
-
-  static defaultProps = {
-    imageMasonryDirection: 'column'
-  };
-
-  constructor() {
-    super();
-
-    this.state = {
-      currentImageIndex: 0,
-      lightboxIsOpen: false,
-      clientSide: false
+    static propTypes = {
+        galleryTitle: PropTypes.string.isRequired,
+        imageMasonryDirection: PropTypes.oneOf(['column', 'row']),
+        images: PropTypes.arrayOf(
+            PropTypes.shape({
+                src: PropTypes.string.isRequired,
+                caption: PropTypes.string.isRequired,
+                alt: PropTypes.string.isRequired,
+                width: PropTypes.number,
+                height: PropTypes.number
+            })
+        ).isRequired
     };
-  }
 
-  componentDidMount() {
-    this.setState({ clientSide: true });
-  }
+    static defaultProps = {
+        imageMasonryDirection: 'column'
+    };
 
-  openLightbox = (e, { index }) => {
-    this.setState({
-      currentImageIndex: index,
-      lightboxIsOpen: true
-    });
-  };
+    constructor() {
+        super();
 
-  closeLightbox = () => {
-    this.setState({
-      lightboxIsOpen: false
-    });
-  };
-
-  gotoPrevious = () => {
-    const { currentImageIndex } = this.state;
-
-    // If the current image isn't the first in the list, go to the previous
-    if (currentImageIndex > 0) {
-      this.setState({
-        currentImageIndex: currentImageIndex - 1
-      });
+        this.state = {
+            currentImageIndex: 0,
+            lightboxIsOpen: false,
+            clientSide: false
+        };
     }
-  };
 
-  gotoNext = () => {
-    const { images } = this.props;
-    const { currentImageIndex } = this.state;
-
-    // If the current image isn't the list in the list, go to the next
-    if (currentImageIndex + 1 < images.length) {
-      this.setState({
-        currentImageIndex: currentImageIndex + 1
-      });
+    componentDidMount() {
+        this.setState({ clientSide: true });
     }
-  };
 
-  /**
-   * Sets breakpoints for column width based on containerWidth
-   *
-   * @int containerWidth The current width of the image grid
-   */
-  columnConfig = containerWidth => {
-    let columns = 1;
-    if (containerWidth >= 500) columns = 2;
-    if (containerWidth >= 900) columns = 3;
-    if (containerWidth >= 1500) columns = 4;
+    openLightbox = (e, { index }) => {
+        this.setState({
+            currentImageIndex: index,
+            lightboxIsOpen: true
+        });
+    };
 
-    return columns;
-  };
+    closeLightbox = () => {
+        this.setState({
+            lightboxIsOpen: false
+        });
+    };
 
-  render() {
-    const { currentImageIndex, lightboxIsOpen, clientSide } = this.state;
-    const { images, galleryTitle, imageMasonryDirection } = this.props;
+    gotoPrevious = () => {
+        const { currentImageIndex } = this.state;
 
-    return (
-      <GalleryContainer>
-        {clientSide && (
-          <Gallery
-            columns={this.columnConfig}
-            onClick={this.openLightbox}
-            photos={images}
-            margin={6}
-            direction={imageMasonryDirection}
-            renderImage={GridImage}
-          />
-        )}
-        <StyledLightbox
-          isOpen={lightboxIsOpen}
-          onClose={this.closeLightbox}
-          onPrev={this.gotoPrevious}
-          onNext={this.gotoNext}
-          images={images}
-          currentIndex={currentImageIndex}
-          galleryTitle={galleryTitle}
-          renderHeader={() => (
-            <LightboxHeader
-              galleryTitle={galleryTitle}
-              images={images}
-              currentIndex={currentImageIndex}
-              onClose={this.closeLightbox}
-            />
-          )}
-          renderPrevButton={({ canPrev }) => (
-            <LightboxArrowButton
-              position="left"
-              onClick={this.gotoPrevious}
-              disabled={!canPrev}
-            />
-          )}
-          renderNextButton={({ canNext }) => (
-            <LightboxArrowButton
-              position="right"
-              onClick={this.gotoNext}
-              disabled={!canNext}
-            />
-          )}
-        />
-      </GalleryContainer>
-    );
-  }
+        // If the current image isn't the first in the list, go to the previous
+        if (currentImageIndex > 0) {
+            this.setState({
+                currentImageIndex: currentImageIndex - 1
+            });
+        }
+    };
+
+    gotoNext = () => {
+        const { images } = this.props;
+        const { currentImageIndex } = this.state;
+
+        // If the current image isn't the list in the list, go to the next
+        if (currentImageIndex + 1 < images.length) {
+            this.setState({
+                currentImageIndex: currentImageIndex + 1
+            });
+        }
+    };
+
+    /**
+     * Sets breakpoints for column width based on containerWidth
+     *
+     * @int containerWidth The current width of the image grid
+     */
+    columnConfig = containerWidth => {
+        let columns = 1;
+        if (containerWidth >= 500) columns = 2;
+        if (containerWidth >= 900) columns = 3;
+        if (containerWidth >= 1500) columns = 4;
+
+        return columns;
+    };
+
+    render() {
+        const { currentImageIndex, lightboxIsOpen, clientSide } = this.state;
+        const { images, galleryTitle, imageMasonryDirection } = this.props;
+
+        return (
+            <GalleryContainer>
+                {clientSide && (
+                    <Gallery
+                        columns={this.columnConfig}
+                        onClick={this.openLightbox}
+                        photos={images}
+                        margin={6}
+                        direction={imageMasonryDirection}
+                        renderImage={GridImage}
+                    />
+                )}
+                <StyledLightbox
+                    isOpen={lightboxIsOpen}
+                    onClose={this.closeLightbox}
+                    onPrev={this.gotoPrevious}
+                    onNext={this.gotoNext}
+                    images={images}
+                    currentIndex={currentImageIndex}
+                    galleryTitle={galleryTitle}
+                    renderHeader={() => (
+                        <LightboxHeader
+                            galleryTitle={galleryTitle}
+                            images={images}
+                            currentIndex={currentImageIndex}
+                            onClose={this.closeLightbox}
+                        />
+                    )}
+                    renderPrevButton={({ canPrev }) => (
+                        <LightboxArrowButton
+                            position="left"
+                            onClick={this.gotoPrevious}
+                            disabled={!canPrev}
+                        />
+                    )}
+                    renderNextButton={({ canNext }) => (
+                        <LightboxArrowButton
+                            position="right"
+                            onClick={this.gotoNext}
+                            disabled={!canNext}
+                        />
+                    )}
+                />
+            </GalleryContainer>
+        );
+    }
 }
 
 export default BlogImageGallery;
 
 const GalleryContainer = styled.section`
-  overflow-y: auto;
-  max-height: calc(100% - 4em);
-  padding: 2em;
+    overflow-y: auto;
+    max-height: calc(100% - 4em);
+    padding: 2em;
 `;
 
 const StyledLightbox = styled(Lightbox)`
-  background: ${({ theme }) =>
-    Color(theme.accentColor)
-      .alpha(0.95)
-      .hsl()
-      .string()};
-  * ::selection {
-    background: ${({ theme }) => theme.pageContentSelectionColor};
-  }
-  * ::-moz-selection {
     background: ${({ theme }) =>
-      new Color(theme.pageContentSelectionColor).darken(0.57).hex()};
-  }
+        Color(theme.accentColor)
+            .alpha(0.95)
+            .hsl()
+            .string()};
+    * ::selection {
+        background: ${({ theme }) => theme.pageContentSelectionColor};
+    }
+    * ::-moz-selection {
+        background: ${({ theme }) =>
+            new Color(theme.pageContentSelectionColor).darken(0.57).hex()};
+    }
 `;

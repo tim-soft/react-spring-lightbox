@@ -1,37 +1,37 @@
 {
-  "name": "react-spring-lightbox-example",
-  "homepage": "https://tim-soft.github.io/react-spring-lightbox",
-  "version": "0.0.0",
-  "license": "MIT",
-  "private": true,
-  "dependencies": {
-    "@react-spring/web": "link:../node_modules/@react-spring/web",
-    "color": "^3.1.2",
-    "lodash.clamp": "^4.0.3",
-    "lodash.merge": "^4.6.2",
-    "next": "^9.2.1",
-    "prop-types": "^15.6.2",
-    "react": "link:../node_modules/react",
-    "react-dom": "link:../node_modules/react-dom",
-    "react-icons": "^3.9.0",
-    "react-is": "^16.12.0",
-    "react-photo-gallery": "^8.0.0",
-    "react-spring-lightbox": "link:..",
-    "styled-components": "^5.0.1",
-    "styled-normalize": "^8.0.7"
-  },
-  "scripts": {
-    "dev": "next",
-    "start": "next start",
-    "build": "next build"
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
-  "devDependencies": {
-    "babel-plugin-styled-components": "^1.10.7"
-  }
+    "name": "react-spring-lightbox-example",
+    "homepage": "https://tim-soft.github.io/react-spring-lightbox",
+    "version": "0.0.0",
+    "license": "MIT",
+    "private": true,
+    "dependencies": {
+        "@react-spring/web": "link:../node_modules/@react-spring/web",
+        "color": "^3.1.2",
+        "lodash.clamp": "^4.0.3",
+        "lodash.merge": "^4.6.2",
+        "next": "^9.2.1",
+        "prop-types": "^15.6.2",
+        "react": "link:../node_modules/react",
+        "react-dom": "link:../node_modules/react-dom",
+        "react-icons": "^3.9.0",
+        "react-is": "^16.12.0",
+        "react-photo-gallery": "^8.0.0",
+        "react-spring-lightbox": "link:..",
+        "styled-components": "^5.0.1",
+        "styled-normalize": "^8.0.7"
+    },
+    "scripts": {
+        "dev": "next",
+        "start": "next start",
+        "build": "next build"
+    },
+    "browserslist": [
+        ">0.2%",
+        "not dead",
+        "not ie <= 11",
+        "not op_mini all"
+    ],
+    "devDependencies": {
+        "babel-plugin-styled-components": "^1.10.7"
+    }
 }
