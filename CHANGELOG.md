@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2020-03-5
+
+### Added
+
+-   Added `renderImageOverlay` prop, renders a React component within the image stage, useful for creating UI overlays on top of the current image
+
 ## [1.2.0] - 2020-02-14
 
 -   Upgrade react-use-gesture v6 -> v7

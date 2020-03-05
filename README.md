@@ -106,21 +106,22 @@ export default CoolLightbox;
 
 ## Props
 
-| Prop                 | Description                                                       |
-| -------------------- | ----------------------------------------------------------------- |
-| isOpen               | Flag that dictates if the lightbox is open or closed              |
-| onClose              | Function that closes the Lightbox                                 |
-| onPrev               | Function that changes currentIndex to previous image in images    |
-| onNext               | Function that changes currentIndex to next image in images        |
-| currentIndex         | Index of image in images array that is currently shown            |
-| renderHeader         | A React component that renders above the image pager              |
-| renderFooter         | A React component that renders below the image pager              |
-| renderPrevButton     | A React component that is used for previous button in image pager |
-| renderNextButton     | A React component that is used for next button in image pager     |
-| images               | Array of image objects to be shown in Lightbox                    |
-| className            | Classes are applied to the root lightbox component                |
-| style                | Inline styles are applied to the root lightbox component          |
-| pageTransitionConfig | React-Spring useTransition config for page open/close animation   |
+| Prop                 | Description                                                                                                        |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| isOpen               | Flag that dictates if the lightbox is open or closed                                                               |
+| onClose              | Function that closes the Lightbox                                                                                  |
+| onPrev               | Function that changes currentIndex to previous image in images                                                     |
+| onNext               | Function that changes currentIndex to next image in images                                                         |
+| currentIndex         | Index of image in images array that is currently shown                                                             |
+| renderHeader         | A React component that renders above the image pager                                                               |
+| renderFooter         | A React component that renders below the image pager                                                               |
+| renderPrevButton     | A React component that is used for previous button in image pager                                                  |
+| renderNextButton     | A React component that is used for next button in image pager                                                      |
+| renderImageOverlay   | A React component that renders within the image stage, useful for creating UI overlays on top of the current image |
+| images               | Array of image objects to be shown in Lightbox                                                                     |
+| className            | Classes are applied to the root lightbox component                                                                 |
+| style                | Inline styles are applied to the root lightbox component                                                           |
+| pageTransitionConfig | React-Spring useTransition config for page open/close animation                                                    |
 
 ## Local Development
 

@@ -12,6 +12,7 @@ import ImagePager from './components/ImagePager';
  * @param {function} onNext Function that can be called to disable dragging in the pager
  * @param {function} renderPrevButton A React component that is used for previous button in image pager
  * @param {function} renderNextButton A React component that is used for next button in image pager
+ * @param {function} renderImageOverlay A React component that renders inside the image stage, useful for making overlays over the image
  */
 const ImageStage = ({
     images,
@@ -20,7 +21,8 @@ const ImageStage = ({
     onNext,
     onClose,
     renderPrevButton,
-    renderNextButton
+    renderNextButton,
+    renderImageOverlay
 }) => {
     // Extra sanity check that the next/prev image exists before moving to it
     const canPrev = currentIndex > 0;
@@ -42,15 +44,14 @@ const ImageStage = ({
             }}
         >
             {renderPrevButton({ canPrev })}
-
             <ImagePager
                 images={images}
                 currentIndex={currentIndex}
                 onClose={onClose}
                 onNext={next}
                 onPrev={prev}
+                renderImageOverlay={renderImageOverlay}
             />
-
             {renderNextButton({ canNext })}
         </div>
     );
@@ -71,7 +72,8 @@ ImageStage.propTypes = {
         })
     ).isRequired,
     renderPrevButton: PropTypes.func.isRequired,
-    renderNextButton: PropTypes.func.isRequired
+    renderNextButton: PropTypes.func.isRequired,
+    renderImageOverlay: PropTypes.func.isRequired
 };
 
 export default ImageStage;

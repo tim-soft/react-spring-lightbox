@@ -12,6 +12,7 @@ import { ImageStage, PageContainer, CreatePortal } from './components';
  * @param {number} currentIndex Index of image in images array that is currently shown
  * @param {function} renderHeader A React component that renders above the image pager
  * @param {function} renderFooter A React component that renders below the image pager
+ * @param {function} renderImageOverlay A React component that renders inside the image stage, useful for making overlays over the image
  * @param {function} renderPrevButton A React component that is used for previous button in image pager
  * @param {function} renderNextButton A React component that is used for next button in image pager
  * @param {array} images Array of image objects to be shown in Lightbox
@@ -33,6 +34,7 @@ const Lightbox = ({
     renderFooter,
     renderPrevButton,
     renderNextButton,
+    renderImageOverlay,
     className,
     style,
     pageTransitionConfig
@@ -104,6 +106,7 @@ const Lightbox = ({
                     onNext={onNext}
                     renderPrevButton={renderPrevButton}
                     renderNextButton={renderNextButton}
+                    renderImageOverlay={renderImageOverlay}
                 />
                 {renderFooter()}
             </PageContainer>
@@ -132,7 +135,8 @@ Lightbox.propTypes = {
     renderNextButton: PropTypes.func,
     className: PropTypes.string,
     style: PropTypes.object,
-    pageTransitionConfig: PropTypes.object
+    pageTransitionConfig: PropTypes.object,
+    renderImageOverlay: PropTypes.func
 };
 
 Lightbox.defaultProps = {
@@ -142,7 +146,8 @@ Lightbox.defaultProps = {
     renderHeader: () => null,
     renderFooter: () => null,
     renderPrevButton: () => null,
-    renderNextButton: () => null
+    renderNextButton: () => null,
+    renderImageOverlay: () => null
 };
 
 export default Lightbox;

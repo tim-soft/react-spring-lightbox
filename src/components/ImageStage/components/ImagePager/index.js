@@ -15,11 +15,19 @@ import Image from '../Image';
  * @param {function} onPrev True if this image is currently shown in pager, otherwise false
  * @param {function} onNext Function that can be called to disable dragging in the pager
  * @param {function} onClose Function that closes the Lightbox
+ * @param {function} renderImageOverlay A React component that renders inside the image stage, useful for making overlays over the image
  *
  * @see https://github.com/react-spring/react-use-gesture
  * @see https://github.com/react-spring/react-spring
  */
-const ImagePager = ({ images, currentIndex, onPrev, onNext, onClose }) => {
+const ImagePager = ({
+    images,
+    currentIndex,
+    onPrev,
+    onNext,
+    onClose,
+    renderImageOverlay
+}) => {
     const firstRender = useRef(true);
     const imageStageRef = useRef(
         [...Array(images.length)].map(() => React.createRef())
@@ -32,7 +40,13 @@ const ImagePager = ({ images, currentIndex, onPrev, onNext, onClose }) => {
         const x = (i - currentIndex) * pageWidth + (down ? xDelta : 0);
         if (i < currentIndex - 1 || i > currentIndex + 1)
             return { x, display: 'none' };
-        return { x, display: 'block' };
+        return {
+            x,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center'
+        };
     };
 
     /**
@@ -149,7 +163,7 @@ const ImagePager = ({ images, currentIndex, onPrev, onNext, onClose }) => {
      */
     useEffect(bind, [bind, currentIndex]);
 
-    return props.map(({ x, display }, i) => (
+    return props.map(({ x, display, ...restStyles }, i) => (
         <animated.div
             ref={imageStageRef.current[i]}
             key={i}
@@ -161,19 +175,16 @@ const ImagePager = ({ images, currentIndex, onPrev, onNext, onClose }) => {
                 height: '100%',
                 width: '100%',
                 willChange: 'transform',
-                touchAction: 'none'
+                touchAction: 'none',
+                ...restStyles
             }}
         >
             <div
                 role="presentation"
                 className="lightbox-image-container"
                 style={{
+                    maxHeight: '100%',
                     position: 'relative',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    width: '100%',
-                    height: '100%',
                     touchAction: 'none',
                     WebkitUserSelect: 'none',
                     MozUserSelect: 'none',
@@ -189,6 +200,7 @@ const ImagePager = ({ images, currentIndex, onPrev, onNext, onClose }) => {
                     alt={images[i].alt}
                     isCurrentImage={i === currentIndex}
                 />
+                {renderImageOverlay()}
             </div>
         </animated.div>
     ));
@@ -211,7 +223,8 @@ ImagePager.propTypes = {
             /* The alt attribute for this image */
             alt: PropTypes.string.isRequired
         })
-    ).isRequired
+    ).isRequired,
+    renderImageOverlay: PropTypes.func.isRequired
 };
 
 export default ImagePager;
