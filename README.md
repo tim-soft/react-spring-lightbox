@@ -149,7 +149,7 @@ Run the example app in development mode
 
 ```bash
 cd example
-yarn start
+yarn dev
 ```
 
 Changes to the library code should hot reload in the demo app
