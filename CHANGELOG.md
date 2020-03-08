@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.0] - 2020-03-7
+
+### BREAKING CHANGE
+
+-   Replaced inline styles with styled-components. This library now has a peer dependency on `styled-components@5`
+
+### Fixed
+
+-   Gigantic initial image size in Firefox and MS Edge
+-   Click background to close functionality
+
+### Added
+
+-   Vendor prefixed styles
+-   A resize observer polyfill is now included to support MS Edge
+
 ## [1.2.1] - 2020-03-5
 
 ### Added
