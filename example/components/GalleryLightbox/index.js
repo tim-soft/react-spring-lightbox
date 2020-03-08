@@ -139,12 +139,7 @@ class BlogImageGallery extends React.Component {
                         />
                     )}
                     renderImageOverlay={() => (
-                        <ImageOverlay
-                            onClick={e => {
-                                e.stopPropagation();
-                                e.nativeEvent.stopImmediatePropagation();
-                            }}
-                        >
+                        <ImageOverlay>
                             <p>Create your own UI</p>
                             <FiPrinter size="3em" />
                             <FiShare size="3em" />

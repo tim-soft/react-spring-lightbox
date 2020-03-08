@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useTransition, animated, config } from '@react-spring/web';
 import merge from 'lodash.merge';
+import styled from 'styled-components';
 
 /**
  * Animates the lightbox as it opens/closes
@@ -37,26 +38,15 @@ const PageContainer = ({
     return transitions.map(
         ({ item, key, props }) =>
             item && (
-                <animated.div
+                <AnimatedPageContainer
                     key={key}
                     className={`lightbox-container${
                         className ? ` ${className}` : ''
                     }`}
-                    style={{
-                        ...props,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        position: 'fixed',
-                        zIndex: 400,
-                        top: 0,
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        ...style
-                    }}
+                    style={{ ...props, ...style }}
                 >
                     {children}
-                </animated.div>
+                </AnimatedPageContainer>
             )
     );
 };
@@ -73,3 +63,14 @@ PageContainer.propTypes = {
 };
 
 export default PageContainer;
+
+const AnimatedPageContainer = styled(animated.div)`
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    z-index: 400;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+`;

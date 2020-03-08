@@ -1,6 +1,9 @@
 /* eslint-disable no-shadow */
 import React from 'react';
+import useMeasure from 'react-use-measure';
+import { ResizeObserver } from '@juggle/resize-observer';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import ImagePager from './components/ImagePager';
 
 /**
@@ -24,6 +27,15 @@ const ImageStage = ({
     renderNextButton,
     renderImageOverlay
 }) => {
+    // Get exact height of the image stage, used to make images responsive
+    const [containerStageRef, { height }] = useMeasure({
+        /**
+         * Add resize observer polyfill
+         * @see https://github.com/react-spring/react-use-measure/#resize-observer-polyfills
+         */
+        polyfill: ResizeObserver
+    });
+
     // Extra sanity check that the next/prev image exists before moving to it
     const canPrev = currentIndex > 0;
     const canNext = currentIndex + 1 < images.length;
@@ -31,29 +43,24 @@ const ImageStage = ({
     const next = () => canNext && onNext();
 
     return (
-        <div
+        <ImageStageContainer
             className="lightbox-image-stage"
-            style={{
-                flexGrow: 1,
-                margin: '25px 0',
-                position: 'relative',
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center'
-            }}
+            ref={containerStageRef}
         >
             {renderPrevButton({ canPrev })}
-            <ImagePager
-                images={images}
-                currentIndex={currentIndex}
-                onClose={onClose}
-                onNext={next}
-                onPrev={prev}
-                renderImageOverlay={renderImageOverlay}
-            />
+            <ImagePagerContainer ref={containerStageRef}>
+                <ImagePager
+                    images={images}
+                    currentIndex={currentIndex}
+                    onClose={onClose}
+                    onNext={next}
+                    onPrev={prev}
+                    renderImageOverlay={renderImageOverlay}
+                    pagerHeight={height - 50}
+                />
+            </ImagePagerContainer>
             {renderNextButton({ canNext })}
-        </div>
+        </ImageStageContainer>
     );
 };
 
@@ -77,3 +84,17 @@ ImageStage.propTypes = {
 };
 
 export default ImageStage;
+
+const ImagePagerContainer = styled.div`
+    height: 100%;
+    width: 100%;
+`;
+
+const ImageStageContainer = styled.div`
+    flex-grow: 1;
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;

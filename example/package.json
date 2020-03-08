@@ -14,10 +14,10 @@
         "react": "link:../node_modules/react",
         "react-dom": "link:../node_modules/react-dom",
         "react-icons": "^3.9.0",
-        "react-is": "^16.13.0",
+        "react-is": "link:../node_modules/react-is",
         "react-photo-gallery": "^8.0.0",
         "react-spring-lightbox": "link:..",
-        "styled-components": "^5.0.1",
+        "styled-components": "link:../node_modules/styled-components",
         "styled-normalize": "^8.0.7"
     },
     "scripts": {

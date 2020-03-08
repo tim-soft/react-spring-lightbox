@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { useSprings, animated } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import clamp from 'lodash.clamp';
+import styled from 'styled-components';
 import { useWindowSize } from '../../utils';
 import Image from '../Image';
 
@@ -15,6 +16,7 @@ import Image from '../Image';
  * @param {function} onPrev True if this image is currently shown in pager, otherwise false
  * @param {function} onNext Function that can be called to disable dragging in the pager
  * @param {function} onClose Function that closes the Lightbox
+ * @param {number} pagerHeight Fixed height of the image stage, used to restrict maximum height of images
  * @param {function} renderImageOverlay A React component that renders inside the image stage, useful for making overlays over the image
  *
  * @see https://github.com/react-spring/react-use-gesture
@@ -26,6 +28,7 @@ const ImagePager = ({
     onPrev,
     onNext,
     onClose,
+    pagerHeight,
     renderImageOverlay
 }) => {
     const firstRender = useRef(true);
@@ -40,13 +43,7 @@ const ImagePager = ({
         const x = (i - currentIndex) * pageWidth + (down ? xDelta : 0);
         if (i < currentIndex - 1 || i > currentIndex + 1)
             return { x, display: 'none' };
-        return {
-            x,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center'
-        };
+        return { x, display: 'flex' };
     };
 
     /**
@@ -163,46 +160,38 @@ const ImagePager = ({
      */
     useEffect(bind, [bind, currentIndex]);
 
-    return props.map(({ x, display, ...restStyles }, i) => (
-        <animated.div
+    return props.map(({ x, display }, i) => (
+        <AnimatedImagePager
+            role="presentation"
             ref={imageStageRef.current[i]}
             key={i}
             className="lightbox-image-pager"
             style={{
                 display,
-                transform: x.to(xInterp => `translateX(${xInterp}px)`),
-                position: 'absolute',
-                height: '100%',
-                width: '100%',
-                willChange: 'transform',
-                touchAction: 'none',
-                ...restStyles
+                transform: x.to(xInterp => `translateX(${xInterp}px)`)
             }}
+            onClick={() => Math.abs(x.value) < 1 && onClose()}
         >
-            <div
-                role="presentation"
-                className="lightbox-image-container"
-                style={{
-                    maxHeight: '100%',
-                    position: 'relative',
-                    touchAction: 'none',
-                    WebkitUserSelect: 'none',
-                    MozUserSelect: 'none',
-                    MsUserSelect: 'none',
-                    userSelect: 'none'
-                }}
-                // If the background is clicked, close the lightbox
-                onClick={() => x.value === 0 && onClose()}
-            >
-                <Image
-                    setDisableDrag={setDisableDrag}
-                    src={images[i].src}
-                    alt={images[i].alt}
-                    isCurrentImage={i === currentIndex}
-                />
-                {renderImageOverlay()}
-            </div>
-        </animated.div>
+            <PagerContentWrapper>
+                <PagerInnerContentWrapper>
+                    <ImageContainer
+                        onClick={e => {
+                            e.stopPropagation();
+                            e.nativeEvent.stopImmediatePropagation();
+                        }}
+                    >
+                        <Image
+                            setDisableDrag={setDisableDrag}
+                            src={images[i].src}
+                            alt={images[i].alt}
+                            pagerHeight={pagerHeight}
+                            isCurrentImage={i === currentIndex}
+                        />
+                        {renderImageOverlay()}
+                    </ImageContainer>
+                </PagerInnerContentWrapper>
+            </PagerContentWrapper>
+        </AnimatedImagePager>
     ));
 };
 
@@ -224,7 +213,40 @@ ImagePager.propTypes = {
             alt: PropTypes.string.isRequired
         })
     ).isRequired,
-    renderImageOverlay: PropTypes.func.isRequired
+    /* A React component that renders inside the image stage, useful for making overlays over the image */
+    renderImageOverlay: PropTypes.func.isRequired,
+    /* Fixed height of the image stage, used to restrict maximum height of images */
+    pagerHeight: PropTypes.number.isRequired
 };
 
 export default ImagePager;
+
+const PagerInnerContentWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+const PagerContentWrapper = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+`;
+
+const AnimatedImagePager = styled(animated.div)`
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    will-change: transform;
+    touch-action: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`;
+
+const ImageContainer = styled.div`
+    position: relative;
+    touch-action: none;
+    user-select: none;
+`;

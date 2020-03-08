@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useSpring, animated, to, config } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
+import styled from 'styled-components';
 import {
     useDoubleClick,
     imageIsOutOfBounds,
@@ -15,11 +16,12 @@ import {
  * @param {string} alt The alt attribute for this image
  * @param {boolean} isCurrentImage True if this image is currently shown in pager, otherwise false
  * @param {function} setDisableDrag Function that can be called to disable dragging in the pager
+ * @param {number} pagerHeight Fixed height of the image stage, used to restrict maximum height of images
  *
  * @see https://github.com/react-spring/react-use-gesture
  * @see https://github.com/react-spring/react-spring
  */
-const Image = ({ src, alt, isCurrentImage, setDisableDrag }) => {
+const Image = ({ src, alt, pagerHeight, isCurrentImage, setDisableDrag }) => {
     const imageRef = useRef();
     const defaultImageTransform = () => ({
         scale: 1,
@@ -166,7 +168,6 @@ const Image = ({ src, alt, isCurrentImage, setDisableDrag }) => {
             // If double-tapped while already zoomed-in, zoom out to default scale
             if (scale.value !== 1) {
                 set(defaultImageTransform);
-
                 return;
             }
 
@@ -201,7 +202,7 @@ const Image = ({ src, alt, isCurrentImage, setDisableDrag }) => {
     });
 
     return (
-        <animated.img
+        <AnimatedImage
             ref={imageRef}
             className="lightbox-image"
             style={{
@@ -209,9 +210,7 @@ const Image = ({ src, alt, isCurrentImage, setDisableDrag }) => {
                     [scale, translateX, translateY],
                     (s, x, y) => `translate(${x}px, ${y}px) scale(${s})`
                 ),
-                width: 'auto',
-                maxHeight: '100%',
-                maxWidth: '100%',
+                maxHeight: pagerHeight,
                 ...(isCurrentImage && { willChange: 'transform' })
             }}
             src={src}
@@ -238,7 +237,15 @@ Image.propTypes = {
     /* True if this image is currently shown in pager, otherwise false */
     isCurrentImage: PropTypes.bool.isRequired,
     /* Function that can be called to disable dragging in the pager */
-    setDisableDrag: PropTypes.func.isRequired
+    setDisableDrag: PropTypes.func.isRequired,
+    /* Fixed height of the image stage, used to restrict maximum height of images */
+    pagerHeight: PropTypes.number.isRequired
 };
 
 export default Image;
+
+const AnimatedImage = styled(animated.img)`
+    width: auto;
+    max-width: 100%;
+    will-change: transform;
+`;
