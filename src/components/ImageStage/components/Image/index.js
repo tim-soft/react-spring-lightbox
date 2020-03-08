@@ -247,4 +247,8 @@ export default Image;
 const AnimatedImage = styled(animated.img)`
     width: auto;
     max-width: 100%;
+    user-select: none;
+    ::selection {
+        background: none;
+    }
 `;
