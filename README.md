@@ -82,6 +82,7 @@ const CoolLightbox = () => {
             // renderFooter={() => (<CustomFooter />)}
             // renderPrevButton={() => (<CustomLeftArrowButton />)}
             // renderNextButton={() => (<CustomRightArrowButton />)}
+            // renderImageOverlay={() => (<ImageOverlayComponent >)}
 
             /* Add styling */
             // className="cool-class"
