@@ -49,7 +49,7 @@ const ImagePager = ({
     /**
      * Animates translateX of all images at the same time
      *
-     * https://www.react-spring.io/docs/hooks/use-springs
+     * @see https://www.react-spring.io/docs/hooks/use-springs
      */
     const [props, set] = useSprings(images.length, getPagePositions);
 
