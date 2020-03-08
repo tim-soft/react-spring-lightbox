@@ -247,5 +247,4 @@ export default Image;
 const AnimatedImage = styled(animated.img)`
     width: auto;
     max-width: 100%;
-    will-change: transform;
 `;
