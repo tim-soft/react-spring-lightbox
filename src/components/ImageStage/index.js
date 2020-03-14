@@ -93,6 +93,7 @@ const ImagePagerContainer = styled.div`
 const ImageStageContainer = styled.div`
     flex-grow: 1;
     position: relative;
+    height: 100%;
     width: 100%;
     display: flex;
     justify-content: center;
