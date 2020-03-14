@@ -28,7 +28,8 @@ React-spring-lightbox is a flexible image gallery lightbox with native-feeling t
 -   :point_left: &nbsp;Panning on zoomed-in images
 -   :checkered_flag: &nbsp;Highly performant spring based animations via [react-spring](https://github.com/react-spring/react-spring)
 -   No external CSS
--   Implement your own UI
+-   Implement your own UI 
+-   Supports IE 11, Edge, Safari, Chrome, Firefox and Opera
 
 ## Install
 
