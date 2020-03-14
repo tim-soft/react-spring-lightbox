@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.1] - 2020-03-13
+
+### Fixed
+
+-   Fix image stage height on Safari
+-   Upgrade to react-use-gesture@7.0.5
+-   Upgrade to rollup@2.0.6
+
 ## [1.4.0] - 2020-03-7
 
 ### BREAKING CHANGE
