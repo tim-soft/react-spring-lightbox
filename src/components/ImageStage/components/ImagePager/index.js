@@ -16,7 +16,6 @@ import Image from '../Image';
  * @param {function} onPrev True if this image is currently shown in pager, otherwise false
  * @param {function} onNext Function that can be called to disable dragging in the pager
  * @param {function} onClose Function that closes the Lightbox
- * @param {number} pagerHeight Fixed height of the image stage, used to restrict maximum height of images
  * @param {function} renderImageOverlay A React component that renders inside the image stage, useful for making overlays over the image
  *
  * @see https://github.com/react-spring/react-use-gesture
@@ -28,7 +27,6 @@ const ImagePager = ({
     onPrev,
     onNext,
     onClose,
-    pagerHeight,
     renderImageOverlay
 }) => {
     const firstRender = useRef(true);
@@ -37,6 +35,7 @@ const ImagePager = ({
     );
     const { width: pageWidth } = useWindowSize();
     const [disableDrag, setDisableDrag] = useState(false);
+    const [pagerHeight, setPagerHeight] = useState('100%');
 
     // Generate page positions based on current index
     const getPagePositions = (i, down = false, xDelta = 0) => {
@@ -52,6 +51,13 @@ const ImagePager = ({
      * @see https://www.react-spring.io/docs/hooks/use-springs
      */
     const [props, set] = useSprings(images.length, getPagePositions);
+
+    // Determine the absolute height of the image pager
+    useEffect(() => {
+        const currPagerHeight =
+            imageStageRef.current[currentIndex].current.clientHeight - 50;
+        if (pagerHeight !== currPagerHeight) setPagerHeight(currPagerHeight);
+    }, [currentIndex, pagerHeight]);
 
     // Animate page change if currentIndex changes
     useEffect(() => {
