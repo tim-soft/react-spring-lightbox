@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.2] - 2020-03-15
+
+### Fixed
+
+-   Remove need for react-use-measure and @juggle/resize-observer
+
 ## [1.4.1] - 2020-03-13
 
 ### Fixed
