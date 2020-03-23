@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTransition, animated, config } from '@react-spring/web';
-import merge from 'lodash.merge';
 import styled from 'styled-components';
 
 /**
@@ -29,11 +28,10 @@ const PageContainer = ({
         config: { ...config.default, mass: 1, tension: 320, friction: 32 }
     };
 
-    const transitions = useTransition(
-        isOpen,
-        null,
-        merge(defaultTransition, pageTransitionConfig)
-    );
+    const transitions = useTransition(isOpen, null, {
+        ...defaultTransition,
+        ...pageTransitionConfig
+    });
 
     return transitions.map(
         ({ item, key, props }) =>
