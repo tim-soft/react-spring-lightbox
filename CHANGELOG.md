@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.3] - 2020-03-23
+
+### Fixed
+
+-   Drop lodash.merge
+-   Fix image heights not adjusting on window resize
+
 ## [1.4.2] - 2020-03-15
 
 ### Fixed
