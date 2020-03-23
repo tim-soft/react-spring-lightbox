@@ -33,7 +33,7 @@ const ImagePager = ({
     const imageStageRef = useRef(
         [...Array(images.length)].map(() => React.createRef())
     );
-    const { width: pageWidth } = useWindowSize();
+    const { height: windowHeight, width: pageWidth } = useWindowSize();
     const [disableDrag, setDisableDrag] = useState(false);
     const [pagerHeight, setPagerHeight] = useState('100%');
 
@@ -57,7 +57,7 @@ const ImagePager = ({
         const currPagerHeight =
             imageStageRef.current[currentIndex].current.clientHeight - 50;
         if (pagerHeight !== currPagerHeight) setPagerHeight(currPagerHeight);
-    }, [currentIndex, pagerHeight]);
+    }, [currentIndex, pagerHeight, windowHeight]);
 
     // Animate page change if currentIndex changes
     useEffect(() => {
