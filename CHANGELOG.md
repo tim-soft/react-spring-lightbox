@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.4] - 2020-03-24
+
+### Fixed
+
+-   Add orientationchange event listener for ios devices
+
 ## [1.4.3] - 2020-03-23
 
 ### Fixed
