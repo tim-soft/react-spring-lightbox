@@ -17,18 +17,25 @@ const useWindowSize = () => {
 
     useEffect(() => {
         const handleResize = () => {
-            setWindowSize({
-                width: window.innerWidth,
-                height: window.innerHeight
-            });
+            if (
+                window.innerHeight !== windowSize.height ||
+                window.innerWidth !== windowSize.width
+            ) {
+                setWindowSize({
+                    width: window.innerWidth,
+                    height: window.innerHeight
+                });
+            }
         };
 
         // Add event listener for window resize events
         window.addEventListener('resize', handleResize);
+        window.addEventListener('orientationchange', handleResize);
 
         // Remove event listener
         return () => {
             window.removeEventListener('resize', handleResize);
+            window.addEventListener('orientationchange', handleResize);
         };
     });
 
