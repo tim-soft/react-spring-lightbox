@@ -19,6 +19,7 @@ import { ImageStage, PageContainer, CreatePortal } from './components';
  * @param {string} className Classes are applied to the root lightbox component
  * @param {object} style Inline styles are applied to the root lightbox component
  * @param {object} pageTransitionConfig React-Spring useTransition config for page open/close animation
+ * @param {boolean} singleClickToZoom Overrides the default behavior of double clicking causing an image zoom to a single click
  *
  * @see https://github.com/react-spring/react-use-gesture
  * @see https://github.com/react-spring/react-spring
@@ -36,6 +37,7 @@ const Lightbox = ({
     renderNextButton,
     renderImageOverlay,
     className,
+    singleClickToZoom,
     style,
     pageTransitionConfig
 }) => {
@@ -107,6 +109,7 @@ const Lightbox = ({
                     renderPrevButton={renderPrevButton}
                     renderNextButton={renderNextButton}
                     renderImageOverlay={renderImageOverlay}
+                    singleClickToZoom={singleClickToZoom}
                 />
                 {renderFooter()}
             </PageContainer>
@@ -136,7 +139,8 @@ Lightbox.propTypes = {
     className: PropTypes.string,
     style: PropTypes.object,
     pageTransitionConfig: PropTypes.object,
-    renderImageOverlay: PropTypes.func
+    renderImageOverlay: PropTypes.func,
+    singleClickToZoom: PropTypes.bool
 };
 
 Lightbox.defaultProps = {
@@ -147,7 +151,8 @@ Lightbox.defaultProps = {
     renderFooter: () => null,
     renderPrevButton: () => null,
     renderNextButton: () => null,
-    renderImageOverlay: () => null
+    renderImageOverlay: () => null,
+    singleClickToZoom: false
 };
 
 export default Lightbox;

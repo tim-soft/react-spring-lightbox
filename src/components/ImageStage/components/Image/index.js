@@ -17,11 +17,19 @@ import {
  * @param {boolean} isCurrentImage True if this image is currently shown in pager, otherwise false
  * @param {function} setDisableDrag Function that can be called to disable dragging in the pager
  * @param {number} pagerHeight Fixed height of the image stage, used to restrict maximum height of images
+ * @param {boolean} singleClickToZoom Overrides the default behavior of double clicking causing an image zoom to a single click
  *
  * @see https://github.com/react-spring/react-use-gesture
  * @see https://github.com/react-spring/react-spring
  */
-const Image = ({ src, alt, pagerHeight, isCurrentImage, setDisableDrag }) => {
+const Image = ({
+    src,
+    alt,
+    pagerHeight,
+    isCurrentImage,
+    setDisableDrag,
+    singleClickToZoom
+}) => {
     const imageRef = useRef();
     const defaultImageTransform = () => ({
         scale: 1,
@@ -164,7 +172,7 @@ const Image = ({ src, alt, pagerHeight, isCurrentImage, setDisableDrag }) => {
 
     // Handle double-tap on image
     useDoubleClick({
-        onDoubleClick: e => {
+        [singleClickToZoom ? 'onSingleClick' : 'onDoubleClick']: e => {
             // If double-tapped while already zoomed-in, zoom out to default scale
             if (scale.value !== 1) {
                 set(defaultImageTransform);
@@ -239,7 +247,9 @@ Image.propTypes = {
     /* Function that can be called to disable dragging in the pager */
     setDisableDrag: PropTypes.func.isRequired,
     /* Fixed height of the image stage, used to restrict maximum height of images */
-    pagerHeight: PropTypes.number.isRequired
+    pagerHeight: PropTypes.number.isRequired,
+    /* Overrides the default behavior of double clicking causing an image zoom to a single click */
+    singleClickToZoom: PropTypes.isRequired
 };
 
 export default Image;

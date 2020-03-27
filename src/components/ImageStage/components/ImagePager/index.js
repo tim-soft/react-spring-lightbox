@@ -17,6 +17,7 @@ import Image from '../Image';
  * @param {function} onNext Function that can be called to disable dragging in the pager
  * @param {function} onClose Function that closes the Lightbox
  * @param {function} renderImageOverlay A React component that renders inside the image stage, useful for making overlays over the image
+ * @param {boolean} singleClickToZoom Overrides the default behavior of double clicking causing an image zoom to a single click
  *
  * @see https://github.com/react-spring/react-use-gesture
  * @see https://github.com/react-spring/react-spring
@@ -27,7 +28,8 @@ const ImagePager = ({
     onPrev,
     onNext,
     onClose,
-    renderImageOverlay
+    renderImageOverlay,
+    singleClickToZoom
 }) => {
     const firstRender = useRef(true);
     const imageStageRef = useRef(
@@ -192,6 +194,7 @@ const ImagePager = ({
                             alt={images[i].alt}
                             pagerHeight={pagerHeight}
                             isCurrentImage={i === currentIndex}
+                            singleClickToZoom={singleClickToZoom}
                         />
                         {renderImageOverlay()}
                     </ImageContainer>
@@ -222,7 +225,9 @@ ImagePager.propTypes = {
     /* A React component that renders inside the image stage, useful for making overlays over the image */
     renderImageOverlay: PropTypes.func.isRequired,
     /* Fixed height of the image stage, used to restrict maximum height of images */
-    pagerHeight: PropTypes.number.isRequired
+    pagerHeight: PropTypes.number.isRequired,
+    /* Overrides the default behavior of double clicking causing an image zoom to a single click */
+    singleClickToZoom: PropTypes.isRequired
 };
 
 export default ImagePager;
