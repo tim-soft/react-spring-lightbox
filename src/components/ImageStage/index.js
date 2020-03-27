@@ -14,6 +14,7 @@ import ImagePager from './components/ImagePager';
  * @param {function} renderPrevButton A React component that is used for previous button in image pager
  * @param {function} renderNextButton A React component that is used for next button in image pager
  * @param {function} renderImageOverlay A React component that renders inside the image stage, useful for making overlays over the image
+ * @param {boolean} singleClickToZoom Overrides the default behavior of double clicking causing an image zoom to a single click
  */
 const ImageStage = ({
     images,
@@ -23,7 +24,8 @@ const ImageStage = ({
     onClose,
     renderPrevButton,
     renderNextButton,
-    renderImageOverlay
+    renderImageOverlay,
+    singleClickToZoom
 }) => {
     // Extra sanity check that the next/prev image exists before moving to it
     const canPrev = currentIndex > 0;
@@ -41,6 +43,7 @@ const ImageStage = ({
                 onNext={next}
                 onPrev={prev}
                 renderImageOverlay={renderImageOverlay}
+                singleClickToZoom={singleClickToZoom}
             />
             {renderNextButton({ canNext })}
         </ImageStageContainer>
@@ -63,7 +66,8 @@ ImageStage.propTypes = {
     ).isRequired,
     renderPrevButton: PropTypes.func.isRequired,
     renderNextButton: PropTypes.func.isRequired,
-    renderImageOverlay: PropTypes.func.isRequired
+    renderImageOverlay: PropTypes.func.isRequired,
+    singleClickToZoom: PropTypes.isRequired
 };
 
 export default ImageStage;

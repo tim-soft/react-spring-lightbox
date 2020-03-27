@@ -23,7 +23,7 @@ React-spring-lightbox is a flexible image gallery lightbox with native-feeling t
 -   :point_up: &nbsp;&nbsp;&nbsp;`Mousewheel`, swipe or click+drag to page photos
 -   :keyboard: &nbsp;Keyboard controls <kbd>&leftarrow;</kbd> <kbd>&rightarrow;</kbd> <kbd>Esc</kbd>
 -   :mouse2: &nbsp;<kbd>Ctrl</kbd> + `Mousewheel` or `Trackpad Pinch` to zoom
--   :mag_right: &nbsp;Double-tap or double-click to zoom in/out
+-   :mag_right: &nbsp;Double/Single-tap or double/single-click to zoom in/out
 -   :ok_hand: &nbsp;&nbsp;&nbsp;Pinch to zoom
 -   :point_left: &nbsp;Panning on zoomed-in images
 -   :checkered_flag: &nbsp;Highly performant spring based animations via [react-spring](https://github.com/react-spring/react-spring)
@@ -92,6 +92,9 @@ const CoolLightbox = () => {
             /* Handle closing */
             // onClose={handleClose}
 
+            /* Use single or double click to zoom */
+            // singleClickToZoom
+
             /* react-spring config for open/close animation */
             // pageTransitionConfig={{
             //   from: { transform: "scale(0.75)", opacity: 0 },
@@ -120,6 +123,7 @@ export default CoolLightbox;
 | renderPrevButton     | A React component that is used for previous button in image pager                                                  |
 | renderNextButton     | A React component that is used for next button in image pager                                                      |
 | renderImageOverlay   | A React component that renders within the image stage, useful for creating UI overlays on top of the current image |
+| singleClickToZoom    | Overrides the default behavior of double clicking causing an image zoom to a single click                          |
 | images               | Array of image objects to be shown in Lightbox                                                                     |
 | className            | Classes are applied to the root lightbox component                                                                 |
 | style                | Inline styles are applied to the root lightbox component                                                           |
