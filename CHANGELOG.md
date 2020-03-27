@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.5] - 2020-03-27
+
+### Added
+
+-   Add optional `singleClickToZoom` prop which allows single click/tap zooming on images
+
 ## [1.4.4] - 2020-03-24
 
 ### Fixed
