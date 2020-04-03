@@ -38,13 +38,15 @@ const ImagePager = ({
     const { height: windowHeight, width: pageWidth } = useWindowSize();
     const [disableDrag, setDisableDrag] = useState(false);
     const [pagerHeight, setPagerHeight] = useState('100%');
+    const [isDragging, setIsDragging] = useState(false);
 
     // Generate page positions based on current index
     const getPagePositions = (i, down = false, xDelta = 0) => {
+        const onRest = () => isDragging && setIsDragging(false);
         const x = (i - currentIndex) * pageWidth + (down ? xDelta : 0);
         if (i < currentIndex - 1 || i > currentIndex + 1)
-            return { x, display: 'none' };
-        return { x, display: 'flex' };
+            return { x, display: 'none', onRest };
+        return { x, display: 'flex', onRest };
     };
 
     /**
@@ -120,7 +122,8 @@ const ImagePager = ({
                 touches
             }) => {
                 // Disable drag if Image has been zoomed in to allow for panning
-                if (disableDrag) return;
+                if (disableDrag || xMovement === 0) return;
+                if (!isDragging) setIsDragging(true);
 
                 const isHorizontalDrag = Math.abs(xDir) > 0.7;
                 const draggedFarEnough =
@@ -194,6 +197,7 @@ const ImagePager = ({
                             alt={images[i].alt}
                             pagerHeight={pagerHeight}
                             isCurrentImage={i === currentIndex}
+                            pagerIsDragging={isDragging}
                             singleClickToZoom={singleClickToZoom}
                         />
                         {renderImageOverlay()}

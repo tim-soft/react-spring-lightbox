@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useSpring, animated, to, config } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
@@ -28,8 +28,10 @@ const Image = ({
     pagerHeight,
     isCurrentImage,
     setDisableDrag,
-    singleClickToZoom
+    singleClickToZoom,
+    pagerIsDragging
 }) => {
+    const [isPanningImage, setIsPanningImage] = useState(false);
     const imageRef = useRef();
     const defaultImageTransform = () => ({
         scale: 1,
@@ -55,6 +57,7 @@ const Image = ({
         // Enable dragging in ImagePager if image is at the default size
         onRest: f => {
             if (f.scale === 1) setDisableDrag(false);
+            setIsPanningImage(false);
         }
     }));
 
@@ -122,6 +125,7 @@ const Image = ({
                 if (scale.value > 1) setDisableDrag(true);
                 else set(defaultImageTransform);
             },
+            onDragEnd: () => setIsPanningImage(false),
             onDrag: ({
                 movement: [xMovement, yMovement],
                 pinching,
@@ -130,6 +134,8 @@ const Image = ({
                 first,
                 memo = null
             }) => {
+                if (xMovement && yMovement && !isPanningImage)
+                    setIsPanningImage(true);
                 if (event.touches && event.touches.length > 1) return;
                 if (pinching || scale.value <= 1) return;
 
@@ -173,6 +179,11 @@ const Image = ({
     // Handle double-tap on image
     useDoubleClick({
         [singleClickToZoom ? 'onSingleClick' : 'onDoubleClick']: e => {
+            if (pagerIsDragging || isPanningImage) {
+                e.stopPropagation();
+                return;
+            }
+
             // If double-tapped while already zoomed-in, zoom out to default scale
             if (scale.value !== 1) {
                 set(defaultImageTransform);
@@ -206,7 +217,7 @@ const Image = ({
             });
         },
         ref: imageRef,
-        latency: 250
+        latency: singleClickToZoom ? 0 : 250
     });
 
     return (
@@ -249,7 +260,8 @@ Image.propTypes = {
     /* Fixed height of the image stage, used to restrict maximum height of images */
     pagerHeight: PropTypes.number.isRequired,
     /* Overrides the default behavior of double clicking causing an image zoom to a single click */
-    singleClickToZoom: PropTypes.isRequired
+    singleClickToZoom: PropTypes.isRequired,
+    pagerIsDragging: PropTypes.isRequired
 };
 
 export default Image;

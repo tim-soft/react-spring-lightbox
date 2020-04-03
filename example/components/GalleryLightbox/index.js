@@ -116,6 +116,7 @@ class BlogImageGallery extends React.Component {
                     images={images}
                     currentIndex={currentImageIndex}
                     galleryTitle={galleryTitle}
+                    singleClickToZoom
                     renderHeader={() => (
                         <LightboxHeader
                             galleryTitle={galleryTitle}
