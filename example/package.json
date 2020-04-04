@@ -9,7 +9,7 @@
         "color": "^3.1.2",
         "lodash.clamp": "^4.0.3",
         "lodash.merge": "^4.6.2",
-        "next": "^9.3.2",
+        "next": "^9.3.4",
         "prop-types": "^15.6.2",
         "react": "link:../node_modules/react",
         "react-dom": "link:../node_modules/react-dom",
