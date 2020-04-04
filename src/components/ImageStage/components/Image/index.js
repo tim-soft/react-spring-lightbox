@@ -18,6 +18,7 @@ import {
  * @param {function} setDisableDrag Function that can be called to disable dragging in the pager
  * @param {number} pagerHeight Fixed height of the image stage, used to restrict maximum height of images
  * @param {boolean} singleClickToZoom Overrides the default behavior of double clicking causing an image zoom to a single click
+ * @param {boolean} pagerIsDragging Indicates parent ImagePager is in a state of dragging, if true click to zoom is disabled
  *
  * @see https://github.com/react-spring/react-use-gesture
  * @see https://github.com/react-spring/react-spring
@@ -269,8 +270,9 @@ Image.propTypes = {
     /* Fixed height of the image stage, used to restrict maximum height of images */
     pagerHeight: PropTypes.number.isRequired,
     /* Overrides the default behavior of double clicking causing an image zoom to a single click */
-    singleClickToZoom: PropTypes.isRequired,
-    pagerIsDragging: PropTypes.isRequired
+    singleClickToZoom: PropTypes.bool.isRequired,
+    /* Indicates parent ImagePager is in a state of dragging, if true click to zoom is disabled */
+    pagerIsDragging: PropTypes.bool.isRequired
 };
 
 export default Image;
