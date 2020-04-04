@@ -132,7 +132,7 @@ const Image = ({
                 event,
                 cancel,
                 first,
-                memo = null
+                memo = { initialTranslateX: 0, initialTranslateY: 0 }
             }) => {
                 if (xMovement && yMovement && !isPanningImage)
                     setIsPanningImage(true);
