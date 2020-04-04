@@ -83,7 +83,7 @@ const Image = ({
                 cancel
             }) => {
                 // Prevent ImagePager from registering isDragging
-                event.stopPropagation();
+                setDisableDrag(true);
 
                 // Disable click to zoom during pinch
                 if (xMovement && !isPanningImage) setIsPanningImage(true);
