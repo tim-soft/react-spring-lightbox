@@ -81,6 +81,12 @@ const Image = ({
                 last,
                 cancel
             }) => {
+                // Prevent ImagePager from registering isDragging
+                event.stopPropagation();
+
+                // Disable click to zoom during pinch
+                if (xMovement && !isPanningImage) setIsPanningImage(true);
+
                 // Don't calculate new translate offsets on final frame
                 if (last) {
                     cancel();
@@ -124,6 +130,7 @@ const Image = ({
             onPinchEnd: () => {
                 if (scale.value > 1) setDisableDrag(true);
                 else set(defaultImageTransform);
+                setIsPanningImage(false);
             },
             onDragEnd: () => setIsPanningImage(false),
             onDrag: ({
@@ -134,8 +141,10 @@ const Image = ({
                 first,
                 memo = { initialTranslateX: 0, initialTranslateY: 0 }
             }) => {
+                // Disable click to zoom during drag
                 if (xMovement && yMovement && !isPanningImage)
                     setIsPanningImage(true);
+
                 if (event.touches && event.touches.length > 1) return;
                 if (pinching || scale.value <= 1) return;
 
@@ -176,7 +185,7 @@ const Image = ({
      */
     useEffect(bind, [bind]);
 
-    // Handle double-tap on image
+    // Handle click/tap on image
     useDoubleClick({
         [singleClickToZoom ? 'onSingleClick' : 'onDoubleClick']: e => {
             if (pagerIsDragging || isPanningImage) {
@@ -184,7 +193,7 @@ const Image = ({
                 return;
             }
 
-            // If double-tapped while already zoomed-in, zoom out to default scale
+            // If tapped while already zoomed-in, zoom out to default scale
             if (scale.value !== 1) {
                 set(defaultImageTransform);
                 return;
@@ -217,7 +226,7 @@ const Image = ({
             });
         },
         ref: imageRef,
-        latency: singleClickToZoom ? 0 : 250
+        latency: singleClickToZoom ? 0 : 200
     });
 
     return (
