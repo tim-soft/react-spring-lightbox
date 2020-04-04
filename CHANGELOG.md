@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.6] - 2020-04-04
+
+### Fixed
+
+-   Handle edge case bugs with `singleClickToZoom` option
+-   Fix undefined errors in panning drag handler on initial drags
+
 ## [1.4.5] - 2020-03-27
 
 ### Added
