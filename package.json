@@ -5,6 +5,7 @@
     "author": "Tim Ellenberger <timellenberger@gmail.com>",
     "license": "MIT",
     "repository": "tim-soft/react-spring-lightbox",
+    "sideEffects": false,
     "bugs": {
         "url": "https://github.com/tim-soft/react-spring-lightbox/issues"
     },
