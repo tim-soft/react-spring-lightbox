@@ -58,7 +58,6 @@ const Image = ({
         // Enable dragging in ImagePager if image is at the default size
         onRest: f => {
             if (f.scale === 1) setDisableDrag(false);
-            setIsPanningImage(false);
         }
     }));
 

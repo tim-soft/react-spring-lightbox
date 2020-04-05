@@ -5,6 +5,7 @@
     "author": "Tim Ellenberger <timellenberger@gmail.com>",
     "license": "MIT",
     "repository": "tim-soft/react-spring-lightbox",
+    "sideEffects": false,
     "bugs": {
         "url": "https://github.com/tim-soft/react-spring-lightbox/issues"
     },
@@ -86,12 +87,12 @@
         "eslint-plugin-react-hooks": "^1.7.0",
         "husky": "^4.2.3",
         "jest": "^25.2.3",
-        "lint-staged": "^10.1.1",
+        "lint-staged": "^10.1.2",
         "prettier": "^1.19.1",
         "react": "^16.13.1",
         "react-dom": "^16.13.1",
         "react-is": "^16.13.1",
-        "rollup": "^2.3.2",
+        "rollup": "^2.3.3",
         "rollup-plugin-babel": "^4.4.0",
         "rollup-plugin-filesize": "^6.2.1",
         "styled-components": "^5.0.1"
@@ -102,6 +103,6 @@
     "dependencies": {
         "@react-spring/web": "^9.0.0-beta.34",
         "lodash.clamp": "^4.0.3",
-        "react-use-gesture": "^7.0.9"
+        "react-use-gesture": "^7.0.10"
     }
 }
