@@ -102,6 +102,6 @@
     "dependencies": {
         "@react-spring/web": "^9.0.0-beta.34",
         "lodash.clamp": "^4.0.3",
-        "react-use-gesture": "^7.0.9"
+        "react-use-gesture": "^7.0.10"
     }
 }

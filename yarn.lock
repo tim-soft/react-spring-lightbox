@@ -5004,10 +5004,10 @@ react-is@^16.13.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-use-gesture@^7.0.9:
-  version "7.0.9"
-  resolved "https://registry.yarnpkg.com/react-use-gesture/-/react-use-gesture-7.0.9.tgz#0a36a992564d7c07f741da474ff1f3f25b6ef06d"
-  integrity sha512-z2gNEZhMBiyVRF7g+n54oA/1abEd+v6k99KqlzR+emG+I90rFXBG8U0ftk0h0B3MUxXcBWHZJijlrNQhS6iLAw==
+react-use-gesture@^7.0.10:
+  version "7.0.10"
+  resolved "https://registry.yarnpkg.com/react-use-gesture/-/react-use-gesture-7.0.10.tgz#5d977852a9358588748383883c45b8bcd49a80f3"
+  integrity sha512-1jNFMsXm1hNLEvH7e9z4A8IvBZqCt/q3vhf15hYjUmzDMby228tAWoYByYL0DyIgLEBbbq0zzxU/Sc4oBaeyLw==
 
 react@^16.13.1:
   version "16.13.1"
