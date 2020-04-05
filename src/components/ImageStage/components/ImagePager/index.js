@@ -42,11 +42,10 @@ const ImagePager = ({
 
     // Generate page positions based on current index
     const getPagePositions = (i, down = false, xDelta = 0) => {
-        const onRest = () => isDragging && setIsDragging(false);
         const x = (i - currentIndex) * pageWidth + (down ? xDelta : 0);
         if (i < currentIndex - 1 || i > currentIndex + 1)
-            return { x, display: 'none', onRest };
-        return { x, display: 'flex', onRest };
+            return { x, display: 'none' };
+        return { x, display: 'flex' };
     };
 
     /**
@@ -93,7 +92,7 @@ const ImagePager = ({
 
                 const draggedFarEnough = distance > pageWidth / 3;
                 const draggedFastEnough =
-                    velocity > 1 && distance <= pageWidth / 3;
+                    velocity > 1.5 && distance <= pageWidth / 3;
 
                 // Handle next/prev image from valid drag
                 if (draggedFarEnough || draggedFastEnough) {
@@ -111,6 +110,7 @@ const ImagePager = ({
             },
             onWheelEnd: () => {
                 set(i => getPagePositions(i, false, 0));
+                setIsDragging(false);
             },
             onDrag: ({
                 down,
@@ -127,9 +127,9 @@ const ImagePager = ({
 
                 const isHorizontalDrag = Math.abs(xDir) > 0.7;
                 const draggedFarEnough =
-                    down && isHorizontalDrag && distance > pageWidth / 3;
+                    down && isHorizontalDrag && distance > pageWidth / 3.5;
                 const draggedFastEnough =
-                    down && isHorizontalDrag && velocity > 2.5;
+                    down && isHorizontalDrag && velocity > 2;
 
                 // Handle next/prev image from valid drag
                 if (draggedFarEnough || draggedFastEnough) {
@@ -151,7 +151,8 @@ const ImagePager = ({
 
                 // Update page x-coordinates for single finger/mouse gestures
                 set(i => getPagePositions(i, down, xMovement));
-            }
+            },
+            onDragEnd: () => setIsDragging(false)
         },
         /**
          * useGesture config
@@ -181,7 +182,7 @@ const ImagePager = ({
                 display,
                 transform: x.to(xInterp => `translateX(${xInterp}px)`)
             }}
-            onClick={() => Math.abs(x.value) < 1 && onClose()}
+            onClick={() => Math.abs(x.value) < 1 && !disableDrag && onClose()}
         >
             <PagerContentWrapper>
                 <PagerInnerContentWrapper>
