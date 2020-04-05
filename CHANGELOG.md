@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.7] - 2020-04-05
+
+### Added
+
+-   Lower distance and velocity gesture threshold for a paging between images
+-   Allow click to zoom while a paging animation completes
+-   Upgrade to `rollup@2.3.3` and `react-use-gesture@7.0.10`
+-   Add `sideEffects: false` to `package.json`
+
 ## [1.4.6] - 2020-04-04
 
 ### Fixed
