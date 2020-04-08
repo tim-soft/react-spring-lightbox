@@ -3,7 +3,6 @@ import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSprings, animated } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
-import clamp from 'lodash.clamp';
 import styled from 'styled-components';
 import { useWindowSize } from '../../utils';
 import Image from '../Image';
@@ -96,16 +95,10 @@ const ImagePager = ({
 
                 // Handle next/prev image from valid drag
                 if (draggedFarEnough || draggedFastEnough) {
-                    const goToIndex = clamp(
-                        currentIndex + (xDir + yDir > 0 ? -1 : 1),
-                        0,
-                        images.length - 1
-                    );
+                    const goToIndex = xDir + yDir > 0 ? -1 : 1;
 
-                    if (goToIndex > currentIndex) onNext();
-                    if (goToIndex < currentIndex) onPrev();
-                    if (goToIndex === currentIndex)
-                        set(i => getPagePositions(i, false, 0));
+                    if (goToIndex > 0) onNext();
+                    else if (goToIndex < 0) onPrev();
                 }
             },
             onWheelEnd: () => {
@@ -133,17 +126,13 @@ const ImagePager = ({
 
                 // Handle next/prev image from valid drag
                 if (draggedFarEnough || draggedFastEnough) {
-                    const goToIndex = clamp(
-                        currentIndex + (xDir > 0 ? -1 : 1),
-                        0,
-                        images.length - 1
-                    );
+                    const goToIndex = xDir > 0 ? -1 : 1;
 
                     // Cancel gesture animation
                     cancel();
 
-                    if (goToIndex > currentIndex) onNext();
-                    if (goToIndex < currentIndex) onPrev();
+                    if (goToIndex > 0) onNext();
+                    else if (goToIndex < 0) onPrev();
                 }
 
                 // Don't move pager during two+ finger touch events, i.e. pinch-zoom

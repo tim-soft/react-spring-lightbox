@@ -25,13 +25,11 @@ const ImageStage = ({
     renderPrevButton,
     renderNextButton,
     renderImageOverlay,
-    singleClickToZoom,
+    singleClickToZoom
 }) => {
     // Extra sanity check that the next/prev image exists before moving to it
     const canPrev = currentIndex > 0;
     const canNext = currentIndex + 1 < images.length;
-    const prev = onPrev();
-    const next = onNext();
 
     return (
         <ImageStageContainer className="lightbox-image-stage">
@@ -40,8 +38,8 @@ const ImageStage = ({
                 images={images}
                 currentIndex={currentIndex}
                 onClose={onClose}
-                onNext={next}
-                onPrev={prev}
+                onNext={onNext}
+                onPrev={onPrev}
                 renderImageOverlay={renderImageOverlay}
                 singleClickToZoom={singleClickToZoom}
             />
@@ -61,13 +59,13 @@ ImageStage.propTypes = {
             caption: PropTypes.string.isRequired,
             alt: PropTypes.string.isRequired,
             width: PropTypes.number,
-            height: PropTypes.number,
+            height: PropTypes.number
         })
     ).isRequired,
     renderPrevButton: PropTypes.func.isRequired,
     renderNextButton: PropTypes.func.isRequired,
     renderImageOverlay: PropTypes.func.isRequired,
-    singleClickToZoom: PropTypes.isRequired,
+    singleClickToZoom: PropTypes.isRequired
 };
 
 export default ImageStage;
