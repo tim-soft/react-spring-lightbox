@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.8] - 2020-04-08
+
+### Fixed
+
+-   Dropped `lodash.clamp` dependency
+-   Call onPrev/onNext callbacks on all paging events, even at the beginning or end of image array to allow for infinite paging
+
 ## [1.4.7] - 2020-04-05
 
 ### Added
