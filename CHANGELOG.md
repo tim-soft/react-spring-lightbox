@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+
+## [1.4.9] - 2020-05-02
+
+### Fixed
+
+-   Fix partially off-screen image stage in ie11
+
+### Added
+
+-   Upgrade to `rollup@2.7.6`, `react-use-gesture@7.0.15` and `@babel/****@7.9.6
+
 ## [1.4.8] - 2020-04-08
 
 ### Fixed
