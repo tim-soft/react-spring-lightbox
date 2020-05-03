@@ -240,6 +240,10 @@ const PagerContentWrapper = styled.div`
 
 const AnimatedImagePager = styled(animated.div)`
     position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
     height: 100%;
     width: 100%;
     will-change: transform;
