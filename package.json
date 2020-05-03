@@ -74,6 +74,7 @@
         "@testing-library/jest-dom": "^5.5.0",
         "@testing-library/react": "^10.0.4",
         "babel-eslint": "10.1.0",
+        "babel-plugin-styled-components": "1.10.5",
         "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
         "babel-polyfill": "^6.26.0",
         "cross-env": "^7.0.2",
@@ -95,6 +96,7 @@
         "rollup": "^2.7.6",
         "rollup-plugin-babel": "^4.4.0",
         "rollup-plugin-filesize": "^8.0.2",
+        "rollup-plugin-terser": "^5.3.0",
         "styled-components": "^5.0.1"
     },
     "files": [
