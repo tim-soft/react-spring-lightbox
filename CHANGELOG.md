@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 
--   Upgrade to `rollup@2.7.6`, `react-use-gesture@7.0.15` and `@babel/****@7.9.6
+-   Upgrade to `rollup@2.7.6`, `react-use-gesture@7.0.15` and `@babel/****@7.9.6`
 
 ## [1.4.8] - 2020-04-08
 
