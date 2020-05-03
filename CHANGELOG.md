@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.10] - 2020-05-03
+
+### Added
+
+-   Optimize output bundles with Terser
+-   Apply `babel-plugin-styled-components` babel plugin to optimize styled-components styles
 
 ## [1.4.9] - 2020-05-02
 
