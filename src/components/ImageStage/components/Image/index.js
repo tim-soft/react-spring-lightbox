@@ -233,6 +233,7 @@ const Image = ({
         <AnimatedImage
             ref={imageRef}
             className="lightbox-image"
+            loading="lazy"
             style={{
                 transform: to(
                     [scale, translateX, translateY],
