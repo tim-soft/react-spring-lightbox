@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.11] - 2020-06-10
+
+### Fixed
+
+-   Use aliased version of react-spring dependencies, fixes "Cannot read property 'ref' of null" error
+
 ## [1.4.10] - 2020-05-03
 
 ### Added
