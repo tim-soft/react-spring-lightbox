@@ -13,6 +13,7 @@ import {
  * Animates pinch-zoom + panning on image using spring physics
  *
  * @param {string} src The source URL of this image
+ * @param {string} srcSet Optional srcSet for this image
  * @param {string} alt The alt attribute for this image
  * @param {boolean} isCurrentImage True if this image is currently shown in pager, otherwise false
  * @param {function} setDisableDrag Function that can be called to disable dragging in the pager
@@ -25,6 +26,7 @@ import {
  */
 const Image = ({
     src,
+    srcSet,
     alt,
     pagerHeight,
     isCurrentImage,
@@ -242,6 +244,7 @@ const Image = ({
                 ...(isCurrentImage && { willChange: 'transform' })
             }}
             src={src}
+            srcSet={srcSet}
             alt={alt}
             draggable="false"
             onDragStart={e => {
@@ -260,6 +263,8 @@ const Image = ({
 Image.propTypes = {
     /* The source URL of this image */
     src: PropTypes.string.isRequired,
+    /* Optional srcSet for this image */
+    srcSet: PropTypes.string,
     /* The alt attribute for this image */
     alt: PropTypes.string.isRequired,
     /* True if this image is currently shown in pager, otherwise false */
@@ -272,6 +277,10 @@ Image.propTypes = {
     singleClickToZoom: PropTypes.bool.isRequired,
     /* Indicates parent ImagePager is in a state of dragging, if true click to zoom is disabled */
     pagerIsDragging: PropTypes.bool.isRequired
+};
+
+Image.defaultProps = {
+    srcSet: null
 };
 
 export default Image;
