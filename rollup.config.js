@@ -2,7 +2,7 @@ import path from 'path';
 import babel from 'rollup-plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import filesize from 'rollup-plugin-filesize';
-import resolve from '@rollup/plugin-node-resolve';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
 
 import pkg from './package.json';
@@ -15,25 +15,25 @@ export default {
         {
             file: pkg.main,
             format: 'cjs',
-            sourcemap: true
+            sourcemap: true,
         },
         {
             file: pkg.module,
             format: 'es',
-            sourcemap: true
-        }
+            sourcemap: true,
+        },
     ],
-    external: id => !id.startsWith('.') && !id.startsWith(root),
+    external: (id) => !id.startsWith('.') && !id.startsWith(root),
     plugins: [
         babel({
             exclude: 'node_modules/**',
-            runtimeHelpers: true
+            runtimeHelpers: true,
         }),
-        resolve(),
+        nodeResolve(),
         commonjs({
-            include: 'node_modules/**'
+            include: 'node_modules/**',
         }),
         terser(),
-        filesize()
-    ]
+        filesize(),
+    ],
 };

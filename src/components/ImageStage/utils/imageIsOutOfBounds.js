@@ -5,12 +5,12 @@
  *
  * @returns {boolean} True if image needs to be resized to fit viewport, otherwise false
  */
-const imageIsOutOfBounds = imageRef => {
+const imageIsOutOfBounds = (imageRef) => {
     const {
         top: topLeftY,
         left: topLeftX,
         bottom: bottomRightY,
-        right: bottomRightX
+        right: bottomRightX,
     } = imageRef.current.getBoundingClientRect();
     const { innerHeight: windowHeight, innerWidth: windowWidth } = window;
 

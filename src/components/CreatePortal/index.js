@@ -14,8 +14,8 @@ export default class CreatePortal extends React.Component {
     static propTypes = {
         children: PropTypes.oneOfType([
             PropTypes.arrayOf(PropTypes.element),
-            PropTypes.element
-        ]).isRequired
+            PropTypes.element,
+        ]).isRequired,
     };
 
     // Only executes on the client-side
@@ -47,7 +47,7 @@ export default class CreatePortal extends React.Component {
         this.body.removeChild(this.portalContainer);
     }
 
-    preventWheel = e => e.preventDefault();
+    preventWheel = (e) => e.preventDefault();
 
     render() {
         // Return null during SSR

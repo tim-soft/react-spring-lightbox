@@ -39,7 +39,7 @@ const Lightbox = ({
     className,
     singleClickToZoom,
     style,
-    pageTransitionConfig
+    pageTransitionConfig,
 }) => {
     // Handle event listeners for keyboard
     useEffect(() => {
@@ -47,14 +47,14 @@ const Lightbox = ({
          * Prevent keyboard from controlling background page
          * when lightbox is open
          */
-        const preventBackgroundScroll = e => {
+        const preventBackgroundScroll = (e) => {
             const keysToIgnore = [
                 'ArrowUp',
                 'ArrowDown',
                 'End',
                 'Home',
                 'PageUp',
-                'PageDown'
+                'PageDown',
             ];
 
             if (isOpen && keysToIgnore.includes(e.key)) e.preventDefault();
@@ -63,7 +63,7 @@ const Lightbox = ({
         /**
          * Navigate images with arrow keys, close on Esc key
          */
-        const handleKeyboardInput = e => {
+        const handleKeyboardInput = (e) => {
             if (isOpen) {
                 switch (e.key) {
                     case 'ArrowLeft':
@@ -129,7 +129,7 @@ Lightbox.propTypes = {
             caption: PropTypes.string.isRequired,
             alt: PropTypes.string.isRequired,
             width: PropTypes.number,
-            height: PropTypes.number
+            height: PropTypes.number,
         })
     ).isRequired,
     renderHeader: PropTypes.func,
@@ -140,7 +140,7 @@ Lightbox.propTypes = {
     style: PropTypes.object,
     pageTransitionConfig: PropTypes.object,
     renderImageOverlay: PropTypes.func,
-    singleClickToZoom: PropTypes.bool
+    singleClickToZoom: PropTypes.bool,
 };
 
 Lightbox.defaultProps = {
@@ -152,7 +152,7 @@ Lightbox.defaultProps = {
     renderPrevButton: () => null,
     renderNextButton: () => null,
     renderImageOverlay: () => null,
-    singleClickToZoom: false
+    singleClickToZoom: false,
 };
 
 export default Lightbox;

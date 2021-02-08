@@ -9,7 +9,7 @@ const ArrowButton = ({ position, onClick, disabled }) => {
     const transitions = useTransition(!disabled, null, {
         from: { opacity: 0 },
         enter: { opacity: 1 },
-        leave: { opacity: 0 }
+        leave: { opacity: 0 },
     });
 
     return transitions.map(
@@ -19,7 +19,7 @@ const ArrowButton = ({ position, onClick, disabled }) => {
                     key={key}
                     style={{
                         ...props,
-                        zIndex: 999
+                        zIndex: 999,
                     }}
                 >
                     <Button position={position} type="button" onClick={onClick}>
@@ -34,11 +34,11 @@ const ArrowButton = ({ position, onClick, disabled }) => {
 ArrowButton.propTypes = {
     position: PropTypes.oneOf(['left', 'right']).isRequired,
     onClick: PropTypes.func.isRequired,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
 };
 
 ArrowButton.defaultProps = {
-    disabled: false
+    disabled: false,
 };
 
 export default ArrowButton;

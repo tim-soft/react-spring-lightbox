@@ -34,9 +34,9 @@ LightboxHeader.propTypes = {
             caption: PropTypes.string.isRequired,
             alt: PropTypes.string.isRequired,
             width: PropTypes.number,
-            height: PropTypes.number
+            height: PropTypes.number,
         })
-    ).isRequired
+    ).isRequired,
 };
 
 export default LightboxHeader;
@@ -92,10 +92,7 @@ const TopHeaderBar = styled.header`
     padding: 10px 2px 10px 20px;
     color: ${({ theme }) => theme.headerNavFontColor};
     background-color: ${({ theme }) =>
-        Color(theme.pageBackgroundColor)
-            .alpha(0.5)
-            .hsl()
-            .string()};
+        Color(theme.pageBackgroundColor).alpha(0.5).hsl().string()};
     > * {
         height: inherit;
     }

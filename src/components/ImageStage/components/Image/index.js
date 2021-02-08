@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import {
     useDoubleClick,
     imageIsOutOfBounds,
-    getTranslateOffsetsFromScale
+    getTranslateOffsetsFromScale,
 } from '../../utils';
 
 /**
@@ -30,7 +30,7 @@ const Image = ({
     isCurrentImage,
     setDisableDrag,
     singleClickToZoom,
-    pagerIsDragging
+    pagerIsDragging,
 }) => {
     const [isPanningImage, setIsPanningImage] = useState(false);
     const imageRef = useRef();
@@ -38,7 +38,7 @@ const Image = ({
         scale: 1,
         translateX: 0,
         translateY: 0,
-        config: { ...config.default, precision: 0.01 }
+        config: { ...config.default, precision: 0.01 },
     });
 
     /**
@@ -48,7 +48,7 @@ const Image = ({
      */
     const [{ scale, translateX, translateY }, set] = useSpring(() => ({
         ...defaultImageTransform(),
-        onFrame: f => {
+        onFrame: (f) => {
             if (f.scale < 1 || !f.pinching) set(defaultImageTransform);
 
             // Prevent dragging image out of viewport
@@ -56,9 +56,9 @@ const Image = ({
                 set(defaultImageTransform());
         },
         // Enable dragging in ImagePager if image is at the default size
-        onRest: f => {
+        onRest: (f) => {
             if (f.scale === 1) setDisableDrag(false);
-        }
+        },
     }));
 
     // Reset scale of this image when dragging to new image in ImagePager
@@ -79,7 +79,7 @@ const Image = ({
                 event,
                 ctrlKey,
                 last,
-                cancel
+                cancel,
             }) => {
                 // Prevent ImagePager from registering isDragging
                 setDisableDrag(true);
@@ -103,7 +103,7 @@ const Image = ({
                 // zoom-in to point as image scale grows
                 const [
                     newTranslateX,
-                    newTranslateY
+                    newTranslateY,
                 ] = getTranslateOffsetsFromScale({
                     imageRef,
                     scale: scale.value,
@@ -113,7 +113,7 @@ const Image = ({
                     // Otherwise use touch origin
                     touchOrigin: ctrlKey
                         ? [clientX, clientY]
-                        : [touchOriginX, touchOriginY]
+                        : [touchOriginX, touchOriginY],
                 });
 
                 // Restrict the amount of zoom between half and 3x image size
@@ -124,7 +124,7 @@ const Image = ({
                         scale: pinchScale,
                         translateX: newTranslateX,
                         translateY: newTranslateY,
-                        pinching: true
+                        pinching: true,
                     });
             },
             onPinchEnd: () => {
@@ -139,7 +139,7 @@ const Image = ({
                 event,
                 cancel,
                 first,
-                memo = { initialTranslateX: 0, initialTranslateY: 0 }
+                memo = { initialTranslateX: 0, initialTranslateY: 0 },
             }) => {
                 // Disable click to zoom during drag
                 if (xMovement && yMovement && !isPanningImage)
@@ -154,19 +154,19 @@ const Image = ({
                     if (first) {
                         return {
                             initialTranslateX: translateX.value,
-                            initialTranslateY: translateY.value
+                            initialTranslateY: translateY.value,
                         };
                     }
 
                     // Translate image from dragging
                     set({
                         translateX: memo.initialTranslateX + xMovement,
-                        translateY: memo.initialTranslateY + yMovement
+                        translateY: memo.initialTranslateY + yMovement,
                     });
 
                     return memo;
                 }
-            }
+            },
         },
         /**
          * useGesture config
@@ -175,8 +175,8 @@ const Image = ({
         {
             domTarget: imageRef,
             event: {
-                passive: false
-            }
+                passive: false,
+            },
         }
     );
 
@@ -187,7 +187,7 @@ const Image = ({
 
     // Handle click/tap on image
     useDoubleClick({
-        [singleClickToZoom ? 'onSingleClick' : 'onDoubleClick']: e => {
+        [singleClickToZoom ? 'onSingleClick' : 'onDoubleClick']: (e) => {
             if (pagerIsDragging || isPanningImage) {
                 e.stopPropagation();
                 return;
@@ -212,7 +212,7 @@ const Image = ({
                     scale: scale.value,
                     pinchDelta,
                     currentTranslate: [translateX.value, translateY.value],
-                    touchOrigin: [touchOriginX, touchOriginY]
+                    touchOrigin: [touchOriginX, touchOriginY],
                 }
             );
 
@@ -222,11 +222,11 @@ const Image = ({
                 scale: pinchScale,
                 translateX: newTranslateX,
                 translateY: newTranslateY,
-                pinching: true
+                pinching: true,
             });
         },
         ref: imageRef,
-        latency: singleClickToZoom ? 0 : 200
+        latency: singleClickToZoom ? 0 : 200,
     });
 
     return (
@@ -239,16 +239,16 @@ const Image = ({
                     (s, x, y) => `translate(${x}px, ${y}px) scale(${s})`
                 ),
                 maxHeight: pagerHeight,
-                ...(isCurrentImage && { willChange: 'transform' })
+                ...(isCurrentImage && { willChange: 'transform' }),
             }}
             src={src}
             alt={alt}
             draggable="false"
-            onDragStart={e => {
+            onDragStart={(e) => {
                 // Disable image ghost dragging in firefox
                 e.preventDefault();
             }}
-            onClick={e => {
+            onClick={(e) => {
                 // Don't close lighbox when clicking image
                 e.stopPropagation();
                 e.nativeEvent.stopImmediatePropagation();
@@ -271,7 +271,7 @@ Image.propTypes = {
     /* Overrides the default behavior of double clicking causing an image zoom to a single click */
     singleClickToZoom: PropTypes.bool.isRequired,
     /* Indicates parent ImagePager is in a state of dragging, if true click to zoom is disabled */
-    pagerIsDragging: PropTypes.bool.isRequired
+    pagerIsDragging: PropTypes.bool.isRequired,
 };
 
 export default Image;
