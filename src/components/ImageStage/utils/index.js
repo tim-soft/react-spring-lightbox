@@ -7,5 +7,5 @@ export {
     getTranslateOffsetsFromScale,
     imageIsOutOfBounds,
     useDoubleClick,
-    useWindowSize
+    useWindowSize,
 };

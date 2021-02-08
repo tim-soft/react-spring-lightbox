@@ -8,16 +8,16 @@ module.exports = {
     env: {
         browser: true,
         es6: true,
-        jest: true
+        jest: true,
     },
     extends: ['airbnb', 'prettier', 'prettier/react', 'plugin:import/warnings'],
     plugins: ['prettier', 'jsx-a11y', 'react-hooks', 'import'],
     globals: {
         document: true,
-        window: true
+        window: true,
     },
     parserOptions: {
-        sourceType: 'module'
+        sourceType: 'module',
     },
     rules: {
         'react/forbid-prop-types': 0,
@@ -35,6 +35,6 @@ module.exports = {
         // Enforce React Hooks rules
         // https://www.npmjs.com/package/eslint-plugin-react-hooks
         'react-hooks/rules-of-hooks': 'error',
-        'react-hooks/exhaustive-deps': 'warn'
-    }
+        'react-hooks/exhaustive-deps': 'warn',
+    },
 };

@@ -13,12 +13,12 @@ const useDoubleClick = ({
     ref,
     latency = 300,
     onSingleClick = () => null,
-    onDoubleClick = () => null
+    onDoubleClick = () => null,
 }) => {
     useEffect(() => {
         const clickRef = ref.current;
         let clickCount = 0;
-        const handleClick = e => {
+        const handleClick = (e) => {
             clickCount += 1;
 
             setTimeout(() => {

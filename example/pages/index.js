@@ -13,7 +13,7 @@ export default () => (
                     caption: 'Windows 10 Dark Mode Setting',
                     alt: 'Windows 10 Dark Mode Setting',
                     width: 2848,
-                    height: 2035
+                    height: 2035,
                 },
                 {
                     src:
@@ -21,7 +21,7 @@ export default () => (
                     caption: 'macOS Mojave Dark Mode Setting',
                     alt: 'macOS Mojave Dark Mode Setting',
                     width: 1200,
-                    height: 1218
+                    height: 1218,
                 },
                 {
                     src:
@@ -29,7 +29,7 @@ export default () => (
                     caption: 'Android 9.0 Dark Mode Setting',
                     alt: 'Android 9.0 Dark Mode Setting',
                     width: 1280,
-                    height: 600
+                    height: 600,
                 },
                 {
                     src:
@@ -37,7 +37,7 @@ export default () => (
                     caption: 'Windows 10 Dark Mode Setting#',
                     alt: 'Windows 10 Dark Mode Setting#',
                     width: 2848,
-                    height: 2035
+                    height: 2035,
                 },
                 {
                     src:
@@ -45,7 +45,7 @@ export default () => (
                     caption: 'Windows 10 Dark Mode Setting',
                     alt: 'Windows 10 Dark Mode Setting',
                     width: 2848,
-                    height: 2035
+                    height: 2035,
                 },
                 {
                     src:
@@ -53,7 +53,7 @@ export default () => (
                     caption: 'macOS Mojave Dark Mode Setting',
                     alt: 'macOS Mojave Dark Mode Setting',
                     width: 1200,
-                    height: 1218
+                    height: 1218,
                 },
                 {
                     src:
@@ -61,7 +61,7 @@ export default () => (
                     caption: 'Android 9.0 Dark Mode Setting',
                     alt: 'Android 9.0 Dark Mode Setting',
                     width: 1280,
-                    height: 600
+                    height: 600,
                 },
                 {
                     src:
@@ -69,7 +69,7 @@ export default () => (
                     caption: 'Windows 10 Dark Mode Setting#',
                     alt: 'Windows 10 Dark Mode Setting#',
                     width: 2848,
-                    height: 2035
+                    height: 2035,
                 },
                 {
                     src:
@@ -77,7 +77,7 @@ export default () => (
                     caption: 'Android 9.0 Dark Mode Setting',
                     alt: 'Android 9.0 Dark Mode Setting',
                     width: 1280,
-                    height: 600
+                    height: 600,
                 },
                 {
                     src:
@@ -85,8 +85,8 @@ export default () => (
                     caption: 'Windows 10 Dark Mode Setting#',
                     alt: 'Windows 10 Dark Mode Setting#',
                     width: 2848,
-                    height: 2035
-                }
+                    height: 2035,
+                },
             ]}
         />
     </Container>

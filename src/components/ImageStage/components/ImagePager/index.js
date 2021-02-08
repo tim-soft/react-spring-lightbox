@@ -28,7 +28,7 @@ const ImagePager = ({
     onNext,
     onClose,
     renderImageOverlay,
-    singleClickToZoom
+    singleClickToZoom,
 }) => {
     const firstRender = useRef(true);
     const imageStageRef = useRef(
@@ -84,7 +84,7 @@ const ImagePager = ({
                 distance,
                 velocity,
                 direction: [xDir, yDir],
-                ctrlKey
+                ctrlKey,
             }) => {
                 // Disable drag if Image has been zoomed in to allow for panning
                 if (ctrlKey || disableDrag || velocity === 0) return;
@@ -102,7 +102,7 @@ const ImagePager = ({
                 }
             },
             onWheelEnd: () => {
-                set(i => getPagePositions(i, false, 0));
+                set((i) => getPagePositions(i, false, 0));
                 setIsDragging(false);
             },
             onDrag: ({
@@ -112,7 +112,7 @@ const ImagePager = ({
                 velocity,
                 distance,
                 cancel,
-                touches
+                touches,
             }) => {
                 // Disable drag if Image has been zoomed in to allow for panning
                 if (disableDrag || xMovement === 0) return;
@@ -139,9 +139,9 @@ const ImagePager = ({
                 if (touches > 1) return;
 
                 // Update page x-coordinates for single finger/mouse gestures
-                set(i => getPagePositions(i, down, xMovement));
+                set((i) => getPagePositions(i, down, xMovement));
             },
-            onDragEnd: () => setIsDragging(false)
+            onDragEnd: () => setIsDragging(false),
         },
         /**
          * useGesture config
@@ -151,8 +151,8 @@ const ImagePager = ({
             domTarget: imageStageRef.current[currentIndex],
             event: {
                 passive: true,
-                capture: false
-            }
+                capture: false,
+            },
         }
     );
 
@@ -169,14 +169,14 @@ const ImagePager = ({
             className="lightbox-image-pager"
             style={{
                 display,
-                transform: x.to(xInterp => `translateX(${xInterp}px)`)
+                transform: x.to((xInterp) => `translateX(${xInterp}px)`),
             }}
             onClick={() => Math.abs(x.value) < 1 && !disableDrag && onClose()}
         >
             <PagerContentWrapper>
                 <PagerInnerContentWrapper>
                     <ImageContainer
-                        onClick={e => {
+                        onClick={(e) => {
                             e.stopPropagation();
                             e.nativeEvent.stopImmediatePropagation();
                         }}
@@ -213,7 +213,7 @@ ImagePager.propTypes = {
             /* The source URL of this image */
             src: PropTypes.string.isRequired,
             /* The alt attribute for this image */
-            alt: PropTypes.string.isRequired
+            alt: PropTypes.string.isRequired,
         })
     ).isRequired,
     /* A React component that renders inside the image stage, useful for making overlays over the image */
@@ -221,7 +221,7 @@ ImagePager.propTypes = {
     /* Fixed height of the image stage, used to restrict maximum height of images */
     pagerHeight: PropTypes.number.isRequired,
     /* Overrides the default behavior of double clicking causing an image zoom to a single click */
-    singleClickToZoom: PropTypes.isRequired
+    singleClickToZoom: PropTypes.isRequired,
 };
 
 export default ImagePager;

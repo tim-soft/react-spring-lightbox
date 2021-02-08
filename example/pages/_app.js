@@ -18,7 +18,7 @@ export default class MyApp extends App {
                         pageContentLinkHoverColor: 'aquamarine',
                         pageContentSelectionColor: 'aquamarine',
                         headerNavFontColor: '#e2e5ec',
-                        accentColor: '#1f1f1f'
+                        accentColor: '#1f1f1f',
                     }}
                 >
                     <Component {...pageProps} />

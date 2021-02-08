@@ -15,25 +15,25 @@ export default {
         {
             file: pkg.main,
             format: 'cjs',
-            sourcemap: true
+            sourcemap: true,
         },
         {
             file: pkg.module,
             format: 'es',
-            sourcemap: true
-        }
+            sourcemap: true,
+        },
     ],
-    external: id => !id.startsWith('.') && !id.startsWith(root),
+    external: (id) => !id.startsWith('.') && !id.startsWith(root),
     plugins: [
         babel({
             exclude: 'node_modules/**',
-            runtimeHelpers: true
+            runtimeHelpers: true,
         }),
         nodeResolve(),
         commonjs({
-            include: 'node_modules/**'
+            include: 'node_modules/**',
         }),
         terser(),
-        filesize()
-    ]
+        filesize(),
+    ],
 };

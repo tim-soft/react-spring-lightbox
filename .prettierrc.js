@@ -6,5 +6,5 @@
 module.exports = {
     singleQuote: true,
     semi: true,
-    tabWidth: 4
+    tabWidth: 4,
 };

@@ -6,9 +6,9 @@
 module.exports = {
     setupFilesAfterEnv: [
         '@testing-library/jest-dom/extend-expect',
-        'babel-polyfill'
+        'babel-polyfill',
     ],
     collectCoverage: true,
     coveragePathIgnorePatterns: ['/node_modules/', '/__tests__/'],
-    testMatch: ['**/__tests__/**/*.(spec|test).[jt]s?(x)']
+    testMatch: ['**/__tests__/**/*.(spec|test).[jt]s?(x)'],
 };

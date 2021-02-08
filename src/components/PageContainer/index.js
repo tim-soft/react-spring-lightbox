@@ -19,18 +19,18 @@ const PageContainer = ({
     isOpen,
     className,
     style,
-    pageTransitionConfig
+    pageTransitionConfig,
 }) => {
     const defaultTransition = {
         from: { transform: 'scale(0.75)', opacity: 0 },
         enter: { transform: 'scale(1)', opacity: 1 },
         leave: { transform: 'scale(0.75)', opacity: 0 },
-        config: { ...config.default, mass: 1, tension: 320, friction: 32 }
+        config: { ...config.default, mass: 1, tension: 320, friction: 32 },
     };
 
     const transitions = useTransition(isOpen, null, {
         ...defaultTransition,
-        ...pageTransitionConfig
+        ...pageTransitionConfig,
     });
 
     return transitions.map(
@@ -53,11 +53,11 @@ PageContainer.propTypes = {
     isOpen: PropTypes.bool.isRequired,
     children: PropTypes.oneOfType([
         PropTypes.arrayOf(PropTypes.element),
-        PropTypes.element
+        PropTypes.element,
     ]).isRequired,
     className: PropTypes.string,
     style: PropTypes.object,
-    pageTransitionConfig: PropTypes.object
+    pageTransitionConfig: PropTypes.object,
 };
 
 export default PageContainer;

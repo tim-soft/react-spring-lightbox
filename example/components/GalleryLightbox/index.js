@@ -19,13 +19,13 @@ class BlogImageGallery extends React.Component {
                 caption: PropTypes.string.isRequired,
                 alt: PropTypes.string.isRequired,
                 width: PropTypes.number,
-                height: PropTypes.number
+                height: PropTypes.number,
             })
-        ).isRequired
+        ).isRequired,
     };
 
     static defaultProps = {
-        imageMasonryDirection: 'column'
+        imageMasonryDirection: 'column',
     };
 
     constructor() {
@@ -34,7 +34,7 @@ class BlogImageGallery extends React.Component {
         this.state = {
             currentImageIndex: 0,
             lightboxIsOpen: false,
-            clientSide: false
+            clientSide: false,
         };
     }
 
@@ -45,13 +45,13 @@ class BlogImageGallery extends React.Component {
     openLightbox = (e, { index }) => {
         this.setState({
             currentImageIndex: index,
-            lightboxIsOpen: true
+            lightboxIsOpen: true,
         });
     };
 
     closeLightbox = () => {
         this.setState({
-            lightboxIsOpen: false
+            lightboxIsOpen: false,
         });
     };
 
@@ -61,7 +61,7 @@ class BlogImageGallery extends React.Component {
         // If the current image isn't the first in the list, go to the previous
         if (currentImageIndex > 0) {
             this.setState({
-                currentImageIndex: currentImageIndex - 1
+                currentImageIndex: currentImageIndex - 1,
             });
         }
     };
@@ -73,7 +73,7 @@ class BlogImageGallery extends React.Component {
         // If the current image isn't the list in the list, go to the next
         if (currentImageIndex + 1 < images.length) {
             this.setState({
-                currentImageIndex: currentImageIndex + 1
+                currentImageIndex: currentImageIndex + 1,
             });
         }
     };
@@ -83,7 +83,7 @@ class BlogImageGallery extends React.Component {
      *
      * @int containerWidth The current width of the image grid
      */
-    columnConfig = containerWidth => {
+    columnConfig = (containerWidth) => {
         let columns = 1;
         if (containerWidth >= 500) columns = 2;
         if (containerWidth >= 900) columns = 3;
@@ -163,10 +163,7 @@ const GalleryContainer = styled.section`
 
 const StyledLightbox = styled(Lightbox)`
     background: ${({ theme }) =>
-        Color(theme.accentColor)
-            .alpha(0.95)
-            .hsl()
-            .string()};
+        Color(theme.accentColor).alpha(0.95).hsl().string()};
     * ::selection {
         background: ${({ theme }) => theme.pageContentSelectionColor};
     }
