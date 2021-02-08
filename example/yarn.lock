@@ -927,10 +927,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@emotion/is-prop-valid@^0.8.3":
-  version "0.8.7"
-  resolved "https://registry.yarnpkg.com/@emotion/is-prop-valid/-/is-prop-valid-0.8.7.tgz#803449993f436f9a6c67752251ea3fc492a1044c"
-  integrity sha512-OPkKzUeiid0vEKjZqnGcy2mzxjIlCffin+L2C02pdz/bVlt5zZZE2VzO0D3XOPnH0NEeF21QNKSXiZphjr4xiQ==
+"@emotion/is-prop-valid@^0.8.8":
+  version "0.8.8"
+  resolved "https://registry.yarnpkg.com/@emotion/is-prop-valid/-/is-prop-valid-0.8.8.tgz#db28b1c4368a259b60a97311d6a952d4fd01ac1a"
+  integrity sha512-u5WtneEAr5IDG2Wv65yhunPSMLIpuKsbuOktRojfrEiEvRyC85LgPMZI63cr7NUqT8ZIGdSVg8ZKGxIug4lXcA==
   dependencies:
     "@emotion/memoize" "0.7.4"
 
@@ -949,26 +949,26 @@
   resolved "https://registry.yarnpkg.com/@emotion/unitless/-/unitless-0.7.5.tgz#77211291c1900a700b8a78cfafda3160d76949ed"
   integrity sha512-OWORNpfjMsSSUBVrRBVGECkhWcULOAJz9ZW8uK9qgxD+87M7jHRcvh/A96XXNhXTLmKcoYSQtBEX7lHMO7YRwg==
 
-"@react-spring/animated@^9.0.0-beta.33":
+"@react-spring/animated@npm:@tim-soft/react-spring-animated@9.0.0-beta.33":
   version "9.0.0-beta.33"
-  resolved "https://registry.yarnpkg.com/@react-spring/animated/-/animated-9.0.0-beta.33.tgz#5481278056e771466137f4d48c2efbf3277faad3"
-  integrity sha512-0ecIXTLjvUuplQgUOr3fhXzHuVcCuVi4gLAEG74m/OcXZ8JZ0DuQCwdIT2TNJYaWX1pOG0OstT3bJ8KN+Ji/BQ==
+  resolved "https://registry.yarnpkg.com/@tim-soft/react-spring-animated/-/react-spring-animated-9.0.0-beta.33.tgz#644247bf3e96b0db3bfc563af4e156bb3e68b6fe"
+  integrity sha512-fXPywLQOWciayrq6nbdl+bAngZxNDDC7ZNigOvYv6Gfhqr9RNNQ0Nkn71bTomjQ4YKRlXjz9gcjzwKS/cW10gA==
   dependencies:
     "@babel/runtime" "^7.3.1"
-    "@react-spring/shared" "^9.0.0-beta.33"
+    "@react-spring/shared" "9.0.0-beta.33"
     tiny-invariant "^1.0.4"
 
-"@react-spring/core@^9.0.0-beta.33":
-  version "9.0.0-beta.33"
-  resolved "https://registry.yarnpkg.com/@react-spring/core/-/core-9.0.0-beta.33.tgz#3b894fb9fbc3d0dde5e4cdfc8eb52935e8cea9bf"
-  integrity sha512-fIUGsAsCmZSBtucfE3zf2XTBjdTYbzdcblZyeo1/pUGW7ehjB85x2oNj7o6JQ603+elsTJ9k7POiYI5/wn1N3A==
+"@react-spring/core@npm:@tim-soft/react-spring-core@9.0.0-beta.34":
+  version "9.0.0-beta.34"
+  resolved "https://registry.yarnpkg.com/@tim-soft/react-spring-core/-/react-spring-core-9.0.0-beta.34.tgz#06a312daec2cee2dec94200b14a1c44a78d48ee1"
+  integrity sha512-12DdLwQNgq+bFLGlcEaqUqe3tdqchZipbMb2F9H4jYfSIieQ8hQHRQvunS88j3EOMBKv9fdT8NTCZ0Br1Hd4Wg==
   dependencies:
     "@babel/runtime" "^7.3.1"
-    "@react-spring/animated" "^9.0.0-beta.33"
-    "@react-spring/shared" "^9.0.0-beta.33"
+    "@react-spring/animated" "npm:@tim-soft/react-spring-animated@9.0.0-beta.33"
+    "@react-spring/shared" "9.0.0-beta.33"
     use-memo-one "^1.1.0"
 
-"@react-spring/shared@^9.0.0-beta.33":
+"@react-spring/shared@9.0.0-beta.33":
   version "9.0.0-beta.33"
   resolved "https://registry.yarnpkg.com/@react-spring/shared/-/shared-9.0.0-beta.33.tgz#8630cf68f79a7b12f075345bdf23a47dff6ed877"
   integrity sha512-oGalrGtIg7ZMn9VW5PzLFMDAa8vH5V0XIeC4WFk7JB4hBfhxx6yzPwjMxSJfRrt/Q+WuS2cPoR5qN0RpH+fJOA==
@@ -976,13 +976,19 @@
     "@babel/runtime" "^7.3.1"
     tiny-invariant "^1.0.4"
 
-"@react-spring/web@^9.0.0-beta.34":
-  version "0.0.0"
-  uid ""
-
 "@react-spring/web@link:../node_modules/@react-spring/web":
   version "0.0.0"
   uid ""
+
+"@react-spring/web@npm:@tim-soft/react-spring-web@9.0.0-beta.36":
+  version "9.0.0-beta.36"
+  resolved "https://registry.yarnpkg.com/@tim-soft/react-spring-web/-/react-spring-web-9.0.0-beta.36.tgz#4c01bda7c83f4a0800919f0297c21242d73a2006"
+  integrity sha512-9qhvnJ/VkIeG59jTB4KgYvq5MH6qW/cPxylnORZlwHjNTA4WWtGB8CO08HDgIEoF6f5VaHWs3QIlthgsiN++Jg==
+  dependencies:
+    "@babel/runtime" "^7.3.1"
+    "@react-spring/animated" "npm:@tim-soft/react-spring-animated@9.0.0-beta.33"
+    "@react-spring/core" "npm:@tim-soft/react-spring-core@9.0.0-beta.34"
+    "@react-spring/shared" "9.0.0-beta.33"
 
 "@webassemblyjs/ast@1.8.5":
   version "1.8.5"
@@ -3585,10 +3591,10 @@ react-photo-gallery@^8.0.0:
   version "0.0.0"
   uid ""
 
-react-use-gesture@^7.0.9:
-  version "7.0.9"
-  resolved "https://registry.yarnpkg.com/react-use-gesture/-/react-use-gesture-7.0.9.tgz#0a36a992564d7c07f741da474ff1f3f25b6ef06d"
-  integrity sha512-z2gNEZhMBiyVRF7g+n54oA/1abEd+v6k99KqlzR+emG+I90rFXBG8U0ftk0h0B3MUxXcBWHZJijlrNQhS6iLAw==
+react-use-gesture@7.0.15:
+  version "7.0.15"
+  resolved "https://registry.yarnpkg.com/react-use-gesture/-/react-use-gesture-7.0.15.tgz#93c651e916a31cfb12d079e7fa1543d5b0511e07"
+  integrity sha512-vHQkaa7oUbSDTAcFk9huQXa7E8KPrZH91erPuOMoqZT513qvtbb/SzTQ33lHc71/kOoJkMbzOkc4uoA4sT7Ogg==
 
 "react@link:../node_modules/react":
   version "0.0.0"
