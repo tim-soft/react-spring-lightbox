@@ -78,91 +78,68 @@ const ImagePager = ({
      *
      * @see https://github.com/react-spring/react-use-gesture
      */
-    const bind = useGesture(
-        {
-            onWheel: ({
-                distance,
-                velocity,
-                direction: [xDir, yDir],
-                ctrlKey,
-            }) => {
-                // Disable drag if Image has been zoomed in to allow for panning
-                if (ctrlKey || disableDrag || velocity === 0) return;
+    const bind = useGesture({
+        onWheel: ({ distance, velocity, direction: [xDir, yDir], ctrlKey }) => {
+            // Disable drag if Image has been zoomed in to allow for panning
+            if (ctrlKey || disableDrag || velocity === 0) return;
 
-                const draggedFarEnough = distance > pageWidth / 3;
-                const draggedFastEnough =
-                    velocity > 1.5 && distance <= pageWidth / 3;
+            const draggedFarEnough = distance > pageWidth / 3;
+            const draggedFastEnough =
+                velocity > 1.5 && distance <= pageWidth / 3;
 
-                // Handle next/prev image from valid drag
-                if (draggedFarEnough || draggedFastEnough) {
-                    const goToIndex = xDir + yDir > 0 ? -1 : 1;
+            // Handle next/prev image from valid drag
+            if (draggedFarEnough || draggedFastEnough) {
+                const goToIndex = xDir + yDir > 0 ? -1 : 1;
 
-                    if (goToIndex > 0) onNext();
-                    else if (goToIndex < 0) onPrev();
-                }
-            },
-            onWheelEnd: () => {
-                set((i) => getPagePositions(i, false, 0));
-                setIsDragging(false);
-            },
-            onDrag: ({
-                down,
-                movement: [xMovement],
-                direction: [xDir],
-                velocity,
-                distance,
-                cancel,
-                touches,
-            }) => {
-                // Disable drag if Image has been zoomed in to allow for panning
-                if (disableDrag || xMovement === 0) return;
-                if (!isDragging) setIsDragging(true);
-
-                const isHorizontalDrag = Math.abs(xDir) > 0.7;
-                const draggedFarEnough =
-                    down && isHorizontalDrag && distance > pageWidth / 3.5;
-                const draggedFastEnough =
-                    down && isHorizontalDrag && velocity > 2;
-
-                // Handle next/prev image from valid drag
-                if (draggedFarEnough || draggedFastEnough) {
-                    const goToIndex = xDir > 0 ? -1 : 1;
-
-                    // Cancel gesture animation
-                    cancel();
-
-                    if (goToIndex > 0) onNext();
-                    else if (goToIndex < 0) onPrev();
-                }
-
-                // Don't move pager during two+ finger touch events, i.e. pinch-zoom
-                if (touches > 1) return;
-
-                // Update page x-coordinates for single finger/mouse gestures
-                set((i) => getPagePositions(i, down, xMovement));
-            },
-            onDragEnd: () => setIsDragging(false),
+                if (goToIndex > 0) onNext();
+                else if (goToIndex < 0) onPrev();
+            }
         },
-        /**
-         * useGesture config
-         * @see https://github.com/react-spring/react-use-gesture#usegesture-config
-         */
-        {
-            domTarget: imageStageRef.current[currentIndex],
-            event: {
-                passive: true,
-                capture: false,
-            },
-        }
-    );
+        onWheelEnd: () => {
+            set((i) => getPagePositions(i, false, 0));
+            setIsDragging(false);
+        },
+        onDrag: ({
+            down,
+            movement: [xMovement],
+            direction: [xDir],
+            velocity,
+            distance,
+            cancel,
+            touches,
+        }) => {
+            // Disable drag if Image has been zoomed in to allow for panning
+            if (disableDrag || xMovement === 0) return;
+            if (!isDragging) setIsDragging(true);
 
-    /**
-     * @see https://github.com/react-spring/react-use-gesture#adding-gestures-to-dom-nodes
-     */
-    useEffect(bind, [bind, currentIndex]);
+            const isHorizontalDrag = Math.abs(xDir) > 0.7;
+            const draggedFarEnough =
+                down && isHorizontalDrag && distance > pageWidth / 3.5;
+            const draggedFastEnough = down && isHorizontalDrag && velocity > 2;
+
+            // Handle next/prev image from valid drag
+            if (draggedFarEnough || draggedFastEnough) {
+                const goToIndex = xDir > 0 ? -1 : 1;
+
+                // Cancel gesture animation
+                cancel();
+
+                if (goToIndex > 0) onNext();
+                else if (goToIndex < 0) onPrev();
+            }
+
+            // Don't move pager during two+ finger touch events, i.e. pinch-zoom
+            if (touches > 1) return;
+
+            // Update page x-coordinates for single finger/mouse gestures
+            set((i) => getPagePositions(i, down, xMovement));
+        },
+        onDragEnd: () => setIsDragging(false),
+    });
 
     return props.map(({ x, display }, i) => (
         <AnimatedImagePager
+            {...bind()}
             role="presentation"
             ref={imageStageRef.current[i]}
             key={i}

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import GalleryLightbox from '../components/GalleryLightbox';
 
-export default () => (
+const HomePage = () => (
     <Container>
         <GalleryLightbox
             galleryTitle="Dark Mode: OS Level Control In Your CSS"
@@ -91,6 +91,8 @@ export default () => (
         />
     </Container>
 );
+
+export default HomePage;
 
 const Container = styled.div`
     height: 100vh;

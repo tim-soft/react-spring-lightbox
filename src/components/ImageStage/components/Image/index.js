@@ -71,7 +71,7 @@ const Image = ({
      *
      * @see https://github.com/react-spring/react-use-gesture#usegesture-hook-supporting-multiple-gestures-at-once
      */
-    const bind = useGesture(
+    useGesture(
         {
             onPinch: ({
                 movement: [xMovement],
@@ -174,16 +174,11 @@ const Image = ({
          */
         {
             domTarget: imageRef,
-            event: {
+            eventOptions: {
                 passive: false,
             },
         }
     );
-
-    /**
-     * @see https://github.com/react-spring/react-use-gesture#adding-gestures-to-dom-nodes
-     */
-    useEffect(bind, [bind]);
 
     // Handle click/tap on image
     useDoubleClick({
@@ -280,6 +275,7 @@ const AnimatedImage = styled(animated.img)`
     width: auto;
     max-width: 100%;
     user-select: none;
+    touch-action: none;
     ::selection {
         background: none;
     }
