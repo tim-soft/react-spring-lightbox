@@ -6,10 +6,7 @@ type ILightboxProps = {
     currentIndex: number;
     images: {
         alt: string;
-        caption: string;
-        height: number;
         src: string;
-        width: number;
     }[];
     isOpen: boolean;
     onClose: () => void;

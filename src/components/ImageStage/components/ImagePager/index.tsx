@@ -10,10 +10,7 @@ type IImagePager = {
     currentIndex: number;
     images: {
         alt: string;
-        caption: string;
-        height: number;
         src: string;
-        width: number;
     }[];
     onClose: () => void;
     onNext: () => void;

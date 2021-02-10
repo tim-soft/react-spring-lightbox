@@ -42,9 +42,9 @@ test('renders custom prev/next buttons', () => {
     render(
         <Lightbox
             // eslint-disable-next-line jsx-a11y/control-has-associated-label
-            renderPrevButton={() => <button id="prev-button" type="button" />}
-            // eslint-disable-next-line jsx-a11y/control-has-associated-label
             renderNextButton={() => <button id="next-button" type="button" />}
+            // eslint-disable-next-line jsx-a11y/control-has-associated-label
+            renderPrevButton={() => <button id="prev-button" type="button" />}
         />
     );
 
@@ -60,18 +60,18 @@ test('calls onNext() callback on ArrowRight keypress', () => {
     const onNext = jest.fn();
     render(<Lightbox onNext={onNext} />);
 
-    fireEvent.keyDown(document, { key: 'ArrowRight', code: 39 });
-    fireEvent.keyUp(document, { key: 'ArrowRight', code: 39 });
+    fireEvent.keyDown(document, { code: 39, key: 'ArrowRight' });
+    fireEvent.keyUp(document, { code: 39, key: 'ArrowRight' });
 
     expect(onNext).toHaveBeenCalledTimes(1);
 });
 
 test('calls onPrev() callback on ArrowLeft keypress', () => {
     const onPrev = jest.fn();
-    render(<Lightbox onPrev={onPrev} currentIndex={2} />);
+    render(<Lightbox currentIndex={2} onPrev={onPrev} />);
 
-    fireEvent.keyDown(document, { key: 'ArrowLeft', code: 37 });
-    fireEvent.keyUp(document, { key: 'ArrowLeft', code: 37 });
+    fireEvent.keyDown(document, { code: 37, key: 'ArrowLeft' });
+    fireEvent.keyUp(document, { code: 37, key: 'ArrowLeft' });
 
     expect(onPrev).toHaveBeenCalledTimes(1);
 });
@@ -80,8 +80,8 @@ test('calls onClose() callback on Esc keypress', () => {
     const onClose = jest.fn();
     render(<Lightbox onClose={onClose} />);
 
-    fireEvent.keyDown(document, { key: 'Escape', code: 27 });
-    fireEvent.keyUp(document, { key: 'Escape', code: 27 });
+    fireEvent.keyDown(document, { code: 27, key: 'Escape' });
+    fireEvent.keyUp(document, { code: 27, key: 'Escape' });
 
     expect(onClose).toHaveBeenCalledTimes(1);
 });
