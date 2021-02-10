@@ -4,7 +4,6 @@ module.exports = {
         ['babel-plugin-styled-components'],
         ['@babel/plugin-proposal-class-properties'],
         ['@babel/plugin-proposal-object-rest-spread'],
-        ['transform-react-remove-prop-types', { removeImport: true }],
         ['@babel/plugin-transform-runtime', { regenerator: false }],
     ],
 };
