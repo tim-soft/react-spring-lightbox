@@ -10,6 +10,7 @@ import pkg from './package.json';
 const root = process.platform === 'win32' ? path.resolve('/') : '/';
 
 export default {
+    external: (id) => !id.startsWith('.') && !id.startsWith(root),
     input: './src/index.tsx',
     output: [
         {
@@ -25,13 +26,12 @@ export default {
             sourcemap: true,
         },
     ],
-    external: (id) => !id.startsWith('.') && !id.startsWith(root),
     plugins: [
         typescript(),
         nodeResolve(),
         commonjs({
+            extensions: ['.js', '.jsx', '.ts', '.tsx'],
             include: 'node_modules/**',
-            extensions: ['.js', '.jsx', '.ts', '.tsx']
         }),
         terser(),
         filesize(),

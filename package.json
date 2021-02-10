@@ -37,7 +37,8 @@
         "lint:ts": "npx tsc --noEmit -p .",
         "test": "jest",
         "test:watch": "jest --watch",
-        "build": "rollup -c",
+        "build": "rollup -c && yarn run build:types",
+        "build:types": "tsc --emitDeclarationOnly",
         "start": "rollup -c -w",
         "prepare": "yarn run build"
     },
