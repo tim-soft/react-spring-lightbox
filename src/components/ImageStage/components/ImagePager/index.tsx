@@ -56,11 +56,7 @@ const ImagePager = ({
     const [isDragging, setIsDragging] = useState<boolean>(false);
 
     // Generate page positions based on current index
-    const getPagePositions = (
-        i: number,
-        down: boolean = false,
-        xDelta: number = 0
-    ) => {
+    const getPagePositions = (i: number, down = false, xDelta = 0) => {
         const x = (i - currentIndex) * pageWidth + (down ? xDelta : 0);
         if (i < currentIndex - 1 || i > currentIndex + 1)
             return { display: 'none', x };
@@ -78,7 +74,9 @@ const ImagePager = ({
     useEffect(() => {
         const currPagerHeight =
             imageStageRef?.current[currentIndex]?.current?.clientHeight - 50;
-        if (pagerHeight !== currPagerHeight) setPagerHeight(currPagerHeight);
+        if (pagerHeight !== currPagerHeight) {
+            setPagerHeight(currPagerHeight);
+        }
     }, [currentIndex, pagerHeight, windowHeight]);
 
     // Animate page change if currentIndex changes
@@ -90,7 +88,7 @@ const ImagePager = ({
         }
 
         // Update page positions after prev/next page state change
-        set(getPagePositions);
+        set((i) => getPagePositions(i));
     });
 
     /**
@@ -98,64 +96,87 @@ const ImagePager = ({
      *
      * @see https://github.com/react-spring/react-use-gesture
      */
-    const bind = useGesture({
-        onDrag: ({
-            down,
-            movement: [xMovement],
-            direction: [xDir],
-            velocity,
-            distance,
-            cancel,
-            touches,
-        }) => {
-            // Disable drag if Image has been zoomed in to allow for panning
-            if (disableDrag || xMovement === 0) return;
-            if (!isDragging) setIsDragging(true);
+    const bind = useGesture(
+        {
+            onDrag: ({
+                down,
+                movement: [xMovement],
+                direction: [xDir],
+                velocity,
+                distance,
+                cancel,
+                touches,
+            }) => {
+                // Disable drag if Image has been zoomed in to allow for panning
+                if (disableDrag || xMovement === 0) return;
+                if (!isDragging) setIsDragging(true);
 
-            const isHorizontalDrag = Math.abs(xDir) > 0.7;
-            const draggedFarEnough =
-                down && isHorizontalDrag && distance > pageWidth / 3.5;
-            const draggedFastEnough = down && isHorizontalDrag && velocity > 2;
+                const isHorizontalDrag = Math.abs(xDir) > 0.7;
+                const draggedFarEnough =
+                    down && isHorizontalDrag && distance > pageWidth / 3.5;
+                const draggedFastEnough =
+                    down && isHorizontalDrag && velocity > 2;
 
-            // Handle next/prev image from valid drag
-            if (draggedFarEnough || draggedFastEnough) {
-                const goToIndex = xDir > 0 ? -1 : 1;
+                // Handle next/prev image from valid drag
+                if (draggedFarEnough || draggedFastEnough) {
+                    const goToIndex = xDir > 0 ? -1 : 1;
 
-                // Cancel gesture animation
-                cancel();
+                    // Cancel gesture animation
+                    cancel();
 
-                if (goToIndex > 0) onNext();
-                else if (goToIndex < 0) onPrev();
-            }
+                    if (goToIndex > 0) onNext();
+                    else if (goToIndex < 0) onPrev();
+                }
 
-            // Don't move pager during two+ finger touch events, i.e. pinch-zoom
-            if (touches > 1) return;
+                // Don't move pager during two+ finger touch events, i.e. pinch-zoom
+                if (touches > 1) return;
 
-            // Update page x-coordinates for single finger/mouse gestures
-            set((i) => getPagePositions(i, down, xMovement));
+                // Update page x-coordinates for single finger/mouse gestures
+                set((i) => getPagePositions(i, down, xMovement));
+            },
+            onDragEnd: () => {
+                if (isDragging) {
+                    // Add small timeout buffer to prevent event handlers from firing in child Images
+                    setTimeout(() => setIsDragging(false), 100);
+                }
+            },
+            onWheel: ({
+                distance,
+                velocity,
+                direction: [xDir, yDir],
+                ctrlKey,
+            }) => {
+                // Disable drag if Image has been zoomed in to allow for panning
+                if (ctrlKey || disableDrag || velocity === 0) return;
+
+                if (!isDragging) {
+                    setIsDragging(true);
+                }
+
+                const draggedFarEnough = distance > pageWidth / 3;
+                const draggedFastEnough =
+                    velocity > 1.5 && distance <= pageWidth / 3;
+
+                // Handle next/prev image from valid drag
+                if (draggedFarEnough || draggedFastEnough) {
+                    const goToIndex = xDir + yDir > 0 ? -1 : 1;
+
+                    if (goToIndex > 0) onNext();
+                    else if (goToIndex < 0) onPrev();
+                }
+            },
+            onWheelEnd: () => {
+                set((i) => getPagePositions(i, false, 0));
+                // Add small timeout buffer to prevent event handlers from firing in child Images
+                setTimeout(() => setIsDragging(false), 100);
+            },
         },
-        onDragEnd: () => setIsDragging(false),
-        onWheel: ({ distance, velocity, direction: [xDir, yDir], ctrlKey }) => {
-            // Disable drag if Image has been zoomed in to allow for panning
-            if (ctrlKey || disableDrag || velocity === 0) return;
-
-            const draggedFarEnough = distance > pageWidth / 3;
-            const draggedFastEnough =
-                velocity > 1.5 && distance <= pageWidth / 3;
-
-            // Handle next/prev image from valid drag
-            if (draggedFarEnough || draggedFastEnough) {
-                const goToIndex = xDir + yDir > 0 ? -1 : 1;
-
-                if (goToIndex > 0) onNext();
-                else if (goToIndex < 0) onPrev();
-            }
-        },
-        onWheelEnd: () => {
-            set((i) => getPagePositions(i, false, 0));
-            setIsDragging(false);
-        },
-    });
+        {
+            drag: {
+                filterTaps: true,
+            },
+        }
+    );
 
     return props.map(({ display, x }, i) => (
         <AnimatedImagePager
@@ -199,6 +220,8 @@ const ImagePager = ({
         </AnimatedImagePager>
     ));
 };
+
+ImagePager.displayName = 'ImagePager';
 
 export default ImagePager;
 

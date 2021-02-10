@@ -57,23 +57,30 @@ const Image = ({
      */
     const [{ scale, translateX, translateY }, set] = useSpring(() => ({
         ...defaultImageTransform(),
-        onFrame: (f: { scale: number; pinching: boolean }) => {
-            if (f.scale < 1 || !f.pinching) set(defaultImageTransform);
+        onFrame: (f: { pinching: boolean; scale: number }) => {
+            if (f.scale < 1 || !f.pinching) {
+                set(defaultImageTransform());
+            }
 
             // Prevent dragging image out of viewport
-            if (f.scale > 1 && imageIsOutOfBounds(imageRef))
-                set(defaultImageTransform);
+            if (f.scale > 1 && imageIsOutOfBounds(imageRef)) {
+                set(defaultImageTransform());
+            }
         },
         // Enable dragging in ImagePager if image is at the default size
-        onRest: (f: { scale: number; pinching: boolean }) => {
-            if (f.scale === 1) setDisableDrag(false);
+        onRest: (f: { pinching: boolean; scale: number }) => {
+            if (f.scale === 1) {
+                setDisableDrag(false);
+            }
         },
     }));
 
     // Reset scale of this image when dragging to new image in ImagePager
     useEffect(() => {
-        if (!isCurrentImage) set(defaultImageTransform);
-    });
+        if (!isCurrentImage && scale.getValue() !== 1) {
+            set(defaultImageTransform());
+        }
+    }, [isCurrentImage, scale, set]);
 
     /**
      * Update Image scale and translate offsets during pinch/pan gestures
@@ -82,7 +89,6 @@ const Image = ({
      */
     useGesture(
         {
-            onDragEnd: () => setIsPanningImage(false),
             onDrag: ({
                 movement: [xMovement, yMovement],
                 pinching,
@@ -91,20 +97,27 @@ const Image = ({
                 first,
                 memo = { initialTranslateX: 0, initialTranslateY: 0 },
             }) => {
+                if (pagerIsDragging || scale.getValue() === 1) {
+                    return;
+                }
+
                 // Disable click to zoom during drag
-                if (xMovement && yMovement && !isPanningImage)
+                if (xMovement && yMovement && !isPanningImage) {
                     setIsPanningImage(true);
+                }
 
                 if (event.touches && event.touches.length > 1) return;
-                if (pinching || scale.value <= 1) return;
+                if (pinching || scale.getValue() <= 1) return;
 
                 // Prevent dragging image out of viewport
-                if (scale.value > 1 && imageIsOutOfBounds(imageRef)) cancel();
-                else {
+                if (scale.getValue() > 1 && imageIsOutOfBounds(imageRef)) {
+                    cancel();
+                    return;
+                } else {
                     if (first) {
                         return {
-                            initialTranslateX: translateX.value,
-                            initialTranslateY: translateY.value,
+                            initialTranslateX: translateX.getValue(),
+                            initialTranslateY: translateY.getValue(),
                         };
                     }
 
@@ -117,6 +130,12 @@ const Image = ({
                     return memo;
                 }
             },
+            onDragEnd: ({ memo }) => {
+                if (memo !== undefined) {
+                    // Add small timeout to prevent onClick handler from firing after drag
+                    setTimeout(() => setIsPanningImage(false), 100);
+                }
+            },
             onPinch: ({
                 movement: [xMovement],
                 origin: [touchOriginX, touchOriginY],
@@ -125,6 +144,10 @@ const Image = ({
                 last,
                 cancel,
             }) => {
+                if (pagerIsDragging) {
+                    return;
+                }
+
                 // Prevent ImagePager from registering isDragging
                 setDisableDrag(true);
 
@@ -139,8 +162,8 @@ const Image = ({
 
                 // Speed up pinch zoom when using mouse versus touch
                 const SCALE_FACTOR = ctrlKey ? 1000 : 250;
-                const pinchScale = scale.value + xMovement / SCALE_FACTOR;
-                const pinchDelta = pinchScale - scale.value;
+                const pinchScale = scale.getValue() + xMovement / SCALE_FACTOR;
+                const pinchDelta = pinchScale - scale.getValue();
                 const { clientX, clientY } = event;
 
                 // Calculate the amount of x, y translate offset needed to
@@ -149,10 +172,13 @@ const Image = ({
                     newTranslateX,
                     newTranslateY,
                 ] = getTranslateOffsetsFromScale({
-                    currentTranslate: [translateX.value, translateY.value],
+                    currentTranslate: [
+                        translateX.getValue(),
+                        translateY.getValue(),
+                    ],
                     imageRef,
                     pinchDelta,
-                    scale: scale.value,
+                    scale: scale.getValue(),
                     // Use the [x, y] coords of mouse if a trackpad or ctrl + wheel event
                     // Otherwise use touch origin
                     touchOrigin: ctrlKey
@@ -172,9 +198,12 @@ const Image = ({
                     });
             },
             onPinchEnd: () => {
-                if (scale.value > 1) setDisableDrag(true);
-                else set(defaultImageTransform);
-                setIsPanningImage(false);
+                if (!pagerIsDragging) {
+                    if (scale.getValue() > 1) setDisableDrag(true);
+                    else set(defaultImageTransform());
+                    // Add small timeout to prevent onClick handler from firing after panning
+                    setTimeout(() => setIsPanningImage(false), 100);
+                }
             },
         },
         /**
@@ -200,24 +229,27 @@ const Image = ({
             }
 
             // If tapped while already zoomed-in, zoom out to default scale
-            if (scale.value !== 1) {
-                set(defaultImageTransform);
+            if (scale.getValue() !== 1) {
+                set(defaultImageTransform());
                 return;
             }
 
             // Zoom-in to origin of click on image
             const { clientX: touchOriginX, clientY: touchOriginY } = e;
-            const pinchScale = scale.value + 1;
-            const pinchDelta = pinchScale - scale.value;
+            const pinchScale = scale.getValue() + 1;
+            const pinchDelta = pinchScale - scale.getValue();
 
             // Calculate the amount of x, y translate offset needed to
             // zoom-in to point as image scale grows
             const [newTranslateX, newTranslateY] = getTranslateOffsetsFromScale(
                 {
-                    currentTranslate: [translateX.value, translateY.value],
+                    currentTranslate: [
+                        translateX.getValue(),
+                        translateY.getValue(),
+                    ],
                     imageRef,
                     pinchDelta,
-                    scale: scale.value,
+                    scale: scale.getValue(),
                     touchOrigin: [touchOriginX, touchOriginY],
                 }
             );
@@ -264,6 +296,8 @@ const Image = ({
         />
     );
 };
+
+Image.displayName = 'Image';
 
 export default Image;
 
