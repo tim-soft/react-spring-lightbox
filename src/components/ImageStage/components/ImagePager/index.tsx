@@ -68,12 +68,17 @@ const ImagePager = ({
      *
      * @see https://www.react-spring.io/docs/hooks/use-springs
      */
-    const [props, set] = useSprings(images.length, getPagePositions);
+    const [pagerSprings, set] = useSprings(images.length, getPagePositions);
 
     // Determine the absolute height of the image pager
     useEffect(() => {
-        const currPagerHeight =
-            imageStageRef?.current[currentIndex]?.current?.clientHeight - 50;
+        const currImageRef = imageStageRef?.current[currentIndex];
+        let currPagerHeight = 0;
+
+        if (currImageRef && currImageRef?.current) {
+            currPagerHeight = currImageRef.current.clientHeight - 50;
+        }
+
         if (pagerHeight !== currPagerHeight) {
             setPagerHeight(currPagerHeight);
         }
@@ -178,47 +183,54 @@ const ImagePager = ({
         }
     );
 
-    return props.map(({ display, x }, i) => (
-        <AnimatedImagePager
-            {...bind()}
-            className="lightbox-image-pager"
-            // @ts-ignore
-            key={i}
-            // @ts-ignore
-            onClick={() => Math.abs(x.value) < 1 && !disableDrag && onClose()}
-            ref={imageStageRef.current[i]}
-            role="presentation"
-            // @ts-ignore
-            style={{
-                display,
-                transform: x.to(
-                    (xInterp: number) => `translateX(${xInterp}px)`
-                ),
-            }}
-        >
-            <PagerContentWrapper>
-                <PagerInnerContentWrapper>
-                    <ImageContainer
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            e.nativeEvent.stopImmediatePropagation();
-                        }}
-                    >
-                        <Image
-                            alt={images[i].alt}
-                            isCurrentImage={i === currentIndex}
-                            pagerHeight={pagerHeight}
-                            pagerIsDragging={isDragging}
-                            setDisableDrag={setDisableDrag}
-                            singleClickToZoom={singleClickToZoom}
-                            src={images[i].src}
-                        />
-                        {renderImageOverlay()}
-                    </ImageContainer>
-                </PagerInnerContentWrapper>
-            </PagerContentWrapper>
-        </AnimatedImagePager>
-    ));
+    return (
+        <>
+            {pagerSprings.map(({ display, x }, i) => (
+                // @ts-ignore
+                <AnimatedImagePager
+                    {...bind()}
+                    className="lightbox-image-pager"
+                    // @ts-ignore
+                    key={i}
+                    // @ts-ignore
+                    onClick={() =>
+                        Math.abs(x.getValue()) < 1 && !disableDrag && onClose()
+                    }
+                    ref={imageStageRef.current[i]}
+                    role="presentation"
+                    // @ts-ignore
+                    style={{
+                        display,
+                        transform: x.to(
+                            (xInterp: number) => `translateX(${xInterp}px)`
+                        ),
+                    }}
+                >
+                    <PagerContentWrapper>
+                        <PagerInnerContentWrapper>
+                            <ImageContainer
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    e.nativeEvent.stopImmediatePropagation();
+                                }}
+                            >
+                                <Image
+                                    alt={images[i].alt}
+                                    isCurrentImage={i === currentIndex}
+                                    pagerHeight={pagerHeight}
+                                    pagerIsDragging={isDragging}
+                                    setDisableDrag={setDisableDrag}
+                                    singleClickToZoom={singleClickToZoom}
+                                    src={images[i].src}
+                                />
+                                {renderImageOverlay()}
+                            </ImageContainer>
+                        </PagerInnerContentWrapper>
+                    </PagerContentWrapper>
+                </AnimatedImagePager>
+            ))}
+        </>
+    );
 };
 
 ImagePager.displayName = 'ImagePager';
