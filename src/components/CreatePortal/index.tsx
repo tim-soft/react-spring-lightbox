@@ -1,22 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
+
+type ICreatePortal = {
+    children: React.ReactNode;
+};
 
 /**
  * Creates a SSR + next.js friendly React Portal inside <body />
  *
  * Child components are rendered on the client side only
- *
- * @param {array|node} children Child components will be rendered to the portal
+
  * @see https://reactjs.org/docs/portals.html
  */
-export default class CreatePortal extends React.Component {
-    static propTypes = {
-        children: PropTypes.oneOfType([
-            PropTypes.arrayOf(PropTypes.element),
-            PropTypes.element,
-        ]).isRequired,
-    };
+class CreatePortal extends React.Component<ICreatePortal> {
+    portalContainer: HTMLDivElement;
+    body: HTMLElement;
 
     // Only executes on the client-side
     componentDidMount() {
@@ -47,7 +45,7 @@ export default class CreatePortal extends React.Component {
         this.body.removeChild(this.portalContainer);
     }
 
-    preventWheel = (e) => e.preventDefault();
+    preventWheel = (e: WheelEvent) => e.preventDefault();
 
     render() {
         // Return null during SSR
@@ -58,3 +56,5 @@ export default class CreatePortal extends React.Component {
         return ReactDOM.createPortal(children, this.portalContainer);
     }
 }
+
+export default CreatePortal;

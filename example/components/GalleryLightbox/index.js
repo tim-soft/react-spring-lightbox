@@ -117,14 +117,14 @@ class BlogImageGallery extends React.Component {
                     currentIndex={currentImageIndex}
                     galleryTitle={galleryTitle}
                     singleClickToZoom
-                    renderHeader={() => (
+                    renderHeader={() => 
                         <LightboxHeader
                             galleryTitle={galleryTitle}
                             images={images}
                             currentIndex={currentImageIndex}
                             onClose={this.closeLightbox}
                         />
-                    )}
+                    }
                     renderPrevButton={({ canPrev }) => (
                         <LightboxArrowButton
                             position="left"

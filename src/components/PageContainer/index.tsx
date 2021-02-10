@@ -1,7 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useTransition, animated, config } from '@react-spring/web';
 import styled from 'styled-components';
+
+type IPageContainerProps = {
+    children: React.ReactNode[];
+    className: string;
+    isOpen: boolean;
+    pageTransitionConfig: any;
+    style: React.CSSProperties;
+};
 
 /**
  * Animates the lightbox as it opens/closes
@@ -16,16 +23,16 @@ import styled from 'styled-components';
  */
 const PageContainer = ({
     children,
-    isOpen,
     className,
-    style,
+    isOpen,
     pageTransitionConfig,
-}) => {
+    style,
+}: IPageContainerProps) => {
     const defaultTransition = {
-        from: { transform: 'scale(0.75)', opacity: 0 },
-        enter: { transform: 'scale(1)', opacity: 1 },
-        leave: { transform: 'scale(0.75)', opacity: 0 },
-        config: { ...config.default, mass: 1, tension: 320, friction: 32 },
+        config: { ...config.default, friction: 32, mass: 1, tension: 320 },
+        enter: { opacity: 1, transform: 'scale(1)' },
+        from: { opacity: 0, transform: 'scale(0.75)' },
+        leave: { opacity: 0, transform: 'scale(0.75)' },
     };
 
     const transitions = useTransition(isOpen, null, {
@@ -33,31 +40,25 @@ const PageContainer = ({
         ...pageTransitionConfig,
     });
 
-    return transitions.map(
-        ({ item, key, props }) =>
-            item && (
-                <AnimatedPageContainer
-                    key={key}
-                    className={`lightbox-container${
-                        className ? ` ${className}` : ''
-                    }`}
-                    style={{ ...props, ...style }}
-                >
-                    {children}
-                </AnimatedPageContainer>
-            )
+    return (
+        <>
+            {transitions.map(
+                ({ item, key, props }) =>
+                    item && (
+                        <AnimatedPageContainer
+                            className={`lightbox-container${
+                                className ? ` ${className}` : ''
+                            }`}
+                            key={key}
+                            // @ts-ignore
+                            style={{ ...props, ...style }}
+                        >
+                            {children}
+                        </AnimatedPageContainer>
+                    )
+            )}
+        </>
     );
-};
-
-PageContainer.propTypes = {
-    isOpen: PropTypes.bool.isRequired,
-    children: PropTypes.oneOfType([
-        PropTypes.arrayOf(PropTypes.element),
-        PropTypes.element,
-    ]).isRequired,
-    className: PropTypes.string,
-    style: PropTypes.object,
-    pageTransitionConfig: PropTypes.object,
 };
 
 export default PageContainer;

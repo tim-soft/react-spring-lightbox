@@ -1,3 +1,13 @@
+type IGetTranslateOffsetsFromScale = {
+    currentTranslate: [translateX: number, translateY: number];
+    imageRef: React.RefObject<HTMLImageElement>;
+    pinchDelta: number;
+    scale: number;
+    touchOrigin: [touchOriginX: number, touchOriginY: number];
+};
+
+type ITranslateOffsetsReturnType = [translateX: number, translateY: number];
+
 /**
  * Calculates the the translate(x,y) coordinates needed to zoom-in
  * to a point in an image.
@@ -16,13 +26,17 @@ const getTranslateOffsetsFromScale = ({
     pinchDelta,
     touchOrigin: [touchOriginX, touchOriginY],
     currentTranslate: [translateX, translateY],
-}) => {
+}: IGetTranslateOffsetsFromScale): ITranslateOffsetsReturnType => {
+    if (!imageRef?.current) {
+        return [0, 0];
+    }
+
     const {
-        top: imageTopLeftY,
-        left: imageTopLeftX,
-        width: imageWidth,
         height: imageHeight,
-    } = imageRef.current.getBoundingClientRect();
+        left: imageTopLeftX,
+        top: imageTopLeftY,
+        width: imageWidth,
+    } = imageRef.current?.getBoundingClientRect();
 
     // Get the (x,y) touch position relative to image origin at the current scale
     const imageCoordX = (touchOriginX - imageTopLeftX - imageWidth / 2) / scale;

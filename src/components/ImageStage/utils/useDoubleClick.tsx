@@ -1,4 +1,11 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
+
+type IUseDoubleClickProps = {
+    latency?: number;
+    onDoubleClick?: (event: MouseEvent) => void;
+    onSingleClick?: (event: MouseEvent) => void;
+    ref: React.RefObject<HTMLElement>;
+};
 
 /**
  * React Hook that returns the current window size
@@ -14,11 +21,11 @@ const useDoubleClick = ({
     latency = 300,
     onSingleClick = () => null,
     onDoubleClick = () => null,
-}) => {
+}: IUseDoubleClickProps) => {
     useEffect(() => {
         const clickRef = ref.current;
         let clickCount = 0;
-        const handleClick = (e) => {
+        const handleClick = (e: MouseEvent) => {
             clickCount += 1;
 
             setTimeout(() => {
@@ -30,11 +37,11 @@ const useDoubleClick = ({
         };
 
         // Add event listener for click events
-        clickRef.addEventListener('click', handleClick);
+        clickRef?.addEventListener('click', handleClick);
 
         // Remove event listener
         return () => {
-            clickRef.removeEventListener('click', handleClick);
+            clickRef?.removeEventListener('click', handleClick);
         };
     });
 };

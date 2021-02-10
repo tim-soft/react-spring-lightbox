@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import PropTypes from 'prop-types';
 import { useSpring, animated, to, config } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import styled from 'styled-components';
@@ -8,6 +7,16 @@ import {
     imageIsOutOfBounds,
     getTranslateOffsetsFromScale,
 } from '../../utils';
+
+type IImageProps = {
+    alt: string;
+    isCurrentImage: boolean;
+    pagerHeight: '100%' | number;
+    pagerIsDragging: boolean;
+    setDisableDrag: (disable: boolean) => void;
+    singleClickToZoom: boolean;
+    src: string;
+};
 
 /**
  * Animates pinch-zoom + panning on image using spring physics
@@ -24,21 +33,21 @@ import {
  * @see https://github.com/react-spring/react-spring
  */
 const Image = ({
-    src,
     alt,
-    pagerHeight,
     isCurrentImage,
+    pagerHeight,
+    pagerIsDragging,
     setDisableDrag,
     singleClickToZoom,
-    pagerIsDragging,
-}) => {
-    const [isPanningImage, setIsPanningImage] = useState(false);
-    const imageRef = useRef();
+    src,
+}: IImageProps) => {
+    const [isPanningImage, setIsPanningImage] = useState<boolean>(false);
+    const imageRef = useRef<HTMLImageElement>(null);
     const defaultImageTransform = () => ({
+        config: { ...config.default, precision: 0.01 },
         scale: 1,
         translateX: 0,
         translateY: 0,
-        config: { ...config.default, precision: 0.01 },
     });
 
     /**
@@ -48,15 +57,15 @@ const Image = ({
      */
     const [{ scale, translateX, translateY }, set] = useSpring(() => ({
         ...defaultImageTransform(),
-        onFrame: (f) => {
+        onFrame: (f: { scale: number; pinching: boolean }) => {
             if (f.scale < 1 || !f.pinching) set(defaultImageTransform);
 
             // Prevent dragging image out of viewport
             if (f.scale > 1 && imageIsOutOfBounds(imageRef))
-                set(defaultImageTransform());
+                set(defaultImageTransform);
         },
         // Enable dragging in ImagePager if image is at the default size
-        onRest: (f) => {
+        onRest: (f: { scale: number; pinching: boolean }) => {
             if (f.scale === 1) setDisableDrag(false);
         },
     }));
@@ -73,65 +82,6 @@ const Image = ({
      */
     useGesture(
         {
-            onPinch: ({
-                movement: [xMovement],
-                origin: [touchOriginX, touchOriginY],
-                event,
-                ctrlKey,
-                last,
-                cancel,
-            }) => {
-                // Prevent ImagePager from registering isDragging
-                setDisableDrag(true);
-
-                // Disable click to zoom during pinch
-                if (xMovement && !isPanningImage) setIsPanningImage(true);
-
-                // Don't calculate new translate offsets on final frame
-                if (last) {
-                    cancel();
-                    return;
-                }
-
-                // Speed up pinch zoom when using mouse versus touch
-                const SCALE_FACTOR = ctrlKey ? 1000 : 250;
-                const pinchScale = scale.value + xMovement / SCALE_FACTOR;
-                const pinchDelta = pinchScale - scale.value;
-                const { clientX, clientY } = event;
-
-                // Calculate the amount of x, y translate offset needed to
-                // zoom-in to point as image scale grows
-                const [
-                    newTranslateX,
-                    newTranslateY,
-                ] = getTranslateOffsetsFromScale({
-                    imageRef,
-                    scale: scale.value,
-                    pinchDelta,
-                    currentTranslate: [translateX.value, translateY.value],
-                    // Use the [x, y] coords of mouse if a trackpad or ctrl + wheel event
-                    // Otherwise use touch origin
-                    touchOrigin: ctrlKey
-                        ? [clientX, clientY]
-                        : [touchOriginX, touchOriginY],
-                });
-
-                // Restrict the amount of zoom between half and 3x image size
-                if (pinchScale < 0.5) set({ scale: 0.5, pinching: true });
-                else if (pinchScale > 3.0) set({ scale: 3.0, pinching: true });
-                else
-                    set({
-                        scale: pinchScale,
-                        translateX: newTranslateX,
-                        translateY: newTranslateY,
-                        pinching: true,
-                    });
-            },
-            onPinchEnd: () => {
-                if (scale.value > 1) setDisableDrag(true);
-                else set(defaultImageTransform);
-                setIsPanningImage(false);
-            },
             onDragEnd: () => setIsPanningImage(false),
             onDrag: ({
                 movement: [xMovement, yMovement],
@@ -167,13 +117,72 @@ const Image = ({
                     return memo;
                 }
             },
+            onPinch: ({
+                movement: [xMovement],
+                origin: [touchOriginX, touchOriginY],
+                event,
+                ctrlKey,
+                last,
+                cancel,
+            }) => {
+                // Prevent ImagePager from registering isDragging
+                setDisableDrag(true);
+
+                // Disable click to zoom during pinch
+                if (xMovement && !isPanningImage) setIsPanningImage(true);
+
+                // Don't calculate new translate offsets on final frame
+                if (last) {
+                    cancel();
+                    return;
+                }
+
+                // Speed up pinch zoom when using mouse versus touch
+                const SCALE_FACTOR = ctrlKey ? 1000 : 250;
+                const pinchScale = scale.value + xMovement / SCALE_FACTOR;
+                const pinchDelta = pinchScale - scale.value;
+                const { clientX, clientY } = event;
+
+                // Calculate the amount of x, y translate offset needed to
+                // zoom-in to point as image scale grows
+                const [
+                    newTranslateX,
+                    newTranslateY,
+                ] = getTranslateOffsetsFromScale({
+                    currentTranslate: [translateX.value, translateY.value],
+                    imageRef,
+                    pinchDelta,
+                    scale: scale.value,
+                    // Use the [x, y] coords of mouse if a trackpad or ctrl + wheel event
+                    // Otherwise use touch origin
+                    touchOrigin: ctrlKey
+                        ? [clientX, clientY]
+                        : [touchOriginX, touchOriginY],
+                });
+
+                // Restrict the amount of zoom between half and 3x image size
+                if (pinchScale < 0.5) set({ pinching: true, scale: 0.5 });
+                else if (pinchScale > 3.0) set({ pinching: true, scale: 3.0 });
+                else
+                    set({
+                        pinching: true,
+                        scale: pinchScale,
+                        translateX: newTranslateX,
+                        translateY: newTranslateY,
+                    });
+            },
+            onPinchEnd: () => {
+                if (scale.value > 1) setDisableDrag(true);
+                else set(defaultImageTransform);
+                setIsPanningImage(false);
+            },
         },
         /**
          * useGesture config
          * @see https://github.com/react-spring/react-use-gesture#usegesture-config
          */
         {
-            domTarget: imageRef,
+            domTarget: imageRef as React.RefObject<EventTarget>,
             eventOptions: {
                 passive: false,
             },
@@ -182,7 +191,9 @@ const Image = ({
 
     // Handle click/tap on image
     useDoubleClick({
-        [singleClickToZoom ? 'onSingleClick' : 'onDoubleClick']: (e) => {
+        [singleClickToZoom ? 'onSingleClick' : 'onDoubleClick']: (
+            e: MouseEvent
+        ) => {
             if (pagerIsDragging || isPanningImage) {
                 e.stopPropagation();
                 return;
@@ -203,10 +214,10 @@ const Image = ({
             // zoom-in to point as image scale grows
             const [newTranslateX, newTranslateY] = getTranslateOffsetsFromScale(
                 {
-                    imageRef,
-                    scale: scale.value,
-                    pinchDelta,
                     currentTranslate: [translateX.value, translateY.value],
+                    imageRef,
+                    pinchDelta,
+                    scale: scale.value,
                     touchOrigin: [touchOriginX, touchOriginY],
                 }
             );
@@ -214,59 +225,44 @@ const Image = ({
             // Disable dragging in pager
             setDisableDrag(true);
             set({
+                pinching: true,
                 scale: pinchScale,
                 translateX: newTranslateX,
                 translateY: newTranslateY,
-                pinching: true,
             });
         },
-        ref: imageRef,
         latency: singleClickToZoom ? 0 : 200,
+        ref: imageRef,
     });
 
     return (
         <AnimatedImage
-            ref={imageRef}
-            className="lightbox-image"
-            style={{
-                transform: to(
-                    [scale, translateX, translateY],
-                    (s, x, y) => `translate(${x}px, ${y}px) scale(${s})`
-                ),
-                maxHeight: pagerHeight,
-                ...(isCurrentImage && { willChange: 'transform' }),
-            }}
-            src={src}
             alt={alt}
+            className="lightbox-image"
             draggable="false"
-            onDragStart={(e) => {
-                // Disable image ghost dragging in firefox
-                e.preventDefault();
-            }}
-            onClick={(e) => {
+            onClick={(e: React.MouseEvent<HTMLImageElement>) => {
                 // Don't close lighbox when clicking image
                 e.stopPropagation();
                 e.nativeEvent.stopImmediatePropagation();
             }}
+            onDragStart={(e: React.DragEvent<HTMLImageElement>) => {
+                // Disable image ghost dragging in firefox
+                e.preventDefault();
+            }}
+            // @ts-ignore
+            ref={imageRef}
+            src={src}
+            // @ts-ignore
+            style={{
+                maxHeight: pagerHeight,
+                transform: to(
+                    [scale, translateX, translateY],
+                    (s, x, y) => `translate(${x}px, ${y}px) scale(${s})`
+                ),
+                ...(isCurrentImage && { willChange: 'transform' }),
+            }}
         />
     );
-};
-
-Image.propTypes = {
-    /* The source URL of this image */
-    src: PropTypes.string.isRequired,
-    /* The alt attribute for this image */
-    alt: PropTypes.string.isRequired,
-    /* True if this image is currently shown in pager, otherwise false */
-    isCurrentImage: PropTypes.bool.isRequired,
-    /* Function that can be called to disable dragging in the pager */
-    setDisableDrag: PropTypes.func.isRequired,
-    /* Fixed height of the image stage, used to restrict maximum height of images */
-    pagerHeight: PropTypes.number.isRequired,
-    /* Overrides the default behavior of double clicking causing an image zoom to a single click */
-    singleClickToZoom: PropTypes.bool.isRequired,
-    /* Indicates parent ImagePager is in a state of dragging, if true click to zoom is disabled */
-    pagerIsDragging: PropTypes.bool.isRequired,
 };
 
 export default Image;

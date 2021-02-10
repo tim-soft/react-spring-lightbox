@@ -1,7 +1,29 @@
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { ImageStage, PageContainer, CreatePortal } from './components';
 
+type ILightboxProps = {
+    className?: string;
+    currentIndex: number;
+    images: {
+        alt: string;
+        caption: string;
+        height: number;
+        src: string;
+        width: number;
+    }[];
+    isOpen: boolean;
+    onClose: () => void;
+    onNext: () => void;
+    onPrev: () => void;
+    pageTransitionConfig?: any;
+    renderFooter?: () => React.ReactNode;
+    renderHeader?: () => React.ReactNode;
+    renderImageOverlay?: () => React.ReactNode;
+    renderNextButton?: () => React.ReactNode;
+    renderPrevButton?: () => React.ReactNode;
+    singleClickToZoom?: boolean;
+    style?: React.CSSProperties;
+};
 /**
  * Gesture controlled lightbox that interpolates animations with spring physics.
  *
@@ -27,27 +49,27 @@ import { ImageStage, PageContainer, CreatePortal } from './components';
 const Lightbox = ({
     isOpen,
     onClose,
-    images,
+    images = [],
     currentIndex,
     onPrev,
     onNext,
-    renderHeader,
-    renderFooter,
-    renderPrevButton,
-    renderNextButton,
-    renderImageOverlay,
-    className,
-    singleClickToZoom,
-    style,
-    pageTransitionConfig,
-}) => {
+    renderHeader = () => null,
+    renderFooter = () => null,
+    renderPrevButton = () => null,
+    renderNextButton = () => null,
+    renderImageOverlay = () => null,
+    className = '',
+    singleClickToZoom = false,
+    style = {},
+    pageTransitionConfig = null,
+}: ILightboxProps) => {
     // Handle event listeners for keyboard
     useEffect(() => {
         /**
          * Prevent keyboard from controlling background page
          * when lightbox is open
          */
-        const preventBackgroundScroll = (e) => {
+        const preventBackgroundScroll = (e: KeyboardEvent) => {
             const keysToIgnore = [
                 'ArrowUp',
                 'ArrowDown',
@@ -63,7 +85,7 @@ const Lightbox = ({
         /**
          * Navigate images with arrow keys, close on Esc key
          */
-        const handleKeyboardInput = (e) => {
+        const handleKeyboardInput = (e: KeyboardEvent) => {
             if (isOpen) {
                 switch (e.key) {
                     case 'ArrowLeft':
@@ -94,65 +116,27 @@ const Lightbox = ({
     return (
         <CreatePortal>
             <PageContainer
-                isOpen={isOpen}
                 className={className}
-                style={style}
+                isOpen={isOpen}
                 pageTransitionConfig={pageTransitionConfig}
+                style={style}
             >
                 {renderHeader()}
                 <ImageStage
+                    currentIndex={currentIndex}
                     images={images}
                     onClose={onClose}
-                    currentIndex={currentIndex}
-                    onPrev={onPrev}
                     onNext={onNext}
-                    renderPrevButton={renderPrevButton}
-                    renderNextButton={renderNextButton}
+                    onPrev={onPrev}
                     renderImageOverlay={renderImageOverlay}
+                    renderNextButton={renderNextButton}
+                    renderPrevButton={renderPrevButton}
                     singleClickToZoom={singleClickToZoom}
                 />
                 {renderFooter()}
             </PageContainer>
         </CreatePortal>
     );
-};
-
-Lightbox.propTypes = {
-    isOpen: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    onPrev: PropTypes.func.isRequired,
-    onNext: PropTypes.func.isRequired,
-    currentIndex: PropTypes.number.isRequired,
-    images: PropTypes.arrayOf(
-        PropTypes.shape({
-            src: PropTypes.string.isRequired,
-            caption: PropTypes.string.isRequired,
-            alt: PropTypes.string.isRequired,
-            width: PropTypes.number,
-            height: PropTypes.number,
-        })
-    ).isRequired,
-    renderHeader: PropTypes.func,
-    renderFooter: PropTypes.func,
-    renderPrevButton: PropTypes.func,
-    renderNextButton: PropTypes.func,
-    className: PropTypes.string,
-    style: PropTypes.object,
-    pageTransitionConfig: PropTypes.object,
-    renderImageOverlay: PropTypes.func,
-    singleClickToZoom: PropTypes.bool,
-};
-
-Lightbox.defaultProps = {
-    pageTransitionConfig: null,
-    className: null,
-    style: null,
-    renderHeader: () => null,
-    renderFooter: () => null,
-    renderPrevButton: () => null,
-    renderNextButton: () => null,
-    renderImageOverlay: () => null,
-    singleClickToZoom: false,
 };
 
 export default Lightbox;

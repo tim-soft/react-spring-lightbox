@@ -1,8 +1,25 @@
 /* eslint-disable no-shadow */
 import React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import ImagePager from './components/ImagePager';
+
+type IImageStageProps = {
+    currentIndex: number;
+    images: {
+        alt: string;
+        caption: string;
+        height: number;
+        src: string;
+        width: number;
+    }[];
+    onClose: () => void;
+    onNext: () => void;
+    onPrev: () => void;
+    renderImageOverlay: () => React.ReactNode;
+    renderNextButton: ({ canNext }: { canNext: boolean }) => React.ReactNode;
+    renderPrevButton: ({ canPrev }: { canPrev: boolean }) => React.ReactNode;
+    singleClickToZoom: boolean;
+};
 
 /**
  * Containing element for ImagePager and prev/next button controls
@@ -17,16 +34,16 @@ import ImagePager from './components/ImagePager';
  * @param {boolean} singleClickToZoom Overrides the default behavior of double clicking causing an image zoom to a single click
  */
 const ImageStage = ({
-    images,
     currentIndex,
-    onPrev,
-    onNext,
+    images,
     onClose,
-    renderPrevButton,
-    renderNextButton,
+    onNext,
+    onPrev,
     renderImageOverlay,
+    renderNextButton,
+    renderPrevButton,
     singleClickToZoom,
-}) => {
+}: IImageStageProps) => {
     // Extra sanity check that the next/prev image exists before moving to it
     const canPrev = currentIndex > 0;
     const canNext = currentIndex + 1 < images.length;
@@ -35,8 +52,8 @@ const ImageStage = ({
         <ImageStageContainer className="lightbox-image-stage">
             {renderPrevButton({ canPrev })}
             <ImagePager
-                images={images}
                 currentIndex={currentIndex}
+                images={images}
                 onClose={onClose}
                 onNext={onNext}
                 onPrev={onPrev}
@@ -46,26 +63,6 @@ const ImageStage = ({
             {renderNextButton({ canNext })}
         </ImageStageContainer>
     );
-};
-
-ImageStage.propTypes = {
-    onClose: PropTypes.func.isRequired,
-    onPrev: PropTypes.func.isRequired,
-    onNext: PropTypes.func.isRequired,
-    currentIndex: PropTypes.number.isRequired,
-    images: PropTypes.arrayOf(
-        PropTypes.shape({
-            src: PropTypes.string.isRequired,
-            caption: PropTypes.string.isRequired,
-            alt: PropTypes.string.isRequired,
-            width: PropTypes.number,
-            height: PropTypes.number,
-        })
-    ).isRequired,
-    renderPrevButton: PropTypes.func.isRequired,
-    renderNextButton: PropTypes.func.isRequired,
-    renderImageOverlay: PropTypes.func.isRequired,
-    singleClickToZoom: PropTypes.isRequired,
 };
 
 export default ImageStage;
