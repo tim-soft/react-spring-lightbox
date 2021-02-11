@@ -5,7 +5,7 @@ cache:
     yarn: true
     directories:
         - node_modules
-install: yarn ci
+install: yarn install
 jobs:
     include:
         - stage: lint
