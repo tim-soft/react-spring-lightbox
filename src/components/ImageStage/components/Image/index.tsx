@@ -92,10 +92,10 @@ const Image = ({
             onDrag: ({
                 movement: [xMovement, yMovement],
                 pinching,
-                event,
                 cancel,
                 first,
                 memo = { initialTranslateX: 0, initialTranslateY: 0 },
+                touches,
             }) => {
                 if (pagerIsDragging || scale.getValue() === 1) {
                     return;
@@ -106,7 +106,7 @@ const Image = ({
                     setIsPanningImage(true);
                 }
 
-                if (event.touches && event.touches.length > 1) return;
+                if (touches > 1) return;
                 if (pinching || scale.getValue() <= 1) return;
 
                 // Prevent dragging image out of viewport
@@ -164,7 +164,20 @@ const Image = ({
                 const SCALE_FACTOR = ctrlKey ? 1000 : 250;
                 const pinchScale = scale.getValue() + xMovement / SCALE_FACTOR;
                 const pinchDelta = pinchScale - scale.getValue();
-                const { clientX, clientY } = event;
+
+                /**
+                 * Calculate touch origin for pinch/zoom
+                 *
+                 * if event is a touch event (React.TouchEvent<Element>, TouchEvent or WebKitGestureEvent) use touchOriginX/Y
+                 * if event is a wheel event (React.WheelEvent<Element> or WheelEvent) use the mouse cursor's clientX/Y
+                 */
+                let touchOrigin: [
+                    touchOriginX: number,
+                    touchOriginY: number
+                ] = [touchOriginX, touchOriginY];
+                if ('clientX' in event && 'clientY' in event && ctrlKey) {
+                    touchOrigin = [event.clientX, event.clientY];
+                }
 
                 // Calculate the amount of x, y translate offset needed to
                 // zoom-in to point as image scale grows
@@ -181,9 +194,7 @@ const Image = ({
                     scale: scale.getValue(),
                     // Use the [x, y] coords of mouse if a trackpad or ctrl + wheel event
                     // Otherwise use touch origin
-                    touchOrigin: ctrlKey
-                        ? [clientX, clientY]
-                        : [touchOriginX, touchOriginY],
+                    touchOrigin,
                 });
 
                 // Restrict the amount of zoom between half and 3x image size
