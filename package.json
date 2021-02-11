@@ -38,7 +38,7 @@
         "test": "jest",
         "test:watch": "jest --watch",
         "build": "rollup -c && yarn run build:types",
-        "build:types": "tsc --project tsconfig.buildtypes.json",
+        "build:types": "tsc --project tsconfig.buildtypes.json --emitDeclarationOnly",
         "start": "rollup -c -w",
         "prepare": "yarn run build"
     },
