@@ -36,6 +36,7 @@ const SimpleLightbox = (
             currentIndex={currentImageIndex}
             images={images}
             isOpen
+            onClose={() => null}
             onNext={gotoNext}
             onPrev={gotoPrevious}
             {...props}
