@@ -1,3 +1,4 @@
+/* eslint-disable sort-keys */
 {
     "compilerOptions": {
         "outDir": "dist",

@@ -1,14 +1,15 @@
 /* eslint-disable no-shadow */
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { animated, useTransition } from '@react-spring/web';
 import ButtonControl from './LightboxButtonControl';
 
-const ArrowButton = ({ position, onClick, disabled }) => {
+const ArrowButton = ({ disabled, onClick, position }) => {
     const transitions = useTransition(!disabled, null, {
-        from: { opacity: 0 },
         enter: { opacity: 1 },
+        from: { opacity: 0 },
         leave: { opacity: 0 },
     });
 
@@ -22,7 +23,7 @@ const ArrowButton = ({ position, onClick, disabled }) => {
                         zIndex: 999,
                     }}
                 >
-                    <Button position={position} type="button" onClick={onClick}>
+                    <Button onClick={onClick} position={position} type="button">
                         {position === 'left' && <IoIosArrowBack />}
                         {position === 'right' && <IoIosArrowForward />}
                     </Button>
@@ -32,9 +33,9 @@ const ArrowButton = ({ position, onClick, disabled }) => {
 };
 
 ArrowButton.propTypes = {
-    position: PropTypes.oneOf(['left', 'right']).isRequired,
-    onClick: PropTypes.func.isRequired,
     disabled: PropTypes.bool,
+    onClick: PropTypes.func.isRequired,
+    position: PropTypes.oneOf(['left', 'right']).isRequired,
 };
 
 ArrowButton.defaultProps = {

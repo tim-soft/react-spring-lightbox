@@ -31,7 +31,7 @@
         "fix": "yarn fix:eslint && yarn fix:prettier",
         "fix:eslint": "eslint --fix \"**/*.*\"",
         "fix:prettier": "prettier --write \"**/*.*\"",
-        "lint": "yarn lint:eslint && yarn lint:prettier && lint:ts",
+        "lint": "yarn lint:eslint && yarn lint:prettier && yarn lint:ts",
         "lint:eslint": "eslint \"**/*.*\"",
         "lint:prettier": "prettier --check \"**/*.*\"",
         "lint:ts": "npx tsc --noEmit -p .",

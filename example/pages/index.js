@@ -1,3 +1,4 @@
+import * as React from 'react';
 import styled from 'styled-components';
 import GalleryLightbox from '../components/GalleryLightbox';
 
@@ -8,84 +9,84 @@ const HomePage = () => (
             imageMasonryDirection="column"
             images={[
                 {
+                    alt: 'Windows 10 Dark Mode Setting',
+                    caption: 'Windows 10 Dark Mode Setting',
+                    height: 2035,
                     src:
                         'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
-                    caption: 'Windows 10 Dark Mode Setting',
-                    alt: 'Windows 10 Dark Mode Setting',
                     width: 2848,
-                    height: 2035,
                 },
                 {
+                    alt: 'macOS Mojave Dark Mode Setting',
+                    caption: 'macOS Mojave Dark Mode Setting',
+                    height: 1218,
                     src:
                         'https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png',
-                    caption: 'macOS Mojave Dark Mode Setting',
-                    alt: 'macOS Mojave Dark Mode Setting',
                     width: 1200,
-                    height: 1218,
                 },
                 {
+                    alt: 'Android 9.0 Dark Mode Setting',
+                    caption: 'Android 9.0 Dark Mode Setting',
+                    height: 600,
                     src:
                         'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
-                    caption: 'Android 9.0 Dark Mode Setting',
-                    alt: 'Android 9.0 Dark Mode Setting',
                     width: 1280,
-                    height: 600,
                 },
                 {
-                    src:
-                        'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
-                    caption: 'Windows 10 Dark Mode Setting#',
                     alt: 'Windows 10 Dark Mode Setting#',
-                    width: 2848,
+                    caption: 'Windows 10 Dark Mode Setting#',
                     height: 2035,
-                },
-                {
                     src:
                         'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
-                    caption: 'Windows 10 Dark Mode Setting',
-                    alt: 'Windows 10 Dark Mode Setting',
                     width: 2848,
-                    height: 2035,
                 },
                 {
+                    alt: 'Windows 10 Dark Mode Setting',
+                    caption: 'Windows 10 Dark Mode Setting',
+                    height: 2035,
+                    src:
+                        'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
+                    width: 2848,
+                },
+                {
+                    alt: 'macOS Mojave Dark Mode Setting',
+                    caption: 'macOS Mojave Dark Mode Setting',
+                    height: 1218,
                     src:
                         'https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png',
-                    caption: 'macOS Mojave Dark Mode Setting',
-                    alt: 'macOS Mojave Dark Mode Setting',
                     width: 1200,
-                    height: 1218,
                 },
                 {
+                    alt: 'Android 9.0 Dark Mode Setting',
+                    caption: 'Android 9.0 Dark Mode Setting',
+                    height: 600,
                     src:
                         'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
-                    caption: 'Android 9.0 Dark Mode Setting',
-                    alt: 'Android 9.0 Dark Mode Setting',
                     width: 1280,
-                    height: 600,
                 },
                 {
+                    alt: 'Windows 10 Dark Mode Setting#',
+                    caption: 'Windows 10 Dark Mode Setting#',
+                    height: 2035,
                     src:
                         'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
-                    caption: 'Windows 10 Dark Mode Setting#',
-                    alt: 'Windows 10 Dark Mode Setting#',
                     width: 2848,
-                    height: 2035,
                 },
                 {
+                    alt: 'Android 9.0 Dark Mode Setting',
+                    caption: 'Android 9.0 Dark Mode Setting',
+                    height: 600,
                     src:
                         'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
-                    caption: 'Android 9.0 Dark Mode Setting',
-                    alt: 'Android 9.0 Dark Mode Setting',
                     width: 1280,
-                    height: 600,
                 },
                 {
+                    alt: 'Windows 10 Dark Mode Setting#',
+                    caption: 'Windows 10 Dark Mode Setting#',
+                    height: 2035,
                     src:
                         'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
-                    caption: 'Windows 10 Dark Mode Setting#',
-                    alt: 'Windows 10 Dark Mode Setting#',
                     width: 2848,
-                    height: 2035,
                 },
             ]}
         />

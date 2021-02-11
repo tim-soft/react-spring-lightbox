@@ -1,3 +1,4 @@
+/* eslint-disable sort-keys */
 {
     "extends": "./tsconfig.json",
     "include": ["src/index.tsx"],
