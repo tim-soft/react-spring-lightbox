@@ -46,7 +46,10 @@ const ImageStage = ({
     const canNext = currentIndex + 1 < images.length;
 
     return (
-        <ImageStageContainer className="lightbox-image-stage">
+        <ImageStageContainer
+            className="lightbox-image-stage"
+            data-testid="lightbox-image-stage"
+        >
             {renderPrevButton({ canPrev })}
             <ImagePager
                 currentIndex={currentIndex}

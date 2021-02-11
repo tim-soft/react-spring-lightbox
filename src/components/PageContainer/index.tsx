@@ -49,6 +49,7 @@ const PageContainer = ({
                             className={`lightbox-container${
                                 className ? ` ${className}` : ''
                             }`}
+                            data-testid="lightbox-container"
                             key={key}
                             // @ts-ignore
                             style={{ ...props, ...style }}
