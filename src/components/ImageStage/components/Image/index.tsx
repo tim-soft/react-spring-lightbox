@@ -9,28 +9,24 @@ import {
 } from '../../utils';
 
 type IImageProps = {
+    /** The alt attribute for this image */
     alt: string;
+    /** True if this image is currently shown in pager, otherwise false */
     isCurrentImage: boolean;
+    /** Fixed height of the image stage, used to restrict maximum height of images */
     pagerHeight: '100%' | number;
+    /** Indicates parent ImagePager is in a state of dragging, if true click to zoom is disabled */
     pagerIsDragging: boolean;
+    /** Function that can be called to disable dragging in the pager */
     setDisableDrag: (disable: boolean) => void;
+    /** Overrides the default behavior of double clicking causing an image zoom to a single click */
     singleClickToZoom: boolean;
+    /** The source URL of this image */
     src: string;
 };
 
 /**
  * Animates pinch-zoom + panning on image using spring physics
- *
- * @param {string} src The source URL of this image
- * @param {string} alt The alt attribute for this image
- * @param {boolean} isCurrentImage True if this image is currently shown in pager, otherwise false
- * @param {function} setDisableDrag Function that can be called to disable dragging in the pager
- * @param {number} pagerHeight Fixed height of the image stage, used to restrict maximum height of images
- * @param {boolean} singleClickToZoom Overrides the default behavior of double clicking causing an image zoom to a single click
- * @param {boolean} pagerIsDragging Indicates parent ImagePager is in a state of dragging, if true click to zoom is disabled
- *
- * @see https://github.com/react-spring/react-use-gesture
- * @see https://github.com/react-spring/react-spring
  */
 const Image = ({
     alt,

@@ -3,23 +3,20 @@ import { useTransition, animated, config } from '@react-spring/web';
 import styled from 'styled-components';
 
 type IPageContainerProps = {
+    /** All child components of Lightbox */
     children: React.ReactNode[];
+    /** Classes are applied to the root lightbox component */
     className: string;
+    /** Flag that dictates if the lightbox is open or closed */
     isOpen: boolean;
+    /** React-Spring useTransition config for page open/close animation */
     pageTransitionConfig: any;
+    /** Inline styles are applied to the root lightbox component */
     style: React.CSSProperties;
 };
 
 /**
  * Animates the lightbox as it opens/closes
- *
- * @param {ReactNode} children All child components of Lightbox
- * @param {boolean} isOpen Flag that dictates if the lightbox is open or closed
- * @param {string} className Classes are applied to the root lightbox component
- * @param {object} style Inline styles are applied to the root lightbox component
- * @param {object} pageTransitionConfig React-Spring useTransition config for page open/close animation
- *
- * @see https://www.react-spring.io/docs/hooks/use-transition
  */
 const PageContainer = ({
     children,

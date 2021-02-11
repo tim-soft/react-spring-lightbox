@@ -7,31 +7,27 @@ import { useWindowSize } from '../../utils';
 import Image from '../Image';
 
 type IImagePager = {
+    /** Index of image in images array that is currently shown */
     currentIndex: number;
+    /** Array of image objects to be shown in Lightbox */
     images: {
         alt: string;
         src: string;
     }[];
+    /** Function that closes the Lightbox */
     onClose: () => void;
+    /** Function that can be called to disable dragging in the pager */
     onNext: () => void;
+    /** True if this image is currently shown in pager, otherwise false */
     onPrev: () => void;
+    /** A React component that renders inside the image stage, useful for making overlays over the image */
     renderImageOverlay: () => React.ReactNode;
+    /** Overrides the default behavior of double clicking causing an image zoom to a single click */
     singleClickToZoom: boolean;
 };
 
 /**
  * Gesture controlled surface that animates prev/next page changes via spring physics.
- *
- * @param {array} images Array of image objects to be shown in Lightbox
- * @param {number} currentIndex Index of image in images array that is currently shown
- * @param {function} onPrev True if this image is currently shown in pager, otherwise false
- * @param {function} onNext Function that can be called to disable dragging in the pager
- * @param {function} onClose Function that closes the Lightbox
- * @param {function} renderImageOverlay A React component that renders inside the image stage, useful for making overlays over the image
- * @param {boolean} singleClickToZoom Overrides the default behavior of double clicking causing an image zoom to a single click
- *
- * @see https://github.com/react-spring/react-use-gesture
- * @see https://github.com/react-spring/react-spring
  */
 const ImagePager = ({
     currentIndex,

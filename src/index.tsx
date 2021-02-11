@@ -36,6 +36,7 @@ type ILightboxProps = {
     /** Inline styles that are applied to the root lightbox component */
     style?: React.CSSProperties;
 };
+
 /**
  * Gesture controlled lightbox that interpolates animations with spring physics.
  *
