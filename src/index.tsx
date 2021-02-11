@@ -2,44 +2,50 @@ import React, { useEffect } from 'react';
 import { ImageStage, PageContainer, CreatePortal } from './components';
 
 type ILightboxProps = {
+    /** classnames are applied to the root lightbox component */
     className?: string;
+    /** Index of image in images array that is currently shown */
     currentIndex: number;
+    /** Array of images to be shown in Lightbox */
     images: {
         alt: string;
         src: string;
     }[];
+    /** Flag that dictates if the lightbox is open or closed */
     isOpen: boolean;
+    /** Function that closes the Lightbox */
     onClose: () => void;
+    /** Function that changes currentIndex to next image in images */
     onNext: () => void;
+    /** Function that changes currentIndex to previous image in images */
     onPrev: () => void;
+    /** React-Spring useTransition config for page open/close animation */
     pageTransitionConfig?: any;
+    /** A React component that renders below the image pager */
     renderFooter?: () => React.ReactNode;
+    /** A React component that renders above the image pager */
     renderHeader?: () => React.ReactNode;
+    /** A React component that renders inside the image stage, useful for making overlays over the image */
     renderImageOverlay?: () => React.ReactNode;
+    /** A React component that is used for next button in image pager */
     renderNextButton?: () => React.ReactNode;
+    /** A React component that is used for previous button in image pager */
     renderPrevButton?: () => React.ReactNode;
+    /** Overrides the default behavior of double clicking causing an image zoom to a single click */
     singleClickToZoom?: boolean;
+    /** Inline styles that are applied to the root lightbox component */
     style?: React.CSSProperties;
 };
 /**
  * Gesture controlled lightbox that interpolates animations with spring physics.
  *
- * @param {boolean} isOpen Flag that dictates if the lightbox is open or closed
- * @param {function} onClose Function that closes the Lightbox
- * @param {function} onPrev Function that changes currentIndex to previous image in images
- * @param {function} onNext Function that changes currentIndex to next image in images
- * @param {number} currentIndex Index of image in images array that is currently shown
- * @param {function} renderHeader A React component that renders above the image pager
- * @param {function} renderFooter A React component that renders below the image pager
- * @param {function} renderImageOverlay A React component that renders inside the image stage, useful for making overlays over the image
- * @param {function} renderPrevButton A React component that is used for previous button in image pager
- * @param {function} renderNextButton A React component that is used for next button in image pager
- * @param {array} images Array of image objects to be shown in Lightbox
- * @param {string} className Classes are applied to the root lightbox component
- * @param {object} style Inline styles are applied to the root lightbox component
- * @param {object} pageTransitionConfig React-Spring useTransition config for page open/close animation
- * @param {boolean} singleClickToZoom Overrides the default behavior of double clicking causing an image zoom to a single click
+ * Demos and docs:
+ * @see https://timellenberger.com/libraries/react-spring-lightbox
  *
+ * GitHub repo:
+ * @see https://github.com/tim-soft/react-spring-lightbox
+ *
+ * Built with:
  * @see https://github.com/react-spring/react-use-gesture
  * @see https://github.com/react-spring/react-spring
  */
