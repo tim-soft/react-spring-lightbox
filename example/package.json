@@ -6,14 +6,14 @@
     "private": true,
     "dependencies": {
         "@react-spring/web": "link:../node_modules/@react-spring/web",
-        "color": "^3.1.2",
+        "color": "^3.1.3",
         "lodash.clamp": "^4.0.3",
         "lodash.merge": "^4.6.2",
         "next": "^10.0.6",
         "prop-types": "^15.6.2",
         "react": "link:../node_modules/react",
         "react-dom": "link:../node_modules/react-dom",
-        "react-icons": "^3.9.0",
+        "react-icons": "^4.2.0",
         "react-is": "link:../node_modules/react-is",
         "react-photo-gallery": "^8.0.0",
         "react-spring-lightbox": "link:..",
@@ -32,6 +32,6 @@
         "not op_mini all"
     ],
     "devDependencies": {
-        "babel-plugin-styled-components": "^1.10.7"
+        "babel-plugin-styled-components": "link:../node_modules/babel-plugin-styled-components"
     }
 }
