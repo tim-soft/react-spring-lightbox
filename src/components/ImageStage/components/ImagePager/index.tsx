@@ -103,7 +103,9 @@ const ImagePager = ({
                 velocity,
                 distance,
                 cancel,
+                active,
                 touches,
+                memo = { currentMovementX: 0 },
             }) => {
                 // Disable drag if Image has been zoomed in to allow for panning
                 if (disableDrag || xMovement === 0) return;
@@ -116,7 +118,7 @@ const ImagePager = ({
                     down && isHorizontalDrag && velocity > 2;
 
                 // Handle next/prev image from valid drag
-                if (draggedFarEnough || draggedFastEnough) {
+                if (draggedFarEnough || (draggedFastEnough && active)) {
                     const goToIndex = xDir > 0 ? -1 : 1;
 
                     // Cancel gesture animation
@@ -124,13 +126,27 @@ const ImagePager = ({
 
                     if (goToIndex > 0) onNext();
                     else if (goToIndex < 0) onPrev();
+
+                    // reset current xposition
+                    memo.currentMovementX = 0;
+                    return memo;
                 }
 
                 // Don't move pager during two+ finger touch events, i.e. pinch-zoom
-                if (touches > 1) return;
+                if (touches > 1) {
+                    cancel();
+
+                    // reset current xposition
+                    memo.currentMovement = 0;
+                    return memo;
+                }
 
                 // Update page x-coordinates for single finger/mouse gestures
                 set((i) => getPagePositions(i, down, xMovement));
+
+                // set next xposition to the current xMovement
+                memo.currentMovementX = xMovement;
+                return memo;
             },
             onDragEnd: () => {
                 if (isDragging) {
