@@ -1,6 +1,6 @@
 export type ImagesListItem = Omit<
     React.HTMLProps<HTMLImageElement>,
     'draggable' | 'onClick' | 'onDragStart' | 'ref'
-> & { alt: string; src: string };
+> & { alt: string; loading?: 'auto' | 'eager' | 'lazy'; src: string };
 
 export type ImagesList = ImagesListItem[];
