@@ -96,6 +96,15 @@ class BlogImageGallery extends React.Component {
         const { clientSide, currentImageIndex, lightboxIsOpen } = this.state;
         const { galleryTitle, imageMasonryDirection, images } = this.props;
 
+        // remove the height and width props for the lightbox images array
+        const listboxImages = [...images].map((image) => {
+            const newImage = { ...image };
+            delete newImage.height;
+            delete newImage.width;
+
+            return newImage;
+        });
+
         return (
             <GalleryContainer>
                 {clientSide && (
@@ -111,7 +120,7 @@ class BlogImageGallery extends React.Component {
                 <StyledLightbox
                     currentIndex={currentImageIndex}
                     galleryTitle={galleryTitle}
-                    images={images}
+                    images={listboxImages}
                     isOpen={lightboxIsOpen}
                     onClose={this.closeLightbox}
                     onNext={this.gotoNext}

@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
 import { ImageStage, PageContainer, CreatePortal } from './components';
+import { ImagesList } from './types/ImagesList';
+
+export type ImagesListType = ImagesList;
 
 type ILightboxProps = {
     /** classnames are applied to the root lightbox component */
     className?: string;
     /** Index of image in images array that is currently shown */
     currentIndex: number;
-    /** Array of images to be shown in Lightbox */
-    images: {
-        alt: string;
-        src: string;
-    }[];
+    /** Array of images to be shown in Lightbox, each image object may contain any valid 'img' attribute with the exceptions of 'draggable', 'onClick', 'onDragStart' and 'ref' */
+    images: ImagesList;
     /** Flag that dictates if the lightbox is open or closed */
     isOpen: boolean;
     /** Function that closes the Lightbox */

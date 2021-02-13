@@ -2,13 +2,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import ImagePager from './components/ImagePager';
+import { ImagesList } from '../../types/ImagesList';
 
 type IImageStageProps = {
     currentIndex: number;
-    images: {
-        alt: string;
-        src: string;
-    }[];
+    images: ImagesList;
     onClose: () => void;
     onNext: () => void;
     onPrev: () => void;

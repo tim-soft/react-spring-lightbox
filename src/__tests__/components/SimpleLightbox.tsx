@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import Lightbox from '../../index';
+import Lightbox, { ImagesListType } from '../../index';
 
-const images = [
+const images: ImagesListType = [
     {
         alt: 'Windows 10 Dark Mode Setting',
         src:

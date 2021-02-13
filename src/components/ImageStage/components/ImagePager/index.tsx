@@ -5,15 +5,13 @@ import { useGesture } from 'react-use-gesture';
 import styled from 'styled-components';
 import { useWindowSize } from '../../utils';
 import Image from '../Image';
+import { ImagesList } from '../../../../types/ImagesList';
 
 type IImagePager = {
     /** Index of image in images array that is currently shown */
     currentIndex: number;
     /** Array of image objects to be shown in Lightbox */
-    images: {
-        alt: string;
-        src: string;
-    }[];
+    images: ImagesList;
     /** Function that closes the Lightbox */
     onClose: () => void;
     /** Function that can be called to disable dragging in the pager */
@@ -215,13 +213,12 @@ const ImagePager = ({
                                 }}
                             >
                                 <Image
-                                    alt={images[i].alt}
+                                    imgProps={images[i]}
                                     isCurrentImage={i === currentIndex}
                                     pagerHeight={pagerHeight}
                                     pagerIsDragging={isDragging}
                                     setDisableDrag={setDisableDrag}
                                     singleClickToZoom={singleClickToZoom}
-                                    src={images[i].src}
                                 />
                                 {renderImageOverlay()}
                             </ImageContainer>

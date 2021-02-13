@@ -7,10 +7,11 @@ import {
     imageIsOutOfBounds,
     getTranslateOffsetsFromScale,
 } from '../../utils';
+import { ImagesListItem } from '../../../../types/ImagesList';
 
 type IImageProps = {
-    /** The alt attribute for this image */
-    alt: string;
+    /** Any valid <img /> props to pass to the lightbox img element ie src, alt, caption etc*/
+    imgProps: ImagesListItem;
     /** True if this image is currently shown in pager, otherwise false */
     isCurrentImage: boolean;
     /** Fixed height of the image stage, used to restrict maximum height of images */
@@ -21,21 +22,18 @@ type IImageProps = {
     setDisableDrag: (disable: boolean) => void;
     /** Overrides the default behavior of double clicking causing an image zoom to a single click */
     singleClickToZoom: boolean;
-    /** The source URL of this image */
-    src: string;
 };
 
 /**
  * Animates pinch-zoom + panning on image using spring physics
  */
 const Image = ({
-    alt,
+    imgProps: { style: imgStyleProp, ...restImgProps },
     isCurrentImage,
     pagerHeight,
     pagerIsDragging,
     setDisableDrag,
     singleClickToZoom,
-    src,
 }: IImageProps) => {
     const [isPanningImage, setIsPanningImage] = useState<boolean>(false);
     const imageRef = useRef<HTMLImageElement>(null);
@@ -276,7 +274,6 @@ const Image = ({
 
     return (
         <AnimatedImage
-            alt={alt}
             className="lightbox-image"
             draggable="false"
             onClick={(e: React.MouseEvent<HTMLImageElement>) => {
@@ -290,9 +287,9 @@ const Image = ({
             }}
             // @ts-ignore
             ref={imageRef}
-            src={src}
             // @ts-ignore
             style={{
+                ...imgStyleProp,
                 maxHeight: pagerHeight,
                 transform: to(
                     [scale, translateX, translateY],
@@ -300,6 +297,8 @@ const Image = ({
                 ),
                 ...(isCurrentImage && { willChange: 'transform' }),
             }}
+            // Include any valid img html attributes provided in the <Lightbox /> images prop
+            {...restImgProps}
         />
     );
 };
