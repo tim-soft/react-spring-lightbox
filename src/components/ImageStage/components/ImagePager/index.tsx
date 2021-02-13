@@ -108,7 +108,8 @@ const ImagePager = ({
                 memo = { currentMovementX: 0 },
             }) => {
                 // Disable drag if Image has been zoomed in to allow for panning
-                if (disableDrag || xMovement === 0) return;
+                if (disableDrag || xMovement === 0)
+                    return { currentMovementX: 0 };
                 if (!isDragging) setIsDragging(true);
 
                 const isHorizontalDrag = Math.abs(xDir) > 0.7;
@@ -118,7 +119,8 @@ const ImagePager = ({
                     down && isHorizontalDrag && velocity > 2;
 
                 // Handle next/prev image from valid drag
-                if (draggedFarEnough || (draggedFastEnough && active)) {
+                if ((draggedFarEnough || draggedFastEnough) && active) {
+                    console.log({ active, down });
                     const goToIndex = xDir > 0 ? -1 : 1;
 
                     // Cancel gesture animation
