@@ -24,10 +24,12 @@ const useDoubleClick = ({
     useEffect(() => {
         const clickRef = ref.current;
         let clickCount = 0;
+        let timer: ReturnType<typeof setTimeout>;
+
         const handleClick = (e: MouseEvent) => {
             clickCount += 1;
 
-            setTimeout(() => {
+            timer = setTimeout(() => {
                 if (clickCount === 1) onSingleClick(e);
                 else if (clickCount === 2) onDoubleClick(e);
 
@@ -41,6 +43,10 @@ const useDoubleClick = ({
         // Remove event listener
         return () => {
             clickRef?.removeEventListener('click', handleClick);
+
+            if (timer) {
+                clearTimeout(timer);
+            }
         };
     });
 };
