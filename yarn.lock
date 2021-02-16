@@ -5806,10 +5806,10 @@ react-is@^17.0.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.1.tgz#5b3531bd76a645a4c9fb6e693ed36419e3301339"
   integrity sha512-NAnt2iGDXohE5LI7uBnLnqvLQMtzhkiAOLXTmv+qnF9Ky7xAPcX8Up/xWIhxvLVGJvuLiNc4xQLtuqDRzb4fSA==
 
-react-use-gesture@9.0.2:
-  version "9.0.2"
-  resolved "https://registry.yarnpkg.com/react-use-gesture/-/react-use-gesture-9.0.2.tgz#e6871938bffb5275a7d374e5daa27cf9602adaf3"
-  integrity sha512-9UxZsnExGH7RHQAbNj08Qnlo4OKYQrXJ203EBOfNLw1dAusTH+PZNlLqmK21hY00O9Kf1q2n85U2JWczobuzcw==
+react-use-gesture@9.0.4:
+  version "9.0.4"
+  resolved "https://registry.yarnpkg.com/react-use-gesture/-/react-use-gesture-9.0.4.tgz#7e0428007df31b6d8daae37c2fb01e9f40283623"
+  integrity sha512-G0sbQY+HSm2gSVIlD+LE1unpVpG7YZRTr8TI72vo0Nu1lecJtvjbcY3ZLonEZLTtODJgLL6nBllMRXyy0bRSQA==
 
 react@^17.0.1:
   version "17.0.1"
