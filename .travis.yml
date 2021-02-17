@@ -1,14 +1,19 @@
 language: node_js
 node_js:
-    - 'node'
     - 'lts/*'
 cache:
+    yarn: true
     directories:
-        - ~/.npm
-install: npm install
-script:
-    - npm run test
-    - npm run build
+        - node_modules
+install: yarn install
+jobs:
+    include:
+        - stage: lint
+          script: yarn lint
+        - stage: test
+          script: yarn test
+        - stage: build
+          script: yarn build
 branches:
     only: master
 notifications:

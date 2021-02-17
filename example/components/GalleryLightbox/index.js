@@ -15,11 +15,11 @@ class BlogImageGallery extends React.Component {
         imageMasonryDirection: PropTypes.oneOf(['column', 'row']),
         images: PropTypes.arrayOf(
             PropTypes.shape({
-                src: PropTypes.string.isRequired,
-                caption: PropTypes.string.isRequired,
                 alt: PropTypes.string.isRequired,
-                width: PropTypes.number,
+                caption: PropTypes.string.isRequired,
                 height: PropTypes.number,
+                src: PropTypes.string.isRequired,
+                width: PropTypes.number,
             })
         ).isRequired,
     };
@@ -32,9 +32,9 @@ class BlogImageGallery extends React.Component {
         super();
 
         this.state = {
+            clientSide: false,
             currentImageIndex: 0,
             lightboxIsOpen: false,
-            clientSide: false,
         };
     }
 
@@ -93,50 +93,44 @@ class BlogImageGallery extends React.Component {
     };
 
     render() {
-        const { currentImageIndex, lightboxIsOpen, clientSide } = this.state;
-        const { images, galleryTitle, imageMasonryDirection } = this.props;
+        const { clientSide, currentImageIndex, lightboxIsOpen } = this.state;
+        const { galleryTitle, imageMasonryDirection, images } = this.props;
+
+        // remove the height and width props for the lightbox images array
+        const listboxImages = [...images].map((image) => {
+            const newImage = { ...image };
+            delete newImage.height;
+            delete newImage.width;
+
+            return newImage;
+        });
 
         return (
             <GalleryContainer>
                 {clientSide && (
                     <Gallery
                         columns={this.columnConfig}
+                        direction={imageMasonryDirection}
+                        margin={6}
                         onClick={this.openLightbox}
                         photos={images}
-                        margin={6}
-                        direction={imageMasonryDirection}
                         renderImage={GridImage}
                     />
                 )}
                 <StyledLightbox
-                    isOpen={lightboxIsOpen}
-                    onClose={this.closeLightbox}
-                    onPrev={this.gotoPrevious}
-                    onNext={this.gotoNext}
-                    images={images}
                     currentIndex={currentImageIndex}
                     galleryTitle={galleryTitle}
-                    singleClickToZoom
+                    images={listboxImages}
+                    isOpen={lightboxIsOpen}
+                    onClose={this.closeLightbox}
+                    onNext={this.gotoNext}
+                    onPrev={this.gotoPrevious}
                     renderHeader={() => (
                         <LightboxHeader
+                            currentIndex={currentImageIndex}
                             galleryTitle={galleryTitle}
                             images={images}
-                            currentIndex={currentImageIndex}
                             onClose={this.closeLightbox}
-                        />
-                    )}
-                    renderPrevButton={({ canPrev }) => (
-                        <LightboxArrowButton
-                            position="left"
-                            onClick={this.gotoPrevious}
-                            disabled={!canPrev}
-                        />
-                    )}
-                    renderNextButton={({ canNext }) => (
-                        <LightboxArrowButton
-                            position="right"
-                            onClick={this.gotoNext}
-                            disabled={!canNext}
                         />
                     )}
                     renderImageOverlay={() => (
@@ -147,6 +141,21 @@ class BlogImageGallery extends React.Component {
                             <FiHeart size="3em" />
                         </ImageOverlay>
                     )}
+                    renderNextButton={({ canNext }) => (
+                        <LightboxArrowButton
+                            disabled={!canNext}
+                            onClick={this.gotoNext}
+                            position="right"
+                        />
+                    )}
+                    renderPrevButton={({ canPrev }) => (
+                        <LightboxArrowButton
+                            disabled={!canPrev}
+                            onClick={this.gotoPrevious}
+                            position="left"
+                        />
+                    )}
+                    singleClickToZoom
                 />
             </GalleryContainer>
         );

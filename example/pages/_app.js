@@ -13,12 +13,12 @@ export default class MyApp extends App {
 
                 <ThemeProvider
                     theme={{
+                        accentColor: '#1f1f1f',
+                        headerNavFontColor: '#e2e5ec',
                         pageBackgroundColor: '#101010',
                         pageContentFontColor: '#e2e5ec',
                         pageContentLinkHoverColor: 'aquamarine',
                         pageContentSelectionColor: 'aquamarine',
-                        headerNavFontColor: '#e2e5ec',
-                        accentColor: '#1f1f1f',
                     }}
                 >
                     <Component {...pageProps} />

@@ -1,20 +1,21 @@
+import * as React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 /**
  * A single image element in a masonry style image grid
  */
-const GridImage = ({ key, index, left, top, photo, onClick }) => {
-    const { height, width, src, alt, caption } = photo;
+const GridImage = ({ index, key, left, onClick, photo, top }) => {
+    const { alt, caption, height, src, width } = photo;
     return (
         <ImageContainer
-            key={`${key}-${index}`}
             index={index}
+            key={`${key}-${index}`}
             onClick={(e) => onClick(e, { index })}
-            style={{ left, top, height, width }}
+            style={{ height, left, top, width }}
         >
             <OverlayContainer>
-                <Image src={src} alt={alt} caption={caption} />
+                <Image alt={alt} caption={caption} src={src} />
                 <Caption>
                     <h4>{caption}</h4>
                 </Caption>
@@ -24,19 +25,19 @@ const GridImage = ({ key, index, left, top, photo, onClick }) => {
 };
 
 GridImage.propTypes = {
-    key: PropTypes.string.isRequired,
-    index: PropTypes.number.isRequired,
-    left: PropTypes.number.isRequired,
-    top: PropTypes.number.isRequired,
     containerHeight: PropTypes.number.isRequired,
+    index: PropTypes.number.isRequired,
+    key: PropTypes.string.isRequired,
+    left: PropTypes.number.isRequired,
     onClick: PropTypes.func.isRequired,
     photo: PropTypes.shape({
         alt: PropTypes.string.isRequired,
         caption: PropTypes.string.isRequired,
         height: PropTypes.number.isRequired,
-        width: PropTypes.number.isRequired,
         src: PropTypes.string.isRequired,
+        width: PropTypes.number.isRequired,
     }).isRequired,
+    top: PropTypes.number.isRequired,
 };
 
 export default GridImage;

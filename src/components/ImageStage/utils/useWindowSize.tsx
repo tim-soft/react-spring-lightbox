@@ -1,18 +1,22 @@
 import { useState, useEffect } from 'react';
 
+type IUseWindowSize = {
+    /** window height */
+    height: number;
+    /** window width */
+    width: number;
+};
+
 /**
  * React Hook that returns the current window size
  * and report updates from the 'resize' window event
  *
- * @typedef {WindowSize} WindowSize
- * @property {number} width Window width
- * @property {number} height Window height
  * @returns {WindowSize} An object container the window width and height
  */
-const useWindowSize = () => {
-    const [windowSize, setWindowSize] = useState({
-        width: window.innerWidth,
+const useWindowSize = (): IUseWindowSize => {
+    const [windowSize, setWindowSize] = useState<IUseWindowSize>({
         height: window.innerHeight,
+        width: window.innerWidth,
     });
 
     useEffect(() => {
@@ -22,8 +26,8 @@ const useWindowSize = () => {
                 window.innerWidth !== windowSize.width
             ) {
                 setWindowSize({
-                    width: window.innerWidth,
                     height: window.innerHeight,
+                    width: window.innerWidth,
                 });
             }
         };

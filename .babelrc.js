@@ -1,10 +1,8 @@
 module.exports = {
-    presets: ['@babel/env', '@babel/react'],
+    presets: ['@babel/env', '@babel/react', '@babel/preset-typescript'],
     plugins: [
-        ['babel-plugin-styled-components'],
         ['@babel/plugin-proposal-class-properties'],
         ['@babel/plugin-proposal-object-rest-spread'],
-        ['transform-react-remove-prop-types', { removeImport: true }],
         ['@babel/plugin-transform-runtime', { regenerator: false }],
     ],
 };
