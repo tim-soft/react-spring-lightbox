@@ -2,6 +2,62 @@
 
 All notable changes to this project will be documented in this file.
 
+## Upcoming
+
+-   Upgrade to `react-spring` v9 `stable` whenever this version gets released
+
+## [1.5.0] - 2021-02-17
+
+-   Rewrite project with typescript 4
+-   Upgrade `react-use-gesture@7.0.15` to `react-use-gesture@9.0.4`
+    -   This upgrade should fix some miscellaneous bugs such as `unable to spread non iterable instance` and more consistent trackpad support
+
+### Added
+
+-   The `images` prop now accepts a list of objects whose properties can be _almost_ any valid React `<img />` prop including `srcset` and `loading` (lazy loading)
+
+If you use typescript, the exact type can be imported/used like this
+
+```typescript
+import Lightbox, { ImagesListType } from 'react-spring-lightbox';
+
+const images: ImagesListType = [
+    {
+        alt: 'Windows 10 Dark Mode Setting',
+        'aria-details': 'Some details',
+        'aria-disabled': 'false',
+        loading: 'lazy',
+        src:
+            'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
+        srcSet:
+            '/wp-content/uploads/flamingo4x.jpg 4x, /wp-content/uploads/flamingo3x.jpg 3x, /wp-content/uploads/flamingo2x.jpg 2x, /wp-content/uploads/flamingo1x.jpg 1x',
+    },
+    {
+        alt: 'macOS Mojave Dark Mode Setting',
+        'aria-details': 'Some details',
+        'aria-disabled': 'false',
+        loading: 'lazy',
+        src:
+            'https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png',
+        srcSet:
+            '/wp-content/uploads/flamingo4x.jpg 4x, /wp-content/uploads/flamingo3x.jpg 3x, /wp-content/uploads/flamingo2x.jpg 2x, /wp-content/uploads/flamingo1x.jpg 1x',
+    },
+];
+
+const SimpleLightbox = () => <Lightbox images={images} {...otherProps} />;
+```
+
+The exact type is:
+
+```typescript
+export type ImagesListItem = Omit<
+    React.HTMLProps<HTMLImageElement>,
+    'draggable' | 'onClick' | 'onDragStart' | 'ref'
+> & { alt: string; loading?: 'auto' | 'eager' | 'lazy'; src: string };
+```
+
+Which translates to any React `<img />` prop minus `draggable`, `onClick`, `onDragStart` and `ref` as they are used internally. `alt` and `src` are required and explicitly support `loading` as it is an experimental chrome feature not included in `React.HTMLProps<HTMLImageElement>`.
+
 ## [1.4.11] - 2020-06-10
 
 ### Fixed
