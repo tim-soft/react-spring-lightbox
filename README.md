@@ -30,6 +30,8 @@ React-spring-lightbox is a flexible image gallery lightbox with native-feeling t
 -   No external CSS
 -   Implement your own UI
 -   Supports IE 11, Edge, Safari, Chrome, Firefox and Opera
+-   Full typescript support
+-   Supports any `<img />` attribute including `loading` (lazy loading), `srcset` and `aria-*`
 
 ## Install
 
@@ -39,24 +41,31 @@ yarn add react-spring-lightbox
 
 ## Usage
 
-```jsx
-import React, { useState } from 'react';
-import Lightbox from 'react-spring-lightbox';
+The `images` prop now accepts a list of objects whose properties can be _almost_ any valid React `<img />` prop including `srcset`, `loading` (lazy loading) and `aria-*` attributes.
 
-const images = [
+If you use typescript, the exact type can be imported from `import { ImagesListType } from 'react-spring-lightbox';`
+
+```typescript
+import React, { useState } from 'react';
+import Lightbox, { ImagesListType } from 'react-spring-lightbox';
+
+const images: ImagesListType = [
     {
         src:
             'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
+        loading: 'lazy',
         alt: 'Windows 10 Dark Mode Setting',
     },
     {
         src:
             'https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png',
+        loading: 'lazy',
         alt: 'macOS Mojave Dark Mode Setting',
     },
     {
         src:
             'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
+        loading: 'lazy',
         alt: 'Android 9.0 Dark Mode Setting',
     },
 ];
