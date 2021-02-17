@@ -17,7 +17,9 @@
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "allowSyntheticDefaultImports": true,
-        "rootDir": "src"
+        "rootDir": "src",
+        "target": "ES5",
+        "isolatedModules": true
     },
     "include": ["src"],
     "exclude": ["node_modules", "dist", "example", "src/__tests__"]

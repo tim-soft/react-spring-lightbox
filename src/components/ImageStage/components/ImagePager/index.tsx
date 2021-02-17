@@ -5,7 +5,7 @@ import { useGesture } from 'react-use-gesture';
 import styled from 'styled-components';
 import { useWindowSize } from '../../utils';
 import Image from '../Image';
-import { ImagesList } from '../../../../types/ImagesList';
+import type { ImagesList } from '../../../../types/ImagesList';
 
 type IImagePager = {
     /** Index of image in images array that is currently shown */

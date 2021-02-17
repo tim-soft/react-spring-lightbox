@@ -7,7 +7,7 @@ import {
     imageIsOutOfBounds,
     getTranslateOffsetsFromScale,
 } from '../../utils';
-import { ImagesListItem } from '../../../../types/ImagesList';
+import type { ImagesListItem } from '../../../../types/ImagesList';
 
 type IImageProps = {
     /** Any valid <img /> props to pass to the lightbox img element ie src, alt, caption etc*/
