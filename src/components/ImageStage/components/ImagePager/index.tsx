@@ -59,7 +59,9 @@ const ImagePager = ({
      *
      * @see https://www.react-spring.io/docs/hooks/use-springs
      */
-    const [pagerSprings, set] = useSprings(images.length, getPagePositions);
+    const [pagerSprings, springsApi] = useSprings(images.length, (i) =>
+        getPagePositions(i)
+    );
 
     // Determine the absolute height of the image pager
     useEffect(() => {
@@ -84,7 +86,7 @@ const ImagePager = ({
         }
 
         // Update page positions after prev/next page state change
-        set((i) => getPagePositions(i));
+        springsApi.start((i) => getPagePositions(i));
     });
 
     /**
@@ -134,7 +136,7 @@ const ImagePager = ({
                 }
 
                 // Update page x-coordinates for single finger/mouse gestures
-                set((i) => getPagePositions(i, down, xMovement));
+                springsApi.start((i) => getPagePositions(i, down, xMovement));
                 return;
             },
             onDragEnd: () => {
@@ -169,7 +171,7 @@ const ImagePager = ({
                 }
             },
             onWheelEnd: () => {
-                set((i) => getPagePositions(i, false, 0));
+                springsApi.start((i) => getPagePositions(i, false, 0));
                 // Add small timeout buffer to prevent event handlers from firing in child Images
                 setTimeout(() => setIsDragging(false), 100);
             },
@@ -184,19 +186,16 @@ const ImagePager = ({
     return (
         <>
             {pagerSprings.map(({ display, x }, i) => (
-                // @ts-ignore
                 <AnimatedImagePager
                     {...bind()}
                     className="lightbox-image-pager"
-                    // @ts-ignore
                     key={i}
-                    // @ts-ignore
                     onClick={() =>
-                        Math.abs(x.getValue()) < 1 && !disableDrag && onClose()
+                        Math.abs(x.get()) < 1 && !disableDrag && onClose()
                     }
+                    // @ts-ignore
                     ref={imageStageRef.current[i]}
                     role="presentation"
-                    // @ts-ignore
                     style={{
                         display,
                         transform: x.to(

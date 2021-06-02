@@ -39,6 +39,7 @@ const Image = ({
     const imageRef = useRef<HTMLImageElement>(null);
     const defaultImageTransform = () => ({
         config: { ...config.default, precision: 0.01 },
+        pinching: false,
         scale: 1,
         translateX: 0,
         translateY: 0,
@@ -71,7 +72,7 @@ const Image = ({
 
     // Reset scale of this image when dragging to new image in ImagePager
     useEffect(() => {
-        if (!isCurrentImage && scale.getValue() !== 1) {
+        if (!isCurrentImage && scale.get() !== 1) {
             set(defaultImageTransform());
         }
     }, [isCurrentImage, scale, set]);
@@ -91,7 +92,7 @@ const Image = ({
                 memo = { initialTranslateX: 0, initialTranslateY: 0 },
                 touches,
             }) => {
-                if (pagerIsDragging || scale.getValue() === 1) {
+                if (pagerIsDragging || scale.get() === 1) {
                     return;
                 }
 
@@ -101,17 +102,17 @@ const Image = ({
                 }
 
                 if (touches > 1) return;
-                if (pinching || scale.getValue() <= 1) return;
+                if (pinching || scale.get() <= 1) return;
 
                 // Prevent dragging image out of viewport
-                if (scale.getValue() > 1 && imageIsOutOfBounds(imageRef)) {
+                if (scale.get() > 1 && imageIsOutOfBounds(imageRef)) {
                     cancel();
                     return;
                 } else {
                     if (first) {
                         return {
-                            initialTranslateX: translateX.getValue(),
-                            initialTranslateY: translateY.getValue(),
+                            initialTranslateX: translateX.get(),
+                            initialTranslateY: translateY.get(),
                         };
                     }
 
@@ -156,8 +157,8 @@ const Image = ({
 
                 // Speed up pinch zoom when using mouse versus touch
                 const SCALE_FACTOR = ctrlKey ? 1000 : 250;
-                const pinchScale = scale.getValue() + xMovement / SCALE_FACTOR;
-                const pinchDelta = pinchScale - scale.getValue();
+                const pinchScale = scale.get() + xMovement / SCALE_FACTOR;
+                const pinchDelta = pinchScale - scale.get();
 
                 /**
                  * Calculate touch origin for pinch/zoom
@@ -165,31 +166,24 @@ const Image = ({
                  * if event is a touch event (React.TouchEvent<Element>, TouchEvent or WebKitGestureEvent) use touchOriginX/Y
                  * if event is a wheel event (React.WheelEvent<Element> or WheelEvent) use the mouse cursor's clientX/Y
                  */
-                let touchOrigin: [
-                    touchOriginX: number,
-                    touchOriginY: number
-                ] = [touchOriginX, touchOriginY];
+                let touchOrigin: [touchOriginX: number, touchOriginY: number] =
+                    [touchOriginX, touchOriginY];
                 if ('clientX' in event && 'clientY' in event && ctrlKey) {
                     touchOrigin = [event.clientX, event.clientY];
                 }
 
                 // Calculate the amount of x, y translate offset needed to
                 // zoom-in to point as image scale grows
-                const [
-                    newTranslateX,
-                    newTranslateY,
-                ] = getTranslateOffsetsFromScale({
-                    currentTranslate: [
-                        translateX.getValue(),
-                        translateY.getValue(),
-                    ],
-                    imageRef,
-                    pinchDelta,
-                    scale: scale.getValue(),
-                    // Use the [x, y] coords of mouse if a trackpad or ctrl + wheel event
-                    // Otherwise use touch origin
-                    touchOrigin,
-                });
+                const [newTranslateX, newTranslateY] =
+                    getTranslateOffsetsFromScale({
+                        currentTranslate: [translateX.get(), translateY.get()],
+                        imageRef,
+                        pinchDelta,
+                        scale: scale.get(),
+                        // Use the [x, y] coords of mouse if a trackpad or ctrl + wheel event
+                        // Otherwise use touch origin
+                        touchOrigin,
+                    });
 
                 // Restrict the amount of zoom between half and 3x image size
                 if (pinchScale < 0.5) set({ pinching: true, scale: 0.5 });
@@ -204,7 +198,7 @@ const Image = ({
             },
             onPinchEnd: () => {
                 if (!pagerIsDragging) {
-                    if (scale.getValue() > 1) setDisableDrag(true);
+                    if (scale.get() > 1) setDisableDrag(true);
                     else set(defaultImageTransform());
                     // Add small timeout to prevent onClick handler from firing after panning
                     setTimeout(() => setIsPanningImage(false), 100);
@@ -234,27 +228,24 @@ const Image = ({
             }
 
             // If tapped while already zoomed-in, zoom out to default scale
-            if (scale.getValue() !== 1) {
+            if (scale.get() !== 1) {
                 set(defaultImageTransform());
                 return;
             }
 
             // Zoom-in to origin of click on image
             const { clientX: touchOriginX, clientY: touchOriginY } = e;
-            const pinchScale = scale.getValue() + 1;
-            const pinchDelta = pinchScale - scale.getValue();
+            const pinchScale = scale.get() + 1;
+            const pinchDelta = pinchScale - scale.get();
 
             // Calculate the amount of x, y translate offset needed to
             // zoom-in to point as image scale grows
             const [newTranslateX, newTranslateY] = getTranslateOffsetsFromScale(
                 {
-                    currentTranslate: [
-                        translateX.getValue(),
-                        translateY.getValue(),
-                    ],
+                    currentTranslate: [translateX.get(), translateY.get()],
                     imageRef,
                     pinchDelta,
-                    scale: scale.getValue(),
+                    scale: scale.get(),
                     touchOrigin: [touchOriginX, touchOriginY],
                 }
             );

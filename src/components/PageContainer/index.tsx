@@ -32,24 +32,22 @@ const PageContainer = ({
         leave: { opacity: 0, transform: 'scale(0.75)' },
     };
 
-    const transitions = useTransition(isOpen, null, {
+    const transitions = useTransition(isOpen, {
         ...defaultTransition,
         ...pageTransitionConfig,
     });
 
     return (
         <>
-            {transitions.map(
-                ({ item, key, props }) =>
+            {transitions(
+                (animatedStyles, item) =>
                     item && (
                         <AnimatedPageContainer
                             className={`lightbox-container${
                                 className ? ` ${className}` : ''
                             }`}
                             data-testid="lightbox-container"
-                            key={key}
-                            // @ts-ignore
-                            style={{ ...props, ...style }}
+                            style={{ ...animatedStyles, ...style }}
                         >
                             {children}
                         </AnimatedPageContainer>
