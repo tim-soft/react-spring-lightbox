@@ -38,8 +38,9 @@ const ImagePager = ({
 }: IImagePager) => {
     const firstRender = useRef(true);
     const imageStageRef = useRef(
-        [...Array(images.length)].map(() => React.createRef<HTMLElement>()) ||
-            []
+        [...Array(images.length)].map(() =>
+            React.createRef<HTMLDivElement>()
+        ) || []
     );
     const { height: windowHeight, width: pageWidth } = useWindowSize();
     const [disableDrag, setDisableDrag] = useState<boolean>(false);
@@ -193,7 +194,6 @@ const ImagePager = ({
                     onClick={() =>
                         Math.abs(x.get()) < 1 && !disableDrag && onClose()
                     }
-                    // @ts-ignore
                     ref={imageStageRef.current[i]}
                     role="presentation"
                     style={{
