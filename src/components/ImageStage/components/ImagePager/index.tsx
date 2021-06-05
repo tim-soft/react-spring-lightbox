@@ -48,12 +48,15 @@ const ImagePager = ({
     const [isDragging, setIsDragging] = useState<boolean>(false);
 
     // Generate page positions based on current index
-    const getPagePositions = (i: number, down = false, xDelta = 0) => {
-        const x = (i - currentIndex) * pageWidth + (down ? xDelta : 0);
-        if (i < currentIndex - 1 || i > currentIndex + 1)
-            return { display: 'none', x };
-        return { display: 'flex', x };
-    };
+    const getPagePositions = React.useCallback(
+        (i: number, down = false, xDelta = 0) => {
+            const x = (i - currentIndex) * pageWidth + (down ? xDelta : 0);
+            if (i < currentIndex - 1 || i > currentIndex + 1)
+                return { display: 'none', x };
+            return { display: 'flex', x };
+        },
+        [currentIndex, pageWidth]
+    );
 
     /**
      * Animates translateX of all images at the same time
@@ -88,7 +91,7 @@ const ImagePager = ({
 
         // Update page positions after prev/next page state change
         springsApi.start((i) => getPagePositions(i));
-    });
+    }, [currentIndex, getPagePositions, springsApi]);
 
     /**
      * Update each Image's visibility and translateX offset during dragging
@@ -142,16 +145,12 @@ const ImagePager = ({
             },
             onDragEnd: () => {
                 if (isDragging) {
+                    springsApi.start((i) => getPagePositions(i));
                     // Add small timeout buffer to prevent event handlers from firing in child Images
                     setTimeout(() => setIsDragging(false), 100);
                 }
             },
-            onWheel: ({
-                distance,
-                velocity,
-                direction: [xDir, yDir],
-                ctrlKey,
-            }) => {
+            onWheel: ({ velocity, direction: [xDir, yDir], ctrlKey }) => {
                 // Disable drag if Image has been zoomed in to allow for panning
                 if (ctrlKey || disableDrag || velocity === 0) return;
 
@@ -159,12 +158,10 @@ const ImagePager = ({
                     setIsDragging(true);
                 }
 
-                const draggedFarEnough = distance > pageWidth / 3;
-                const draggedFastEnough =
-                    velocity > 1.5 && distance <= pageWidth / 3;
+                const draggedFastEnough = velocity > 1.1;
 
                 // Handle next/prev image from valid drag
-                if (draggedFarEnough || draggedFastEnough) {
+                if (draggedFastEnough) {
                     const goToIndex = xDir + yDir > 0 ? -1 : 1;
 
                     if (goToIndex > 0) onNext();
@@ -172,7 +169,7 @@ const ImagePager = ({
                 }
             },
             onWheelEnd: () => {
-                springsApi.start((i) => getPagePositions(i, false, 0));
+                springsApi.start((i) => getPagePositions(i));
                 // Add small timeout buffer to prevent event handlers from firing in child Images
                 setTimeout(() => setIsDragging(false), 100);
             },
