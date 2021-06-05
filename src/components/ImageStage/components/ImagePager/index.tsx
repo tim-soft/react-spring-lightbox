@@ -1,4 +1,3 @@
-/* eslint-disable react/no-array-index-key */
 import React, { useRef, useEffect, useState } from 'react';
 import { useSprings, animated } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
