@@ -213,6 +213,9 @@ const Image = ({
          */
         {
             domTarget: imageRef as React.RefObject<EventTarget>,
+            drag: {
+                filterTaps: true,
+            },
             eventOptions: {
                 passive: false,
             },
