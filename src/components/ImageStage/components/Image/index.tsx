@@ -9,6 +9,13 @@ import {
 } from '../../utils';
 import type { ImagesListItem } from '../../../../types/ImagesList';
 
+const defaultImageTransform = {
+    pinching: false,
+    scale: 1,
+    translateX: 0,
+    translateY: 0,
+};
+
 type IImageProps = {
     /** Any valid <img /> props to pass to the lightbox img element ie src, alt, caption etc*/
     imgProps: ImagesListItem;
@@ -37,14 +44,6 @@ const Image = ({
 }: IImageProps) => {
     const [isPanningImage, setIsPanningImage] = useState<boolean>(false);
     const imageRef = useRef<HTMLImageElement>(null);
-    const defaultImageTransform = () => ({
-        pinching: false,
-        resettingBounds: false,
-        resettingScale: false,
-        scale: 1,
-        translateX: 0,
-        translateY: 0,
-    });
 
     /**
      * Animates scale and translate offsets of Image as they change in gestures
@@ -52,30 +51,20 @@ const Image = ({
      * @see https://www.react-spring.io/docs/hooks/use-spring
      */
     const [{ scale, translateX, translateY }, springApi] = useSpring(() => ({
-        ...defaultImageTransform(),
+        ...defaultImageTransform,
         onChange: (result, instance) => {
-            if (result.value.resettingBounds || result.value.resettingScale) {
-                return;
-            }
-
             if (result.value.scale < 1 || !result.value.pinching) {
-                instance.start({
-                    ...defaultImageTransform(),
-                    resettingScale: true,
-                });
+                instance.start(defaultImageTransform);
             }
 
             if (result.value.scale > 1 && imageIsOutOfBounds(imageRef)) {
-                springApi.start({
-                    ...defaultImageTransform(),
-                    resettingBounds: true,
-                });
+                instance.start(defaultImageTransform);
             }
         },
         // Enable dragging in ImagePager if image is at the default size
         onRest: (result, instance) => {
             if (result.value.scale === 1) {
-                instance.start(defaultImageTransform());
+                instance.start(defaultImageTransform);
                 setDisableDrag(false);
             }
         },
@@ -84,7 +73,7 @@ const Image = ({
     // Reset scale of this image when dragging to new image in ImagePager
     useEffect(() => {
         if (!isCurrentImage && scale.get() !== 1) {
-            springApi.start(defaultImageTransform());
+            springApi.start(defaultImageTransform);
         }
     }, [isCurrentImage, scale, springApi]);
 
@@ -212,7 +201,7 @@ const Image = ({
             onPinchEnd: () => {
                 if (!pagerIsDragging) {
                     if (scale.get() > 1) setDisableDrag(true);
-                    else springApi.start(defaultImageTransform());
+                    else springApi.start(defaultImageTransform);
                     // Add small timeout to prevent onClick handler from firing after panning
                     setTimeout(() => setIsPanningImage(false), 100);
                 }
@@ -242,7 +231,7 @@ const Image = ({
 
             // If tapped while already zoomed-in, zoom out to default scale
             if (scale.get() !== 1) {
-                springApi.start(defaultImageTransform());
+                springApi.start(defaultImageTransform);
                 return;
             }
 
@@ -277,34 +266,31 @@ const Image = ({
     });
 
     return (
-        <>
-            {/* @ts-ignore */}
-            <AnimatedImage
-                className="lightbox-image"
-                draggable="false"
-                onClick={(e: React.MouseEvent<HTMLImageElement>) => {
-                    // Don't close lighbox when clicking image
-                    e.stopPropagation();
-                    e.nativeEvent.stopImmediatePropagation();
-                }}
-                onDragStart={(e: React.DragEvent<HTMLImageElement>) => {
-                    // Disable image ghost dragging in firefox
-                    e.preventDefault();
-                }}
-                ref={imageRef}
-                style={{
-                    ...imgStyleProp,
-                    maxHeight: pagerHeight,
-                    transform: to(
-                        [scale, translateX, translateY],
-                        (s, x, y) => `translate(${x}px, ${y}px) scale(${s})`
-                    ),
-                    ...(isCurrentImage && { willChange: 'transform' }),
-                }}
-                // Include any valid img html attributes provided in the <Lightbox /> images prop
-                {...restImgProps}
-            />
-        </>
+        <AnimatedImage
+            className="lightbox-image"
+            draggable="false"
+            onClick={(e: React.MouseEvent<HTMLImageElement>) => {
+                // Don't close lighbox when clicking image
+                e.stopPropagation();
+                e.nativeEvent.stopImmediatePropagation();
+            }}
+            onDragStart={(e: React.DragEvent<HTMLImageElement>) => {
+                // Disable image ghost dragging in firefox
+                e.preventDefault();
+            }}
+            ref={imageRef}
+            style={{
+                ...imgStyleProp,
+                maxHeight: pagerHeight,
+                transform: to(
+                    [scale, translateX, translateY],
+                    (s, x, y) => `translate(${x}px, ${y}px) scale(${s})`
+                ),
+                ...(isCurrentImage && { willChange: 'transform' }),
+            }}
+            // Include any valid img html attributes provided in the <Lightbox /> images prop
+            {...(restImgProps as React.ComponentProps<typeof animated.img>)}
+        />
     );
 };
 
