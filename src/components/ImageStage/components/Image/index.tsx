@@ -91,8 +91,9 @@ const Image = ({
                 first,
                 memo = { initialTranslateX: 0, initialTranslateY: 0 },
                 touches,
+                tap,
             }) => {
-                if (pagerIsDragging || scale.get() === 1) {
+                if (pagerIsDragging || scale.get() === 1 || tap) {
                     return;
                 }
 

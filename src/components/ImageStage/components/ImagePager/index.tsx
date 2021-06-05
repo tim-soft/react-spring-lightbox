@@ -108,9 +108,10 @@ const ImagePager = ({
                 cancel,
                 active,
                 touches,
+                tap,
             }) => {
                 // Disable drag if Image has been zoomed in to allow for panning
-                if (disableDrag || xMovement === 0) return;
+                if (disableDrag || xMovement === 0 || tap) return;
                 if (!isDragging) setIsDragging(true);
 
                 const isHorizontalDrag = Math.abs(xDir) > 0.7;
