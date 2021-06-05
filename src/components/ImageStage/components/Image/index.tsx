@@ -40,6 +40,8 @@ const Image = ({
     const defaultImageTransform = () => ({
         config: { ...config.default, precision: 0.01 },
         pinching: false,
+        resettingBounds: false,
+        resettingScale: false,
         scale: 1,
         translateX: 0,
         translateY: 0,
@@ -50,21 +52,31 @@ const Image = ({
      *
      * @see https://www.react-spring.io/docs/hooks/use-spring
      */
-    const [{ scale, translateX, translateY }, set] = useSpring(() => ({
+    const [{ scale, translateX, translateY }, springApi] = useSpring(() => ({
         ...defaultImageTransform(),
-        onFrame: (f: { pinching: boolean; scale: number }) => {
-            if (f.scale < 1 || !f.pinching) {
-                set(defaultImageTransform());
+        onChange: (result, instance) => {
+            if (result.value.resettingBounds || result.value.resettingScale) {
+                return;
             }
 
-            // Prevent dragging image out of viewport
-            if (f.scale > 1 && imageIsOutOfBounds(imageRef)) {
-                set(defaultImageTransform());
+            if (result.value.scale < 1 || !result.value.pinching) {
+                instance.start({
+                    ...defaultImageTransform(),
+                    resettingScale: true,
+                });
+            }
+
+            if (result.value.scale > 1 && imageIsOutOfBounds(imageRef)) {
+                springApi.start({
+                    ...defaultImageTransform(),
+                    resettingBounds: true,
+                });
             }
         },
         // Enable dragging in ImagePager if image is at the default size
-        onRest: (f: { pinching: boolean; scale: number }) => {
-            if (f.scale === 1) {
+        onRest: (result, instance) => {
+            if (result.value.scale === 1) {
+                instance.start(defaultImageTransform());
                 setDisableDrag(false);
             }
         },
@@ -73,9 +85,9 @@ const Image = ({
     // Reset scale of this image when dragging to new image in ImagePager
     useEffect(() => {
         if (!isCurrentImage && scale.get() !== 1) {
-            set(defaultImageTransform());
+            springApi.start(defaultImageTransform());
         }
-    }, [isCurrentImage, scale, set]);
+    }, [isCurrentImage, scale, springApi]);
 
     /**
      * Update Image scale and translate offsets during pinch/pan gestures
@@ -117,7 +129,7 @@ const Image = ({
                     }
 
                     // Translate image from dragging
-                    set({
+                    springApi.start({
                         translateX: memo.initialTranslateX + xMovement,
                         translateY: memo.initialTranslateY + yMovement,
                     });
@@ -186,10 +198,12 @@ const Image = ({
                     });
 
                 // Restrict the amount of zoom between half and 3x image size
-                if (pinchScale < 0.5) set({ pinching: true, scale: 0.5 });
-                else if (pinchScale > 3.0) set({ pinching: true, scale: 3.0 });
+                if (pinchScale < 0.5)
+                    springApi.start({ pinching: true, scale: 0.5 });
+                else if (pinchScale > 3.0)
+                    springApi.start({ pinching: true, scale: 3.0 });
                 else
-                    set({
+                    springApi.start({
                         pinching: true,
                         scale: pinchScale,
                         translateX: newTranslateX,
@@ -199,7 +213,7 @@ const Image = ({
             onPinchEnd: () => {
                 if (!pagerIsDragging) {
                     if (scale.get() > 1) setDisableDrag(true);
-                    else set(defaultImageTransform());
+                    else springApi.start(defaultImageTransform());
                     // Add small timeout to prevent onClick handler from firing after panning
                     setTimeout(() => setIsPanningImage(false), 100);
                 }
@@ -229,7 +243,7 @@ const Image = ({
 
             // If tapped while already zoomed-in, zoom out to default scale
             if (scale.get() !== 1) {
-                set(defaultImageTransform());
+                springApi.start(defaultImageTransform());
                 return;
             }
 
@@ -252,7 +266,7 @@ const Image = ({
 
             // Disable dragging in pager
             setDisableDrag(true);
-            set({
+            springApi.start({
                 pinching: true,
                 scale: pinchScale,
                 translateX: newTranslateX,
@@ -276,9 +290,7 @@ const Image = ({
                 // Disable image ghost dragging in firefox
                 e.preventDefault();
             }}
-            // @ts-ignore
             ref={imageRef}
-            // @ts-ignore
             style={{
                 ...imgStyleProp,
                 maxHeight: pagerHeight,
