@@ -27,20 +27,16 @@ const images: ImagesListType = [
         'aria-details': 'Some details',
         'aria-disabled': 'false',
         loading: 'lazy',
-        src:
-            'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
-        srcSet:
-            '/wp-content/uploads/flamingo4x.jpg 4x, /wp-content/uploads/flamingo3x.jpg 3x, /wp-content/uploads/flamingo2x.jpg 2x, /wp-content/uploads/flamingo1x.jpg 1x',
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
+        srcSet: '/wp-content/uploads/flamingo4x.jpg 4x, /wp-content/uploads/flamingo3x.jpg 3x, /wp-content/uploads/flamingo2x.jpg 2x, /wp-content/uploads/flamingo1x.jpg 1x',
     },
     {
         alt: 'macOS Mojave Dark Mode Setting',
         'aria-details': 'Some details',
         'aria-disabled': 'false',
         loading: 'lazy',
-        src:
-            'https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png',
-        srcSet:
-            '/wp-content/uploads/flamingo4x.jpg 4x, /wp-content/uploads/flamingo3x.jpg 3x, /wp-content/uploads/flamingo2x.jpg 2x, /wp-content/uploads/flamingo1x.jpg 1x',
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png',
+        srcSet: '/wp-content/uploads/flamingo4x.jpg 4x, /wp-content/uploads/flamingo3x.jpg 3x, /wp-content/uploads/flamingo2x.jpg 2x, /wp-content/uploads/flamingo1x.jpg 1x',
     },
 ];
 
