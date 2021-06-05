@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useSpring, animated, to, config } from '@react-spring/web';
+import { useSpring, animated, to } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import styled from 'styled-components';
 import {
@@ -38,7 +38,6 @@ const Image = ({
     const [isPanningImage, setIsPanningImage] = useState<boolean>(false);
     const imageRef = useRef<HTMLImageElement>(null);
     const defaultImageTransform = () => ({
-        config: { ...config.default, precision: 0.01 },
         pinching: false,
         resettingBounds: false,
         resettingScale: false,
@@ -278,31 +277,34 @@ const Image = ({
     });
 
     return (
-        <AnimatedImage
-            className="lightbox-image"
-            draggable="false"
-            onClick={(e: React.MouseEvent<HTMLImageElement>) => {
-                // Don't close lighbox when clicking image
-                e.stopPropagation();
-                e.nativeEvent.stopImmediatePropagation();
-            }}
-            onDragStart={(e: React.DragEvent<HTMLImageElement>) => {
-                // Disable image ghost dragging in firefox
-                e.preventDefault();
-            }}
-            ref={imageRef}
-            style={{
-                ...imgStyleProp,
-                maxHeight: pagerHeight,
-                transform: to(
-                    [scale, translateX, translateY],
-                    (s, x, y) => `translate(${x}px, ${y}px) scale(${s})`
-                ),
-                ...(isCurrentImage && { willChange: 'transform' }),
-            }}
-            // Include any valid img html attributes provided in the <Lightbox /> images prop
-            {...restImgProps}
-        />
+        <>
+            {/* @ts-ignore */}
+            <AnimatedImage
+                className="lightbox-image"
+                draggable="false"
+                onClick={(e: React.MouseEvent<HTMLImageElement>) => {
+                    // Don't close lighbox when clicking image
+                    e.stopPropagation();
+                    e.nativeEvent.stopImmediatePropagation();
+                }}
+                onDragStart={(e: React.DragEvent<HTMLImageElement>) => {
+                    // Disable image ghost dragging in firefox
+                    e.preventDefault();
+                }}
+                ref={imageRef}
+                style={{
+                    ...imgStyleProp,
+                    maxHeight: pagerHeight,
+                    transform: to(
+                        [scale, translateX, translateY],
+                        (s, x, y) => `translate(${x}px, ${y}px) scale(${s})`
+                    ),
+                    ...(isCurrentImage && { willChange: 'transform' }),
+                }}
+                // Include any valid img html attributes provided in the <Lightbox /> images prop
+                {...restImgProps}
+            />
+        </>
     );
 };
 
