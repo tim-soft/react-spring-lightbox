@@ -11,5 +11,6 @@ module.exports = {
         '@testing-library/jest-dom/extend-expect',
         'babel-polyfill',
     ],
+    testEnvironment: 'jsdom',
     testMatch: ['**/__tests__/**/*.(spec|test).[jt]s?(x)'],
 };
