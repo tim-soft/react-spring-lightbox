@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## Upcoming
 
--   Upgrade to `react-spring` v9 `stable` whenever this version gets released
+-   Add `swipe up` to close lightbox
+
+## [1.6.0] - 2021-06-06
+
+-   Upgrade to `@react-spring/web@9.2.1` stable from `@tim-soft/react-spring-web@9.0.0-beta.36`
 
 ## [1.5.0] - 2021-02-17
 
