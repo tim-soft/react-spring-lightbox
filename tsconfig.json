@@ -19,7 +19,8 @@
         "allowSyntheticDefaultImports": true,
         "rootDir": "src",
         "target": "ES5",
-        "isolatedModules": true
+        "isolatedModules": true,
+        "skipLibCheck": true
     },
     "include": ["src"],
     "exclude": ["node_modules", "dist", "example", "src/__tests__"]

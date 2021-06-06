@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useSpring, animated, to, config } from '@react-spring/web';
+import { useSpring, animated, to } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import styled from 'styled-components';
 import {
@@ -8,6 +8,13 @@ import {
     getTranslateOffsetsFromScale,
 } from '../../utils';
 import type { ImagesListItem } from '../../../../types/ImagesList';
+
+const defaultImageTransform = {
+    pinching: false,
+    scale: 1,
+    translateX: 0,
+    translateY: 0,
+};
 
 type IImageProps = {
     /** Any valid <img /> props to pass to the lightbox img element ie src, alt, caption etc*/
@@ -37,33 +44,27 @@ const Image = ({
 }: IImageProps) => {
     const [isPanningImage, setIsPanningImage] = useState<boolean>(false);
     const imageRef = useRef<HTMLImageElement>(null);
-    const defaultImageTransform = () => ({
-        config: { ...config.default, precision: 0.01 },
-        scale: 1,
-        translateX: 0,
-        translateY: 0,
-    });
 
     /**
      * Animates scale and translate offsets of Image as they change in gestures
      *
      * @see https://www.react-spring.io/docs/hooks/use-spring
      */
-    const [{ scale, translateX, translateY }, set] = useSpring(() => ({
-        ...defaultImageTransform(),
-        onFrame: (f: { pinching: boolean; scale: number }) => {
-            if (f.scale < 1 || !f.pinching) {
-                set(defaultImageTransform());
+    const [{ scale, translateX, translateY }, springApi] = useSpring(() => ({
+        ...defaultImageTransform,
+        onChange: (result, instance) => {
+            if (result.value.scale < 1 || !result.value.pinching) {
+                instance.start(defaultImageTransform);
             }
 
-            // Prevent dragging image out of viewport
-            if (f.scale > 1 && imageIsOutOfBounds(imageRef)) {
-                set(defaultImageTransform());
+            if (result.value.scale > 1 && imageIsOutOfBounds(imageRef)) {
+                instance.start(defaultImageTransform);
             }
         },
         // Enable dragging in ImagePager if image is at the default size
-        onRest: (f: { pinching: boolean; scale: number }) => {
-            if (f.scale === 1) {
+        onRest: (result, instance) => {
+            if (result.value.scale === 1) {
+                instance.start(defaultImageTransform);
                 setDisableDrag(false);
             }
         },
@@ -71,10 +72,10 @@ const Image = ({
 
     // Reset scale of this image when dragging to new image in ImagePager
     useEffect(() => {
-        if (!isCurrentImage && scale.getValue() !== 1) {
-            set(defaultImageTransform());
+        if (!isCurrentImage && scale.get() !== 1) {
+            springApi.start(defaultImageTransform);
         }
-    }, [isCurrentImage, scale, set]);
+    }, [isCurrentImage, scale, springApi]);
 
     /**
      * Update Image scale and translate offsets during pinch/pan gestures
@@ -90,8 +91,9 @@ const Image = ({
                 first,
                 memo = { initialTranslateX: 0, initialTranslateY: 0 },
                 touches,
+                tap,
             }) => {
-                if (pagerIsDragging || scale.getValue() === 1) {
+                if (pagerIsDragging || scale.get() === 1 || tap) {
                     return;
                 }
 
@@ -101,22 +103,22 @@ const Image = ({
                 }
 
                 if (touches > 1) return;
-                if (pinching || scale.getValue() <= 1) return;
+                if (pinching || scale.get() <= 1) return;
 
                 // Prevent dragging image out of viewport
-                if (scale.getValue() > 1 && imageIsOutOfBounds(imageRef)) {
+                if (scale.get() > 1 && imageIsOutOfBounds(imageRef)) {
                     cancel();
                     return;
                 } else {
                     if (first) {
                         return {
-                            initialTranslateX: translateX.getValue(),
-                            initialTranslateY: translateY.getValue(),
+                            initialTranslateX: translateX.get(),
+                            initialTranslateY: translateY.get(),
                         };
                     }
 
                     // Translate image from dragging
-                    set({
+                    springApi.start({
                         translateX: memo.initialTranslateX + xMovement,
                         translateY: memo.initialTranslateY + yMovement,
                     });
@@ -156,8 +158,8 @@ const Image = ({
 
                 // Speed up pinch zoom when using mouse versus touch
                 const SCALE_FACTOR = ctrlKey ? 1000 : 250;
-                const pinchScale = scale.getValue() + xMovement / SCALE_FACTOR;
-                const pinchDelta = pinchScale - scale.getValue();
+                const pinchScale = scale.get() + xMovement / SCALE_FACTOR;
+                const pinchDelta = pinchScale - scale.get();
 
                 /**
                  * Calculate touch origin for pinch/zoom
@@ -165,37 +167,32 @@ const Image = ({
                  * if event is a touch event (React.TouchEvent<Element>, TouchEvent or WebKitGestureEvent) use touchOriginX/Y
                  * if event is a wheel event (React.WheelEvent<Element> or WheelEvent) use the mouse cursor's clientX/Y
                  */
-                let touchOrigin: [
-                    touchOriginX: number,
-                    touchOriginY: number
-                ] = [touchOriginX, touchOriginY];
+                let touchOrigin: [touchOriginX: number, touchOriginY: number] =
+                    [touchOriginX, touchOriginY];
                 if ('clientX' in event && 'clientY' in event && ctrlKey) {
                     touchOrigin = [event.clientX, event.clientY];
                 }
 
                 // Calculate the amount of x, y translate offset needed to
                 // zoom-in to point as image scale grows
-                const [
-                    newTranslateX,
-                    newTranslateY,
-                ] = getTranslateOffsetsFromScale({
-                    currentTranslate: [
-                        translateX.getValue(),
-                        translateY.getValue(),
-                    ],
-                    imageRef,
-                    pinchDelta,
-                    scale: scale.getValue(),
-                    // Use the [x, y] coords of mouse if a trackpad or ctrl + wheel event
-                    // Otherwise use touch origin
-                    touchOrigin,
-                });
+                const [newTranslateX, newTranslateY] =
+                    getTranslateOffsetsFromScale({
+                        currentTranslate: [translateX.get(), translateY.get()],
+                        imageRef,
+                        pinchDelta,
+                        scale: scale.get(),
+                        // Use the [x, y] coords of mouse if a trackpad or ctrl + wheel event
+                        // Otherwise use touch origin
+                        touchOrigin,
+                    });
 
                 // Restrict the amount of zoom between half and 3x image size
-                if (pinchScale < 0.5) set({ pinching: true, scale: 0.5 });
-                else if (pinchScale > 3.0) set({ pinching: true, scale: 3.0 });
+                if (pinchScale < 0.5)
+                    springApi.start({ pinching: true, scale: 0.5 });
+                else if (pinchScale > 3.0)
+                    springApi.start({ pinching: true, scale: 3.0 });
                 else
-                    set({
+                    springApi.start({
                         pinching: true,
                         scale: pinchScale,
                         translateX: newTranslateX,
@@ -204,8 +201,8 @@ const Image = ({
             },
             onPinchEnd: () => {
                 if (!pagerIsDragging) {
-                    if (scale.getValue() > 1) setDisableDrag(true);
-                    else set(defaultImageTransform());
+                    if (scale.get() > 1) setDisableDrag(true);
+                    else springApi.start(defaultImageTransform);
                     // Add small timeout to prevent onClick handler from firing after panning
                     setTimeout(() => setIsPanningImage(false), 100);
                 }
@@ -217,6 +214,9 @@ const Image = ({
          */
         {
             domTarget: imageRef as React.RefObject<EventTarget>,
+            drag: {
+                filterTaps: true,
+            },
             eventOptions: {
                 passive: false,
             },
@@ -234,34 +234,31 @@ const Image = ({
             }
 
             // If tapped while already zoomed-in, zoom out to default scale
-            if (scale.getValue() !== 1) {
-                set(defaultImageTransform());
+            if (scale.get() !== 1) {
+                springApi.start(defaultImageTransform);
                 return;
             }
 
             // Zoom-in to origin of click on image
             const { clientX: touchOriginX, clientY: touchOriginY } = e;
-            const pinchScale = scale.getValue() + 1;
-            const pinchDelta = pinchScale - scale.getValue();
+            const pinchScale = scale.get() + 1;
+            const pinchDelta = pinchScale - scale.get();
 
             // Calculate the amount of x, y translate offset needed to
             // zoom-in to point as image scale grows
             const [newTranslateX, newTranslateY] = getTranslateOffsetsFromScale(
                 {
-                    currentTranslate: [
-                        translateX.getValue(),
-                        translateY.getValue(),
-                    ],
+                    currentTranslate: [translateX.get(), translateY.get()],
                     imageRef,
                     pinchDelta,
-                    scale: scale.getValue(),
+                    scale: scale.get(),
                     touchOrigin: [touchOriginX, touchOriginY],
                 }
             );
 
             // Disable dragging in pager
             setDisableDrag(true);
-            set({
+            springApi.start({
                 pinching: true,
                 scale: pinchScale,
                 translateX: newTranslateX,
@@ -285,9 +282,7 @@ const Image = ({
                 // Disable image ghost dragging in firefox
                 e.preventDefault();
             }}
-            // @ts-ignore
             ref={imageRef}
-            // @ts-ignore
             style={{
                 ...imgStyleProp,
                 maxHeight: pagerHeight,
@@ -298,7 +293,7 @@ const Image = ({
                 ...(isCurrentImage && { willChange: 'transform' }),
             }}
             // Include any valid img html attributes provided in the <Lightbox /> images prop
-            {...restImgProps}
+            {...(restImgProps as React.ComponentProps<typeof animated.img>)}
         />
     );
 };

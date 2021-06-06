@@ -1,4 +1,3 @@
-/* eslint-disable no-shadow */
 import React from 'react';
 import styled from 'styled-components';
 import ImagePager from './components/ImagePager';
