@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useSpring, animated, to } from '@react-spring/web';
+import * as React from 'react';
+import { useSpring, animated, to, config } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import styled from 'styled-components';
 import {
@@ -9,7 +9,20 @@ import {
 } from '../../utils';
 import type { ImagesListItem } from '../../../../types/ImagesList';
 
+const defaultConfig = config.default;
+const panningConfig = {
+    tension: 180,
+    friction: 17,
+    velocity: 13 * 0.001,
+};
+const pinchingConfig = {
+    tension: 180,
+    friction: 22,
+    velocity: 2 * 0.001,
+};
+
 const defaultImageTransform = {
+    config: defaultConfig,
     pinching: false,
     scale: 1,
     translateX: 0,
@@ -42,8 +55,8 @@ const Image = ({
     setDisableDrag,
     singleClickToZoom,
 }: IImageProps) => {
-    const [isPanningImage, setIsPanningImage] = useState<boolean>(false);
-    const imageRef = useRef<HTMLImageElement>(null);
+    const isPanningImage = React.useRef<boolean>(false);
+    const imageRef = React.useRef<HTMLImageElement>(null);
 
     /**
      * Animates scale and translate offsets of Image as they change in gestures
@@ -71,7 +84,7 @@ const Image = ({
     }));
 
     // Reset scale of this image when dragging to new image in ImagePager
-    useEffect(() => {
+    React.useEffect(() => {
         if (!isCurrentImage && scale.get() !== 1) {
             springApi.start(defaultImageTransform);
         }
@@ -98,8 +111,8 @@ const Image = ({
                 }
 
                 // Disable click to zoom during drag
-                if (xMovement && yMovement && !isPanningImage) {
-                    setIsPanningImage(true);
+                if (xMovement && yMovement && !isPanningImage.current) {
+                    isPanningImage.current = true;
                 }
 
                 if (touches > 1) return;
@@ -119,6 +132,7 @@ const Image = ({
 
                     // Translate image from dragging
                     springApi.start({
+                        config: panningConfig,
                         translateX: memo.initialTranslateX + xMovement,
                         translateY: memo.initialTranslateY + yMovement,
                     });
@@ -127,9 +141,15 @@ const Image = ({
                 }
             },
             onDragEnd: ({ memo }) => {
+                springApi.start({
+                    config: defaultConfig,
+                });
+
                 if (memo !== undefined) {
                     // Add small timeout to prevent onClick handler from firing after drag
-                    setTimeout(() => setIsPanningImage(false), 100);
+                    setTimeout(() => {
+                        isPanningImage.current = false;
+                    }, 100);
                 }
             },
             onPinch: ({
@@ -148,7 +168,9 @@ const Image = ({
                 setDisableDrag(true);
 
                 // Disable click to zoom during pinch
-                if (xMovement && !isPanningImage) setIsPanningImage(true);
+                if (xMovement && !isPanningImage.current) {
+                    isPanningImage.current = false;
+                }
 
                 // Don't calculate new translate offsets on final frame
                 if (last) {
@@ -186,6 +208,10 @@ const Image = ({
                         touchOrigin,
                     });
 
+                springApi.start({
+                    config: pinchingConfig,
+                });
+
                 // Restrict the amount of zoom between half and 3x image size
                 if (pinchScale < 0.5)
                     springApi.start({ pinching: true, scale: 0.5 });
@@ -200,11 +226,17 @@ const Image = ({
                     });
             },
             onPinchEnd: () => {
+                springApi.start({
+                    config: pinchingConfig,
+                });
+
                 if (!pagerIsDragging) {
                     if (scale.get() > 1) setDisableDrag(true);
                     else springApi.start(defaultImageTransform);
                     // Add small timeout to prevent onClick handler from firing after panning
-                    setTimeout(() => setIsPanningImage(false), 100);
+                    setTimeout(() => {
+                        isPanningImage.current = false;
+                    }, 100);
                 }
             },
         },
@@ -228,7 +260,7 @@ const Image = ({
         [singleClickToZoom ? 'onSingleClick' : 'onDoubleClick']: (
             e: MouseEvent
         ) => {
-            if (pagerIsDragging || isPanningImage) {
+            if (pagerIsDragging || isPanningImage.current) {
                 e.stopPropagation();
                 return;
             }
