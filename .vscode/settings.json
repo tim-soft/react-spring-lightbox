@@ -3,5 +3,8 @@
     "javascript.validate.enable": false,
     "editor.tabSize": 4,
     "editor.detectIndentation": false,
-    "eslint.enable": true
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
 }
