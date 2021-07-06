@@ -147,18 +147,21 @@ cd react-spring-lightbox
 Setup symlinks
 
 ```bash
+yarn install
 yarn link
+
 cd example
 yarn link react-spring-lightbox
+yarn install
 ```
 
-Run the library in development mode
+Run the library (project root) in development mode
 
 ```bash
 yarn start
 ```
 
-Run the example app in development mode
+Run the example app (/example) in development mode
 
 ```bash
 cd example

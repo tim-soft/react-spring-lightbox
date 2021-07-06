@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useSprings, animated } from '@react-spring/web';
-import { useGesture } from 'react-use-gesture';
+import { useGesture } from '@use-gesture/react';
 import styled from 'styled-components';
 import { useWindowSize } from '../../utils';
 import Image from '../Image';
@@ -103,8 +103,8 @@ const ImagePager = ({
                 down,
                 movement: [xMovement],
                 direction: [xDir],
-                velocity,
-                distance,
+                velocity: [xVelocity],
+                distance: [xDistance],
                 cancel,
                 active,
                 touches,
@@ -116,9 +116,9 @@ const ImagePager = ({
 
                 const isHorizontalDrag = Math.abs(xDir) > 0.7;
                 const draggedFarEnough =
-                    down && isHorizontalDrag && distance > pageWidth / 3.5;
+                    down && isHorizontalDrag && xDistance > pageWidth / 3.5;
                 const draggedFastEnough =
-                    down && isHorizontalDrag && velocity > 2;
+                    down && isHorizontalDrag && xVelocity > 2;
 
                 // Handle next/prev image from valid drag
                 if ((draggedFarEnough || draggedFastEnough) && active) {
@@ -150,7 +150,14 @@ const ImagePager = ({
                     setTimeout(() => setIsDragging(false), 100);
                 }
             },
-            onWheel: ({ velocity, direction: [xDir, yDir], ctrlKey }) => {
+            onWheel: ({
+                velocity: [xVelocity, yVelocity],
+                direction: [xDir, yDir],
+                ctrlKey,
+            }) => {
+                // Go with whichever scroll wheel direction's velocity is highest
+                const velocity = xVelocity > yVelocity ? xVelocity : yVelocity;
+
                 // Disable drag if Image has been zoomed in to allow for panning
                 if (ctrlKey || disableDrag || velocity === 0) return;
 
