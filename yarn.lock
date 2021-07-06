@@ -2210,17 +2210,17 @@
     "@typescript-eslint/types" "4.28.2"
     eslint-visitor-keys "^2.0.0"
 
-"@use-gesture/core@^10.0.0-beta.17":
-  version "10.0.0-beta.17"
-  resolved "https://registry.yarnpkg.com/@use-gesture/core/-/core-10.0.0-beta.17.tgz#ef4cf4de66439c596624f0d39ecd190f3159ad34"
-  integrity sha512-vnV721mkpnTy8Qh/4XXjQltcT/nXh40wYECe0RlP/sW51fb2w8w7PSyInHlKJT7V9dTqeiDXeWQRv9DOJaxDJw==
+"@use-gesture/core@^10.0.0-beta.19":
+  version "10.0.0-beta.19"
+  resolved "https://registry.yarnpkg.com/@use-gesture/core/-/core-10.0.0-beta.19.tgz#327d7e61af7832cc73c522e51913d24eafc37db7"
+  integrity sha512-84s7pcFiVg1M3y8+xLKf1kpfAEZn5XvgL0T5xYY63bzlZ7PTn/NkOwM+tnAv/J2Em/40+RdC8AZwi1HxAPbUNw==
 
-"@use-gesture/react@^10.0.0-beta.17":
-  version "10.0.0-beta.17"
-  resolved "https://registry.yarnpkg.com/@use-gesture/react/-/react-10.0.0-beta.17.tgz#1d8fc33b02f01f1fe2e15a8228ede2770ece739b"
-  integrity sha512-z719FUwNGhtXoZE2Gxx/u4jOMHjjjQVeYh0KIf+qMAjoQaPf+p0+Dwz+l2vG0a2aWBSIjJkVnCrS2P9II92o6Q==
+"@use-gesture/react@^10.0.0-beta.19":
+  version "10.0.0-beta.19"
+  resolved "https://registry.yarnpkg.com/@use-gesture/react/-/react-10.0.0-beta.19.tgz#9bb0be7b7dc2b62d05d5ca8167bdcff8f51ba468"
+  integrity sha512-lzAN6uGXb9Qa9PM9YO/QnUobHnI4NcxqdXOZ7vQxQPxpYY/Y5EtJlB/nnoH0dMbhW/fqQM0TLhnZOM0kTxGAtw==
   dependencies:
-    "@use-gesture/core" "^10.0.0-beta.17"
+    "@use-gesture/core" "^10.0.0-beta.19"
 
 abab@^2.0.3, abab@^2.0.5:
   version "2.0.5"
@@ -3848,7 +3848,7 @@ fs.realpath@^1.0.0:
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
   integrity sha1-FQStJSMVjKpA20onh8sBQRmU6k8=
 
-fsevents@^2.3.2, fsevents@~2.3.1:
+fsevents@^2.3.2, fsevents@~2.3.2:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.2.tgz#8a526f78b8fdf4623b709e0b975c52c24c02fd1a"
   integrity sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==
@@ -6333,12 +6333,12 @@ rollup-plugin-terser@^7.0.2:
     serialize-javascript "^4.0.0"
     terser "^5.0.0"
 
-rollup@^2.50.6:
-  version "2.50.6"
-  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.50.6.tgz#24e2211caf9031081656e98a5e5e94d3b5e786e2"
-  integrity sha512-6c5CJPLVgo0iNaZWWliNu1Kl43tjP9LZcp6D/tkf2eLH2a9/WeHxg9vfTFl8QV/2SOyaJX37CEm9XuGM0rviUg==
+rollup@^2.52.7:
+  version "2.52.7"
+  resolved "https://registry.yarnpkg.com/rollup/-/rollup-2.52.7.tgz#e15a8bf734f6e4c204b7cdf33521151310250cb2"
+  integrity sha512-55cSH4CCU6MaPr9TAOyrIC+7qFCHscL7tkNsm1MBfIJRRqRbCEY0mmeFn4Wg8FKsHtEH8r389Fz38r/o+kgXLg==
   optionalDependencies:
-    fsevents "~2.3.1"
+    fsevents "~2.3.2"
 
 run-parallel@^1.1.9:
   version "1.1.10"

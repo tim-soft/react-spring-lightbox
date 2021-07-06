@@ -151,18 +151,21 @@ const ImagePager = ({
                 }
             },
             onWheel: ({
-                velocity: [xVelocity],
+                velocity: [xVelocity, yVelocity],
                 direction: [xDir, yDir],
                 ctrlKey,
             }) => {
+                // Go with whichever scroll wheel direction's velocity is highest
+                const velocity = xVelocity > yVelocity ? xVelocity : yVelocity;
+
                 // Disable drag if Image has been zoomed in to allow for panning
-                if (ctrlKey || disableDrag || xVelocity === 0) return;
+                if (ctrlKey || disableDrag || velocity === 0) return;
 
                 if (!isDragging) {
                     setIsDragging(true);
                 }
 
-                const draggedFastEnough = xVelocity > 1.1;
+                const draggedFastEnough = velocity > 1.1;
 
                 // Handle next/prev image from valid drag
                 if (draggedFastEnough) {

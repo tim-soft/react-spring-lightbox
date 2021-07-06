@@ -160,6 +160,7 @@ const Image = ({
                 last,
                 cancel,
             }) => {
+                console.log('mousewheel is not firing!');
                 if (pagerIsDragging) {
                     return;
                 }
