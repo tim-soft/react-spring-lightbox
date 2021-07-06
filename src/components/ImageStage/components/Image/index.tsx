@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useSpring, animated, to, config } from '@react-spring/web';
-import { useGesture } from 'react-use-gesture';
+import { useGesture } from '@use-gesture/react';
 import styled from 'styled-components';
 import {
     useDoubleClick,
@@ -17,8 +17,8 @@ const panningConfig = {
 };
 const pinchingConfig = {
     tension: 180,
-    friction: 22,
-    velocity: 2 * 0.001,
+    friction: 17,
+    clamp: true,
 };
 
 const defaultImageTransform = {
@@ -178,22 +178,29 @@ const Image = ({
                     return;
                 }
 
-                // Speed up pinch zoom when using mouse versus touch
-                const SCALE_FACTOR = ctrlKey ? 1000 : 250;
-                const pinchScale = scale.get() + xMovement / SCALE_FACTOR;
-                const pinchDelta = pinchScale - scale.get();
-
                 /**
                  * Calculate touch origin for pinch/zoom
                  *
                  * if event is a touch event (React.TouchEvent<Element>, TouchEvent or WebKitGestureEvent) use touchOriginX/Y
                  * if event is a wheel event (React.WheelEvent<Element> or WheelEvent) use the mouse cursor's clientX/Y
                  */
+                let isScrollWheel = false;
                 let touchOrigin: [touchOriginX: number, touchOriginY: number] =
                     [touchOriginX, touchOriginY];
                 if ('clientX' in event && 'clientY' in event && ctrlKey) {
                     touchOrigin = [event.clientX, event.clientY];
+                    isScrollWheel = true;
                 }
+
+                // Speed up pinch zoom when using mouse versus touch
+                let pinchScale = 0;
+                if (isScrollWheel) {
+                    pinchScale = scale.get() + xMovement / 5000;
+                } else {
+                    pinchScale = scale.get() + xMovement;
+                }
+
+                const pinchDelta = pinchScale - scale.get();
 
                 // Calculate the amount of x, y translate offset needed to
                 // zoom-in to point as image scale grows
@@ -208,17 +215,22 @@ const Image = ({
                         touchOrigin,
                     });
 
-                springApi.start({
-                    config: pinchingConfig,
-                });
+                const nextConfig = isScrollWheel
+                    ? defaultConfig
+                    : pinchingConfig;
 
                 // Restrict the amount of zoom between half and 3x image size
                 if (pinchScale < 0.5)
-                    springApi.start({ pinching: true, scale: 0.5 });
+                    springApi.start({
+                        scale: 0.5,
+                    });
                 else if (pinchScale > 3.0)
-                    springApi.start({ pinching: true, scale: 3.0 });
+                    springApi.start({
+                        scale: 3.0,
+                    });
                 else
                     springApi.start({
+                        config: nextConfig,
                         pinching: true,
                         scale: pinchScale,
                         translateX: newTranslateX,
@@ -226,10 +238,6 @@ const Image = ({
                     });
             },
             onPinchEnd: () => {
-                springApi.start({
-                    config: pinchingConfig,
-                });
-
                 if (!pagerIsDragging) {
                     if (scale.get() > 1) setDisableDrag(true);
                     else springApi.start(defaultImageTransform);
@@ -245,7 +253,7 @@ const Image = ({
          * @see https://github.com/react-spring/react-use-gesture#usegesture-config
          */
         {
-            domTarget: imageRef as React.RefObject<EventTarget>,
+            target: imageRef,
             drag: {
                 filterTaps: true,
             },

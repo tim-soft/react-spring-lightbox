@@ -116,6 +116,6 @@
     "dependencies": {
         "@babel/runtime": "^7.14.6",
         "@react-spring/web": "9.2.3",
-        "react-use-gesture": "9.1.3"
+        "@use-gesture/react": "^10.0.0-beta.17"
     }
 }
