@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import ImagePager from './components/ImagePager';
 import type { ImagesList } from '../../types/ImagesList';
 
-type IImageStageProps = {
+type ImageStageProps = {
     /** Index of image in images array that is currently shown */
     currentIndex: number;
     /** Array of image objects to be shown in Lightbox */
@@ -27,7 +27,7 @@ type IImageStageProps = {
 /**
  * Containing element for ImagePager and prev/next button controls
  */
-const ImageStage = ({
+export const ImageStage = ({
     currentIndex,
     images,
     onClose,
@@ -37,7 +37,7 @@ const ImageStage = ({
     renderNextButton,
     renderPrevButton,
     singleClickToZoom,
-}: IImageStageProps) => {
+}: ImageStageProps) => {
     // Extra sanity check that the next/prev image exists before moving to it
     const canPrev = currentIndex > 0;
     const canNext = currentIndex + 1 < images.length;
@@ -61,8 +61,6 @@ const ImageStage = ({
         </ImageStageContainer>
     );
 };
-
-export default ImageStage;
 
 const ImageStageContainer = styled.div`
     flex-grow: 1;
