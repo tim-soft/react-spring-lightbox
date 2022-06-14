@@ -27,7 +27,7 @@ type IImageStageProps = {
 /**
  * Containing element for ImagePager and prev/next button controls
  */
-const ImageStage = ({
+export const ImageStage = ({
     currentIndex,
     images,
     onClose,
@@ -61,8 +61,6 @@ const ImageStage = ({
         </ImageStageContainer>
     );
 };
-
-export default ImageStage;
 
 const ImageStageContainer = styled.div`
     flex-grow: 1;

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { ImageStage, PageContainer, CreatePortal } from './components';
+import { PageContainer, CreatePortal } from './components';
+import { ImageStage } from './components/ImageStage';
 import type { ImagesList } from './types/ImagesList';
 
 export type ImagesListType = ImagesList;
