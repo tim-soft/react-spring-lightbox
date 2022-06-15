@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-import { PageContainer, CreatePortal } from './components';
-import { ImageStage } from './components/ImageStage';
+import { ImageStage, PageContainer, CreatePortal } from './components';
 import type { ImagesList } from './types/ImagesList';
 
 export type ImagesListType = ImagesList;
@@ -146,3 +145,4 @@ const Lightbox = ({
 };
 
 export default Lightbox;
+export { default as ImageStage } from './components/ImageStage';
