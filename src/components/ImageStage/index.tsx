@@ -42,6 +42,9 @@ const ImageStage = ({
     const canPrev = currentIndex > 0;
     const canNext = currentIndex + 1 < images.length;
 
+    const onNextImage = canNext ? onNext : () => null;
+    const onPrevImage = canPrev ? onPrev : () => null;
+
     return (
         <ImageStageContainer
             className="lightbox-image-stage"
@@ -52,8 +55,8 @@ const ImageStage = ({
                 currentIndex={currentIndex}
                 images={images}
                 onClose={onClose}
-                onNext={onNext}
-                onPrev={onPrev}
+                onNext={onNextImage}
+                onPrev={onPrevImage}
                 renderImageOverlay={renderImageOverlay}
                 singleClickToZoom={singleClickToZoom}
             />

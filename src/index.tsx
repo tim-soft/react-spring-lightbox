@@ -11,6 +11,8 @@ type ILightboxProps = {
     currentIndex: number;
     /** Array of images to be shown in Lightbox, each image object may contain any valid 'img' attribute with the exceptions of 'draggable', 'onClick', 'onDragStart' and 'ref' */
     images: ImagesList;
+    /** Determines whether the Lightbox returns just an Inline carousel (ImageStage) */
+    inline?: boolean;
     /** Flag that dictates if the lightbox is open or closed */
     isOpen: boolean;
     /** Function that closes the Lightbox */
@@ -54,6 +56,7 @@ type ILightboxProps = {
 const Lightbox = ({
     isOpen,
     onClose,
+    inline = false,
     images = [],
     currentIndex,
     onPrev,
@@ -117,7 +120,21 @@ const Lightbox = ({
             document.removeEventListener('keydown', preventBackgroundScroll);
         };
     });
-
+    if (inline) {
+        return (
+            <ImageStage
+                currentIndex={currentIndex}
+                images={images}
+                onClose={onClose}
+                onNext={onNext}
+                onPrev={onPrev}
+                renderImageOverlay={renderImageOverlay}
+                renderNextButton={renderNextButton}
+                renderPrevButton={renderPrevButton}
+                singleClickToZoom={singleClickToZoom}
+            />
+        );
+    }
     return (
         <CreatePortal>
             <PageContainer

@@ -1,9 +1,11 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import GalleryLightbox from '../components/GalleryLightbox';
+import InlineLightbox from '../components/InlineLightbox';
 
 const HomePage = () => (
     <Container>
+        <StyledH2>Gallery Lightbox</StyledH2>
         <GalleryLightbox
             galleryTitle="Dark Mode: OS Level Control In Your CSS"
             imageMasonryDirection="column"
@@ -80,6 +82,9 @@ const HomePage = () => (
                 },
             ]}
         />
+        <hr />
+        <StyledH2>Inline Lightbox</StyledH2>
+        <InlineLightbox />
     </Container>
 );
 
@@ -89,6 +94,10 @@ const Container = styled.div`
     height: 100vh;
     width: 100%;
     user-select: none;
-    overflow: hidden;
     background: #272727;
+`;
+
+const StyledH2 = styled.h2`
+    color: #fff;
+    text-align: center;
 `;
