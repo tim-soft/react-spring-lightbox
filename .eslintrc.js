@@ -36,6 +36,7 @@ module.exports = {
     ],
     root: true,
     rules: {
+        'prettier/prettier': ['error', { endOfLine: 'auto' }],
         // Enforce React Hooks rules
         // https://www.npmjs.com/package/eslint-plugin-react-hooks
         'react-hooks/rules-of-hooks': 'error',
@@ -67,7 +68,6 @@ module.exports = {
                 },
             },
         ],
-        endOfLine: 'auto',
     },
     settings: {
         'import/resolver': {

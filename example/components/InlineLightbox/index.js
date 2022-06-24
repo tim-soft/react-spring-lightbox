@@ -79,6 +79,17 @@ const images = [
 const InlineLightbox = () => {
     const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
 
+    React.useEffect(() => {
+        const body = document.body;
+        body.addEventListener('wheel', preventWheel, { passive: false });
+    }, []);
+
+    const preventWheel = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    };
+
     const gotoNext = () => {
         setCurrentImageIndex(currentImageIndex + 1);
     };
@@ -91,26 +102,15 @@ const InlineLightbox = () => {
         return null;
     }
 
-    React.useEffect(() => {
-        const body = document.body;
-        body.addEventListener('wheel', preventWheel, { passive: false });
-    }, [preventWheel]);
-
-    const preventWheel = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        return false;
-    };
-
     return (
         <Container>
             <Lightbox
                 currentIndex={currentImageIndex}
+                images={images}
                 inline
+                isOpen
                 onNext={gotoNext}
                 onPrev={gotoPrevious}
-                images={images}
-                isOpen
                 renderNextButton={({ canNext }) => (
                     <LightboxArrowButton
                         disabled={!canNext}
