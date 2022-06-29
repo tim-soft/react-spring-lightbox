@@ -79,10 +79,11 @@ const images = [
 const InlineLightbox = () => {
     const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
 
+    const inlineCarouselElement = React.useRef();
+
     React.useEffect(() => {
-        const body = document.body;
-        body.addEventListener('wheel', preventWheel, { passive: false });
-    }, []);
+        inlineCarouselElement?.current?.addEventListener('wheel', preventWheel);
+    }, [inlineCarouselElement]);
 
     const preventWheel = (e) => {
         e.preventDefault();
@@ -90,12 +91,15 @@ const InlineLightbox = () => {
         return false;
     };
 
+    const canPrev = currentImageIndex > 0;
+    const canNext = currentImageIndex + 1 < images.length;
+
     const gotoNext = () => {
-        setCurrentImageIndex(currentImageIndex + 1);
+        canNext ? setCurrentImageIndex(currentImageIndex + 1) : () => null;
     };
 
     const gotoPrevious = () => {
-        setCurrentImageIndex(currentImageIndex - 1);
+        canPrev ? setCurrentImageIndex(currentImageIndex - 1) : null;
     };
 
     if (typeof window === 'undefined') {
@@ -103,7 +107,7 @@ const InlineLightbox = () => {
     }
 
     return (
-        <Container>
+        <Container ref={inlineCarouselElement}>
             <Lightbox
                 currentIndex={currentImageIndex}
                 images={images}
@@ -112,14 +116,14 @@ const InlineLightbox = () => {
                 onNext={gotoNext}
                 onPrev={gotoPrevious}
                 renderNextButton={({ canNext }) => (
-                    <LightboxArrowButton
+                    <StyledLightboxArrowButton
                         disabled={!canNext}
                         onClick={gotoNext}
                         position="right"
                     />
                 )}
                 renderPrevButton={({ canPrev }) => (
-                    <LightboxArrowButton
+                    <StyledLightboxArrowButton
                         disabled={!canPrev}
                         onClick={gotoPrevious}
                         position="left"
@@ -137,4 +141,8 @@ const Container = styled.div`
     flex-direction: column;
     height: 700px;
     overflow-x: hidden;
+`;
+
+const StyledLightboxArrowButton = styled(LightboxArrowButton)`
+    z-index: 10;
 `;

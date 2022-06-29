@@ -91,7 +91,7 @@ const HomePage = () => (
 export default HomePage;
 
 const Container = styled.div`
-    height: 100vh;
+    height: 100%;
     width: 100%;
     user-select: none;
     background: #272727;

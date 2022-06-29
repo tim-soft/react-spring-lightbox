@@ -6,7 +6,7 @@ import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { animated, useTransition } from '@react-spring/web';
 import ButtonControl from './LightboxButtonControl';
 
-const ArrowButton = ({ disabled, onClick, position }) => {
+const ArrowButton = ({ className, disabled, onClick, position }) => {
     const transitions = useTransition(!disabled, {
         enter: { opacity: 1 },
         from: { opacity: 0 },
@@ -17,6 +17,7 @@ const ArrowButton = ({ disabled, onClick, position }) => {
         (props, item) =>
             item && (
                 <animated.div
+                    className={className}
                     style={{
                         ...props,
                         zIndex: 999,
