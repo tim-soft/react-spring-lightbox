@@ -9,7 +9,7 @@ type IImageStageProps = {
     /** Array of image objects to be shown in Lightbox */
     images: ImagesList;
     /** Function that closes the Lightbox */
-    onClose: () => void;
+    onClose?: () => void;
     /** Function that can be called to disable dragging in the pager */
     onNext: () => void;
     /** True if this image is currently shown in pager, otherwise false */
