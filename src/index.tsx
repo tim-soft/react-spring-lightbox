@@ -16,7 +16,7 @@ type ILightboxProps = {
     /** Flag that dictates if the lightbox is open or closed */
     isOpen: boolean;
     /** Function that closes the Lightbox */
-    onClose: () => void;
+    onClose?: () => void;
     /** Function that changes currentIndex to next image in images */
     onNext: () => void;
     /** Function that changes currentIndex to previous image in images */
@@ -103,7 +103,7 @@ const Lightbox = ({
                         onNext();
                         break;
                     case 'Escape':
-                        onClose();
+                        onClose && onClose();
                         break;
                     default:
                         e.preventDefault();

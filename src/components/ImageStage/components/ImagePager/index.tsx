@@ -12,7 +12,7 @@ type IImagePager = {
     /** Array of image objects to be shown in Lightbox */
     images: ImagesList;
     /** Function that closes the Lightbox */
-    onClose: () => void;
+    onClose?: () => void;
     /** Function that can be called to disable dragging in the pager */
     onNext: () => void;
     /** True if this image is currently shown in pager, otherwise false */
@@ -188,9 +188,15 @@ const ImagePager = ({
                     {...bind()}
                     className="lightbox-image-pager"
                     key={i}
-                    onClick={() =>
-                        Math.abs(x.get()) < 1 && !disableDrag && onClose()
-                    }
+                    onClick={() => {
+                        if (onClose) {
+                            return (
+                                Math.abs(x.get()) < 1 &&
+                                !disableDrag &&
+                                onClose()
+                            );
+                        }
+                    }}
                     ref={imageStageRef.current[i]}
                     role="presentation"
                     style={{
