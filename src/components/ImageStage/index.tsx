@@ -4,6 +4,8 @@ import ImagePager from './components/ImagePager';
 import type { ImagesList } from '../../types/ImagesList';
 
 type IImageStageProps = {
+    /** classnames are applied to the root ImageStage component */
+    className: string;
     /** Index of image in images array that is currently shown */
     currentIndex: number;
     /** Array of image objects to be shown in Lightbox */
@@ -28,6 +30,7 @@ type IImageStageProps = {
  * Containing element for ImagePager and prev/next button controls
  */
 const ImageStage = ({
+    className = '',
     currentIndex,
     images,
     onClose,
@@ -47,7 +50,7 @@ const ImageStage = ({
 
     return (
         <ImageStageContainer
-            className="lightbox-image-stage"
+            className={className}
             data-testid="lightbox-image-stage"
         >
             {renderPrevButton({ canPrev })}
