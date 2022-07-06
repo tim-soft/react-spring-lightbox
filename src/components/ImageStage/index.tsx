@@ -5,7 +5,7 @@ import type { ImagesList } from '../../types/ImagesList';
 
 type IImageStageProps = {
     /** classnames are applied to the root ImageStage component */
-    className: string;
+    className?: string;
     /** Index of image in images array that is currently shown */
     currentIndex: number;
     /** Array of image objects to be shown in Lightbox */
