@@ -10,6 +10,8 @@ type IImageStageProps = {
     currentIndex: number;
     /** Array of image objects to be shown in Lightbox */
     images: ImagesList;
+    /** Affects Width calculation method, depending on whether the Lightbox is Inline or not */
+    inline?: boolean;
     /** Function that closes the Lightbox */
     onClose?: () => void;
     /** Function that can be called to disable dragging in the pager */
@@ -33,6 +35,7 @@ const ImageStage = ({
     className = '',
     currentIndex,
     images,
+    inline,
     onClose,
     onNext,
     onPrev,
@@ -57,6 +60,7 @@ const ImageStage = ({
             <ImagePager
                 currentIndex={currentIndex}
                 images={images}
+                inline={inline}
                 onClose={onClose}
                 onNext={onNextImage}
                 onPrev={onPrevImage}

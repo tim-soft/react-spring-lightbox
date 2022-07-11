@@ -125,6 +125,7 @@ const Lightbox = ({
             <ImageStage
                 currentIndex={currentIndex}
                 images={images}
+                inline
                 onClose={onClose}
                 onNext={onNext}
                 onPrev={onPrev}

@@ -11,7 +11,7 @@ type IUseWindowSize = {
  * React Hook that returns the current window size
  * and report updates from the 'resize' window event
  *
- * @returns {WindowSize} An object container the window width and height
+ * @returns {WindowSize} An object containing the window width and height
  */
 const useWindowSize = (): IUseWindowSize => {
     const [windowSize, setWindowSize] = useState<IUseWindowSize>({

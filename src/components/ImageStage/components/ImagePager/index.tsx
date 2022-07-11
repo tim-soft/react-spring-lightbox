@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useLayoutEffect } from 'react';
 import { useSprings, animated } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import styled from 'styled-components';
@@ -11,6 +11,8 @@ type IImagePager = {
     currentIndex: number;
     /** Array of image objects to be shown in Lightbox */
     images: ImagesList;
+    /** Affects Width calculation method, depending on whether the Lightbox is Inline or not */
+    inline?: boolean;
     /** Function that closes the Lightbox */
     onClose?: () => void;
     /** Function that can be called to disable dragging in the pager */
@@ -29,6 +31,7 @@ type IImagePager = {
 const ImagePager = ({
     currentIndex,
     images,
+    inline,
     onClose,
     onNext,
     onPrev,
@@ -42,6 +45,8 @@ const ImagePager = ({
         ) || []
     );
     const { height: windowHeight, width: pageWidth } = useWindowSize();
+
+    const [pagerWidth, setPagerWidth] = useState<number>(pageWidth);
     const [disableDrag, setDisableDrag] = useState<boolean>(false);
     const [pagerHeight, setPagerHeight] = useState<'100%' | number>('100%');
     const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -49,12 +54,12 @@ const ImagePager = ({
     // Generate page positions based on current index
     const getPagePositions = React.useCallback(
         (i: number, down = false, xDelta = 0) => {
-            const x = (i - currentIndex) * pageWidth + (down ? xDelta : 0);
+            const x = (i - currentIndex) * pagerWidth + (down ? xDelta : 0);
             if (i < currentIndex - 1 || i > currentIndex + 1)
                 return { display: 'none', x };
             return { display: 'flex', x };
         },
-        [currentIndex, pageWidth]
+        [currentIndex, pagerWidth]
     );
 
     /**
@@ -67,18 +72,24 @@ const ImagePager = ({
     );
 
     // Determine the absolute height of the image pager
-    useEffect(() => {
+    useLayoutEffect(() => {
         const currImageRef = imageStageRef?.current[currentIndex];
         let currPagerHeight = 0;
 
         if (currImageRef && currImageRef?.current) {
-            currPagerHeight = currImageRef.current.clientHeight - 50;
+            currPagerHeight = inline
+                ? currImageRef.current.clientHeight
+                : currImageRef.current.clientHeight - 50;
+
+            if (inline) {
+                setPagerWidth(currImageRef.current.clientWidth);
+            }
         }
 
         if (pagerHeight !== currPagerHeight) {
             setPagerHeight(currPagerHeight);
         }
-    }, [currentIndex, pagerHeight, windowHeight]);
+    }, [currentIndex, inline, pageWidth, pagerHeight, windowHeight]);
 
     // Animate page change if currentIndex changes
     useEffect(() => {
@@ -116,7 +127,7 @@ const ImagePager = ({
 
                 const isHorizontalDrag = Math.abs(xDir) > 0.7;
                 const draggedFarEnough =
-                    down && isHorizontalDrag && distance > pageWidth / 3.5;
+                    down && isHorizontalDrag && distance > pagerWidth / 3.5;
                 const draggedFastEnough =
                     down && isHorizontalDrag && velocity > 2;
 

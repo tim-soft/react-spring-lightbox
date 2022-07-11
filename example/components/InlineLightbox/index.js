@@ -139,8 +139,9 @@ export default InlineLightbox;
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    height: 700px;
-    overflow-x: hidden;
+    max-height: calc(100% - 4em);
+    height: 40em;
+    overflow: hidden;
 `;
 
 const StyledLightboxArrowButton = styled(LightboxArrowButton)`
