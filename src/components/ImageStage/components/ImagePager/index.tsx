@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useLayoutEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useSprings, animated } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import styled from 'styled-components';
@@ -72,7 +72,7 @@ const ImagePager = ({
     );
 
     // Determine the absolute height of the image pager
-    useLayoutEffect(() => {
+    useEffect(() => {
         const currImageRef = imageStageRef?.current[currentIndex];
         let currPagerHeight = 0;
 
