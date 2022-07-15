@@ -16,18 +16,12 @@ const ArrowButton = ({ className, disabled, onClick, position }) => {
     return transitions(
         (props, item) =>
             item && (
-                <animated.div
-                    className={className}
-                    style={{
-                        ...props,
-                        zIndex: 999,
-                    }}
-                >
+                <StyledAnimatedDiv className={className} style={props}>
                     <Button onClick={onClick} position={position} type="button">
                         {position === 'left' && <IoIosArrowBack />}
                         {position === 'right' && <IoIosArrowForward />}
                     </Button>
-                </animated.div>
+                </StyledAnimatedDiv>
             )
     );
 };
@@ -43,6 +37,10 @@ ArrowButton.defaultProps = {
 };
 
 export default ArrowButton;
+
+const StyledAnimatedDiv = styled(animated.div)`
+    z-index: 999;
+`;
 
 const Button = styled(ButtonControl)`
     position: absolute;

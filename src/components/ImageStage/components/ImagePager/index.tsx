@@ -2,9 +2,9 @@ import React, { useRef, useEffect, useState } from 'react';
 import { useSprings, animated } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import styled from 'styled-components';
-import { useWindowSize } from '../../utils';
 import Image from '../Image';
 import type { ImagesList } from '../../../../types/ImagesList';
+import useRefSize from '../../utils/useRefSize';
 
 type IImagePager = {
     /** Index of image in images array that is currently shown */
@@ -44,9 +44,10 @@ const ImagePager = ({
             React.createRef<HTMLDivElement>()
         ) || []
     );
-    const { height: windowHeight, width: pageWidth } = useWindowSize();
+    const containerRef = useRef(null);
+    const { height: containerHeight, width: containerWidth } =
+        useRefSize(containerRef);
 
-    const [pagerWidth, setPagerWidth] = useState<number>(pageWidth);
     const [disableDrag, setDisableDrag] = useState<boolean>(false);
     const [pagerHeight, setPagerHeight] = useState<'100%' | number>('100%');
     const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -54,12 +55,12 @@ const ImagePager = ({
     // Generate page positions based on current index
     const getPagePositions = React.useCallback(
         (i: number, down = false, xDelta = 0) => {
-            const x = (i - currentIndex) * pagerWidth + (down ? xDelta : 0);
+            const x = (i - currentIndex) * containerWidth + (down ? xDelta : 0);
             if (i < currentIndex - 1 || i > currentIndex + 1)
                 return { display: 'none', x };
             return { display: 'flex', x };
         },
-        [currentIndex, pagerWidth]
+        [currentIndex, containerWidth]
     );
 
     /**
@@ -80,16 +81,12 @@ const ImagePager = ({
             currPagerHeight = inline
                 ? currImageRef.current.clientHeight
                 : currImageRef.current.clientHeight - 50;
-
-            if (inline) {
-                setPagerWidth(currImageRef.current.clientWidth);
-            }
         }
 
         if (pagerHeight !== currPagerHeight) {
             setPagerHeight(currPagerHeight);
         }
-    }, [currentIndex, inline, pageWidth, pagerHeight, windowHeight]);
+    }, [currentIndex, inline, containerWidth, pagerHeight, containerHeight]);
 
     // Animate page change if currentIndex changes
     useEffect(() => {
@@ -127,7 +124,7 @@ const ImagePager = ({
 
                 const isHorizontalDrag = Math.abs(xDir) > 0.7;
                 const draggedFarEnough =
-                    down && isHorizontalDrag && distance > pagerWidth / 3.5;
+                    down && isHorizontalDrag && distance > containerWidth / 3.5;
                 const draggedFastEnough =
                     down && isHorizontalDrag && velocity > 2;
 
@@ -193,7 +190,7 @@ const ImagePager = ({
     );
 
     return (
-        <>
+        <ImagePagerContainer ref={containerRef}>
             {pagerSprings.map(({ display, x }, i) => (
                 <AnimatedImagePager
                     {...bind()}
@@ -239,13 +236,18 @@ const ImagePager = ({
                     </PagerContentWrapper>
                 </AnimatedImagePager>
             ))}
-        </>
+        </ImagePagerContainer>
     );
 };
 
 ImagePager.displayName = 'ImagePager';
 
 export default ImagePager;
+
+const ImagePagerContainer = styled.div`
+    height: 100%;
+    width: 100%;
+`;
 
 const PagerInnerContentWrapper = styled.div`
     display: flex;

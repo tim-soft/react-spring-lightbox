@@ -1,7 +1,7 @@
 import getTranslateOffsetsFromScale from './getTranslateOffsetsFromScale';
 import imageIsOutOfBounds from './imageIsOutOfBounds';
 import useDoubleClick from './useDoubleClick';
-import useWindowSize from './useWindowSize';
+import useWindowSize from './useRefSize';
 
 export {
     getTranslateOffsetsFromScale,

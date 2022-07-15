@@ -84,12 +84,20 @@ const HomePage = () => (
         />
         <hr />
         <StyledH2>Inline Lightbox</StyledH2>
-        <InlineLightbox />
+        <StyledDiv>
+            <h2>SOME CONTENT SOME CONTENT SOME CONTNET</h2>
+            <InlineLightbox />
+        </StyledDiv>
     </Container>
 );
 
 export default HomePage;
 
+const StyledDiv = styled.div`
+    display: flex;
+    width: 100%;
+    height: 100%;
+`;
 const Container = styled.div`
     height: 100%;
     width: 100%;
