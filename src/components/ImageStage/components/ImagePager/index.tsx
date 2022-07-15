@@ -281,4 +281,7 @@ const ImageContainer = styled.div`
     position: relative;
     touch-action: none;
     user-select: none;
+    display: flex;
+    justify-content: center;
+    width: 100%;
 `;

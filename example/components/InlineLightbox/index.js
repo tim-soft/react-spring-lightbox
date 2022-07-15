@@ -139,8 +139,7 @@ export default InlineLightbox;
 const Container = styled.div`
     display: flex;
     flex-direction: column;
-    max-height: calc(100% - 4em);
-    height: 800px;
+    height: 500px;
     width: 100%;
     overflow: hidden;
 `;

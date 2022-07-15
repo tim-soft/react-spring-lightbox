@@ -304,6 +304,7 @@ export default Image;
 
 const AnimatedImage = styled(animated.img)`
     width: auto;
+    height: auto;
     max-width: 100%;
     user-select: none;
     touch-action: none;

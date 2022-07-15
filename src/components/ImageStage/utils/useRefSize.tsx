@@ -25,25 +25,24 @@ const useRefSize = (refElem: React.RefObject<HTMLDivElement>): IUseRefSize => {
             return;
         }
         const handleResize = () => {
-            if (
-                element.clientHeight !== refSize.height ||
-                element.clientWidth !== refSize.width
-            ) {
+            const { height, width } = element.getBoundingClientRect();
+            console.log({ height, width });
+            if (height !== refSize.height || width !== refSize.width) {
                 setRefSize({
-                    height: element.clientHeight,
-                    width: element.clientWidth,
+                    height,
+                    width,
                 });
             }
         };
 
         // Add event listener for window resize events
-        element.addEventListener('resize', handleResize);
-        element.addEventListener('orientationchange', handleResize);
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('orientationchange', handleResize);
 
         // Remove event listener
         return () => {
-            element.removeEventListener('resize', handleResize);
-            element.addEventListener('orientationchange', handleResize);
+            window.removeEventListener('resize', handleResize);
+            window.addEventListener('orientationchange', handleResize);
         };
     }, [refElem, refSize.height, refSize.width]);
 
