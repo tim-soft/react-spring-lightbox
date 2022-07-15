@@ -1,9 +1,4 @@
-import React, {
-    useState,
-    useEffect,
-    ReactElement,
-    ReactHTMLElement,
-} from 'react';
+import React, { useState, useEffect } from 'react';
 
 type IUseRefSize = {
     /** ref height */
