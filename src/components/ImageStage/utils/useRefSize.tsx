@@ -26,7 +26,6 @@ const useRefSize = (refElem: React.RefObject<HTMLDivElement>): IUseRefSize => {
         }
         const handleResize = () => {
             const { height, width } = element.getBoundingClientRect();
-            console.log({ height, width });
             if (height !== refSize.height || width !== refSize.width) {
                 setRefSize({
                     height,
