@@ -28,23 +28,25 @@ type IImagePager = {
 /**
  * Gesture controlled surface that animates prev/next page changes via spring physics.
  */
-const ImagePager = ({
-    currentIndex,
-    images,
-    inline,
-    onClose,
-    onNext,
-    onPrev,
-    renderImageOverlay,
-    singleClickToZoom,
-}: IImagePager) => {
+const ImagePager = (
+    {
+        currentIndex,
+        images,
+        inline,
+        onClose,
+        onNext,
+        onPrev,
+        renderImageOverlay,
+        singleClickToZoom,
+    }: IImagePager,
+    containerRef: React.RefObject<HTMLDivElement>
+) => {
     const firstRender = useRef(true);
     const imageStageRef = useRef(
         [...Array(images.length)].map(() =>
             React.createRef<HTMLDivElement>()
         ) || []
     );
-    const containerRef = useRef(null);
     const { height: containerHeight, width: containerWidth } =
         useRefSize(containerRef);
 
@@ -194,7 +196,7 @@ const ImagePager = ({
     );
 
     return (
-        <ImagePagerContainer ref={containerRef}>
+        <ImagePagerContainer>
             {pagerSprings.map(({ display, x }, i) => (
                 <AnimatedImagePager
                     {...bind()}

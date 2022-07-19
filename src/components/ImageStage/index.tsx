@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import ImagePager from './components/ImagePager';
 import type { ImagesList } from '../../types/ImagesList';
@@ -51,10 +51,13 @@ const ImageStage = ({
     const onNextImage = canNext ? onNext : () => null;
     const onPrevImage = canPrev ? onPrev : () => null;
 
+    const containerRef = useRef(null);
+
     return (
         <ImageStageContainer
             className={className}
             data-testid="lightbox-image-stage"
+            ref={containerRef}
         >
             {renderPrevButton({ canPrev })}
             <ImagePager
@@ -72,7 +75,7 @@ const ImageStage = ({
     );
 };
 
-export default ImageStage;
+export default React.forwardRef(ImageStage);
 
 const ImageStageContainer = styled.div`
     position: relative;
