@@ -75,7 +75,7 @@ const ImagePager = ({
     // Determine the absolute height of the image pager
     useEffect(() => {
         const currImageRef = imageStageRef?.current[currentIndex];
-        let currPagerHeight = containerHeight;
+        let currPagerHeight: '100%' | number = '100%';
         if (currImageRef && currImageRef?.current) {
             console.log({ containerHeight });
             console.log({
