@@ -78,12 +78,15 @@ const ImagePager = (
     useEffect(() => {
         const currImageRef = imageStageRef?.current[currentIndex];
         let currPagerHeight = containerHeight;
+        console.log({ currPagerHeight });
+
         if (currImageRef && currImageRef?.current) {
             currPagerHeight = inline
                 ? currImageRef.current.clientHeight
                 : currImageRef.current.clientHeight - 50;
         }
         if (pagerHeight !== currPagerHeight) {
+            console.log({ currPagerHeight });
             setPagerHeight(currPagerHeight);
         }
     }, [currentIndex, inline, pagerHeight, containerHeight]);
