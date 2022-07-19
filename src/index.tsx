@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ImageStage, PageContainer, CreatePortal } from './components';
 import type { ImagesList } from './types/ImagesList';
 
@@ -71,6 +71,8 @@ const Lightbox = ({
     style = {},
     pageTransitionConfig = null,
 }: ILightboxProps) => {
+    const containerRef = useRef(null);
+
     // Handle event listeners for keyboard
     useEffect(() => {
         /**
@@ -129,6 +131,7 @@ const Lightbox = ({
                 onClose={onClose}
                 onNext={onNext}
                 onPrev={onPrev}
+                ref={containerRef}
                 renderImageOverlay={renderImageOverlay}
                 renderNextButton={renderNextButton}
                 renderPrevButton={renderPrevButton}
@@ -151,6 +154,7 @@ const Lightbox = ({
                     onClose={onClose}
                     onNext={onNext}
                     onPrev={onPrev}
+                    ref={containerRef}
                     renderImageOverlay={renderImageOverlay}
                     renderNextButton={renderNextButton}
                     renderPrevButton={renderPrevButton}

@@ -13,7 +13,9 @@ type IUseRefSize = {
  *
  * @returns {RefSize} An object containing the ref width and height
  */
-const useRefSize = (refElem: React.RefObject<HTMLDivElement>): IUseRefSize => {
+const useRefSize = (
+    refElem: React.MutableRefObject<HTMLDivElement>
+): IUseRefSize => {
     const [refSize, setRefSize] = useState<IUseRefSize>({
         height: window.innerHeight,
         width: window.innerWidth,

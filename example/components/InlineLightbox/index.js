@@ -77,6 +77,32 @@ const images = [
 ];
 
 const InlineLightbox = () => {
+    // const getRandomImages = async () => {
+    //     // const response = await fetch('https://picsum.photos/id/237/200/300');
+    //     const response = await fetch('https://picsum.photos/v2/list?limit=10');
+    //     console.log(response);
+
+    //     return response;
+    // };
+
+    // const imageUrl = 'https://picsum.photos/200/300';
+
+    // const reader = new FileReader();
+    // reader.onloadend = () => {
+    //     const base64data = reader.result;
+    //     console.log(base64data);
+    // };
+
+    // console.log(
+    //     (async () => {
+    //         const response = await fetch(imageUrl);
+    //         const imageBlob = await response.blob();
+    //         reader.readAsDataURL(imageBlob);
+    //     })()
+    // );
+
+    // const images = getRandomImages();
+    // console.log({ images });
     const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
     const [mounted, setMounted] = React.useState(false);
 

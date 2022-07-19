@@ -39,7 +39,7 @@ const ImagePager = (
         renderImageOverlay,
         singleClickToZoom,
     }: IImagePager,
-    containerRef: React.RefObject<HTMLDivElement>
+    containerRef: React.MutableRefObject<HTMLDivElement>
 ) => {
     const firstRender = useRef(true);
     const imageStageRef = useRef(
@@ -77,19 +77,13 @@ const ImagePager = (
     // Determine the absolute height of the image pager
     useEffect(() => {
         const currImageRef = imageStageRef?.current[currentIndex];
-        let currPagerHeight: '100%' | number = '100%';
+        let currPagerHeight = containerHeight;
         if (currImageRef && currImageRef?.current) {
-            console.log({ containerHeight });
-            console.log({
-                currentImageStageHeight: currImageRef.current.clientHeight,
-            });
             currPagerHeight = inline
                 ? currImageRef.current.clientHeight
                 : currImageRef.current.clientHeight - 50;
         }
-        console.log({ currPagerHeight, pagerHeight });
         if (pagerHeight !== currPagerHeight) {
-            console.log({ currPagerHeight, pagerHeight });
             setPagerHeight(currPagerHeight);
         }
     }, [currentIndex, inline, pagerHeight, containerHeight]);
@@ -248,7 +242,7 @@ const ImagePager = (
 
 ImagePager.displayName = 'ImagePager';
 
-export default ImagePager;
+export default React.forwardRef(ImagePager);
 
 const ImagePagerContainer = styled.div`
     height: 100%;

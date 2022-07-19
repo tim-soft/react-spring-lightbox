@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import ImagePager from './components/ImagePager';
 import type { ImagesList } from '../../types/ImagesList';
@@ -31,19 +31,22 @@ type IImageStageProps = {
 /**
  * Containing element for ImagePager and prev/next button controls
  */
-const ImageStage = ({
-    className = '',
-    currentIndex,
-    images,
-    inline,
-    onClose,
-    onNext,
-    onPrev,
-    renderImageOverlay,
-    renderNextButton,
-    renderPrevButton,
-    singleClickToZoom,
-}: IImageStageProps) => {
+const ImageStage = (
+    {
+        className = '',
+        currentIndex,
+        images,
+        inline,
+        onClose,
+        onNext,
+        onPrev,
+        renderImageOverlay,
+        renderNextButton,
+        renderPrevButton,
+        singleClickToZoom,
+    }: IImageStageProps,
+    containerRef: React.MutableRefObject<HTMLDivElement>
+) => {
     // Extra sanity check that the next/prev image exists before moving to it
     const canPrev = currentIndex > 0;
     const canNext = currentIndex + 1 < images.length;
@@ -51,13 +54,10 @@ const ImageStage = ({
     const onNextImage = canNext ? onNext : () => null;
     const onPrevImage = canPrev ? onPrev : () => null;
 
-    const containerRef = useRef(null);
-
     return (
         <ImageStageContainer
             className={className}
             data-testid="lightbox-image-stage"
-            ref={containerRef}
         >
             {renderPrevButton({ canPrev })}
             <ImagePager
@@ -67,6 +67,7 @@ const ImageStage = ({
                 onClose={onClose}
                 onNext={onNextImage}
                 onPrev={onPrevImage}
+                ref={containerRef}
                 renderImageOverlay={renderImageOverlay}
                 singleClickToZoom={singleClickToZoom}
             />
