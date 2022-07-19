@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useLayoutEffect } from 'react';
 import { useSprings, animated } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import styled from 'styled-components';
@@ -75,18 +75,22 @@ const ImagePager = ({
     // Determine the absolute height of the image pager
     useEffect(() => {
         const currImageRef = imageStageRef?.current[currentIndex];
-        let currPagerHeight = 0;
-
+        let currPagerHeight = containerHeight;
         if (currImageRef && currImageRef?.current) {
+            console.log({ containerHeight });
+            console.log({
+                currentImageStageHeight: currImageRef.current.clientHeight,
+            });
             currPagerHeight = inline
                 ? currImageRef.current.clientHeight
                 : currImageRef.current.clientHeight - 50;
         }
-
+        console.log({ currPagerHeight, pagerHeight });
         if (pagerHeight !== currPagerHeight) {
+            console.log({ currPagerHeight, pagerHeight });
             setPagerHeight(currPagerHeight);
         }
-    }, [currentIndex, inline, containerWidth, pagerHeight, containerHeight]);
+    }, [currentIndex, inline, pagerHeight, containerHeight]);
 
     // Animate page change if currentIndex changes
     useEffect(() => {

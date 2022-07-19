@@ -78,10 +78,12 @@ const images = [
 
 const InlineLightbox = () => {
     const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
+    const [mounted, setMounted] = React.useState(false);
 
     const inlineCarouselElement = React.useRef();
 
     React.useEffect(() => {
+        setMounted(true);
         inlineCarouselElement?.current?.addEventListener('wheel', preventWheel);
     }, [inlineCarouselElement]);
 
@@ -107,43 +109,49 @@ const InlineLightbox = () => {
     }
 
     return (
-        <Container ref={inlineCarouselElement}>
-            <Lightbox
-                currentIndex={currentImageIndex}
-                images={images}
-                inline
-                isOpen
-                onNext={gotoNext}
-                onPrev={gotoPrevious}
-                renderNextButton={({ canNext }) => (
-                    <StyledLightboxArrowButton
-                        disabled={!canNext}
-                        onClick={gotoNext}
-                        position="right"
-                    />
-                )}
-                renderPrevButton={({ canPrev }) => (
-                    <StyledLightboxArrowButton
-                        disabled={!canPrev}
-                        onClick={gotoPrevious}
-                        position="left"
-                    />
-                )}
-            />
-        </Container>
+        mounted && (
+            <Container ref={inlineCarouselElement}>
+                <Lightbox
+                    currentIndex={currentImageIndex}
+                    images={images}
+                    inline
+                    isOpen
+                    onNext={gotoNext}
+                    onPrev={gotoPrevious}
+                    renderNextButton={({ canNext }) => (
+                        <StyledLightboxArrowButton
+                            disabled={!canNext}
+                            onClick={gotoNext}
+                            position="right"
+                        />
+                    )}
+                    renderPrevButton={({ canPrev }) => (
+                        <StyledLightboxArrowButton
+                            disabled={!canPrev}
+                            onClick={gotoPrevious}
+                            position="left"
+                        />
+                    )}
+                    singleClickToZoom
+                />
+            </Container>
+        )
     );
 };
 
 export default InlineLightbox;
 
 const Container = styled.div`
-    display: flex;
+    display: inline-flex;
     flex-direction: column;
-    height: 500px;
     width: 100%;
+    height: 384px;
     overflow: hidden;
 `;
 
 const StyledLightboxArrowButton = styled(LightboxArrowButton)`
     z-index: 10;
+    button {
+        font-size: 25px;
+    }
 `;

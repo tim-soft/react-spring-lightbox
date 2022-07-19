@@ -88,6 +88,7 @@ const HomePage = () => (
         <InlineLightboxExampleContainer>
             <StyledH2>Inline Lightbox</StyledH2>
             <InlineLightboxExample>
+                {/* <InlineLightbox /> */}
                 <OtherInlineContent>🎉🎉Inline content🎉🎉</OtherInlineContent>
                 <InlineLightbox />
                 <OtherInlineContent>🎉🎉Inline content🎉🎉</OtherInlineContent>
@@ -104,6 +105,7 @@ const Container = styled.div`
     user-select: none;
     background: #272727;
     color: #fff;
+    padding: 50px 0;
 `;
 
 const GalleryLightboxExample = styled.div`
@@ -118,6 +120,7 @@ const InlineLightboxExampleContainer = styled.div`
 const InlineLightboxExample = styled.div`
     width: 100%;
     display: flex;
+    justify-content: center;
 `;
 
 const OtherInlineContent = styled.div`
@@ -126,6 +129,7 @@ const OtherInlineContent = styled.div`
     justify-content: center;
     align-items: center;
     padding: 10px;
+    background: blueviolet;
 `;
 
 const StyledH2 = styled.h2`
