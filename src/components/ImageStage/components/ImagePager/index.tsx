@@ -86,7 +86,7 @@ const ImagePager = (
         if (pagerHeight !== currPagerHeight) {
             setPagerHeight(currPagerHeight);
         }
-    }, [currentIndex, inline, pagerHeight]);
+    }, [currentIndex, inline, pagerHeight, images]);
 
     // Animate page change if currentIndex changes
     useEffect(() => {
