@@ -73,6 +73,8 @@ const ImagePager = (
         getPagePositions(i)
     );
 
+    const currentImage = images[currentIndex];
+
     //Determine the absolute height of the image pager
     useEffect(() => {
         const currImageRef = imageStageRef?.current[currentIndex];
@@ -86,7 +88,7 @@ const ImagePager = (
         if (pagerHeight !== currPagerHeight) {
             setPagerHeight(currPagerHeight);
         }
-    }, [currentIndex, inline, pagerHeight, images]);
+    }, [currentIndex, inline, pagerHeight, currentImage]);
 
     // Animate page change if currentIndex changes
     useEffect(() => {
