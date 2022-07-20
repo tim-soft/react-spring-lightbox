@@ -47,8 +47,7 @@ const ImagePager = (
             React.createRef<HTMLDivElement>()
         ) || []
     );
-    const { height: containerHeight, width: containerWidth } =
-        useRefSize(containerRef);
+    const { width: containerWidth } = useRefSize(containerRef);
 
     const [disableDrag, setDisableDrag] = useState<boolean>(false);
     const [pagerHeight, setPagerHeight] = useState<'100%' | number>('100%');
@@ -74,11 +73,10 @@ const ImagePager = (
         getPagePositions(i)
     );
 
-    // Determine the absolute height of the image pager
+    //Determine the absolute height of the image pager
     useEffect(() => {
         const currImageRef = imageStageRef?.current[currentIndex];
-        let currPagerHeight = containerHeight;
-        console.log({ currPagerHeight });
+        let currPagerHeight = 0;
 
         if (currImageRef && currImageRef?.current) {
             currPagerHeight = inline
@@ -86,10 +84,9 @@ const ImagePager = (
                 : currImageRef.current.clientHeight - 50;
         }
         if (pagerHeight !== currPagerHeight) {
-            console.log({ currPagerHeight });
             setPagerHeight(currPagerHeight);
         }
-    }, [currentIndex, inline, pagerHeight, containerHeight]);
+    }, [currentIndex, inline, pagerHeight]);
 
     // Animate page change if currentIndex changes
     useEffect(() => {
@@ -98,7 +95,6 @@ const ImagePager = (
             firstRender.current = false;
             return;
         }
-
         // Update page positions after prev/next page state change
         springsApi.start((i) => getPagePositions(i));
     }, [currentIndex, getPagePositions, springsApi]);

@@ -1,108 +1,10 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Lightbox from 'react-spring-lightbox';
 import LightboxArrowButton from '../GalleryLightbox/components/LightboxArrowButton';
 
-const images = [
-    {
-        alt: 'Windows 10 Dark Mode Setting',
-        caption: 'Windows 10 Dark Mode Setting',
-        height: 2035,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
-        width: 2848,
-    },
-    {
-        alt: 'macOS Mojave Dark Mode Setting',
-        caption: 'macOS Mojave Dark Mode Setting',
-        height: 1218,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png',
-        width: 1200,
-    },
-    {
-        alt: 'Android 9.0 Dark Mode Setting',
-        caption: 'Android 9.0 Dark Mode Setting',
-        height: 600,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
-        width: 1280,
-    },
-    {
-        alt: 'Windows 10 Dark Mode Setting#',
-        caption: 'Windows 10 Dark Mode Setting#',
-        height: 2035,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
-        width: 2848,
-    },
-    {
-        alt: 'Windows 10 Dark Mode Setting',
-        caption: 'Windows 10 Dark Mode Setting',
-        height: 2035,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
-        width: 2848,
-    },
-    {
-        alt: 'macOS Mojave Dark Mode Setting',
-        caption: 'macOS Mojave Dark Mode Setting',
-        height: 1218,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png',
-        width: 1200,
-    },
-    {
-        alt: 'Android 9.0 Dark Mode Setting',
-        caption: 'Android 9.0 Dark Mode Setting',
-        height: 600,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
-        width: 1280,
-    },
-    {
-        alt: 'Windows 10 Dark Mode Setting#',
-        caption: 'Windows 10 Dark Mode Setting#',
-        height: 2035,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
-        width: 2848,
-    },
-    {
-        alt: 'Android 9.0 Dark Mode Setting',
-        caption: 'Android 9.0 Dark Mode Setting',
-        height: 600,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
-        width: 1280,
-    },
-    {
-        alt: 'Windows 10 Dark Mode Setting#',
-        caption: 'Windows 10 Dark Mode Setting#',
-        height: 2035,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
-        width: 2848,
-    },
-];
-
-const InlineLightbox = () => {
-    // const getRandomImages = async () => {
-    //     // const response = await fetch('https://picsum.photos/id/237/200/300');
-    //     const response = await fetch('https://picsum.photos/v2/list?limit=10');
-    //     console.log(response);
-
-    //     return response;
-    // };
-
-    // const imageUrl = 'https://picsum.photos/200/300';
-
-    // const reader = new FileReader();
-    // reader.onloadend = () => {
-    //     const base64data = reader.result;
-    //     console.log(base64data);
-    // };
-
-    // console.log(
-    //     (async () => {
-    //         const response = await fetch(imageUrl);
-    //         const imageBlob = await response.blob();
-    //         reader.readAsDataURL(imageBlob);
-    //     })()
-    // );
-
-    // const images = getRandomImages();
-    // console.log({ images });
+const InlineLightbox = ({ images }) => {
     const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
     const [mounted, setMounted] = React.useState(false);
 
@@ -166,6 +68,18 @@ const InlineLightbox = () => {
 };
 
 export default InlineLightbox;
+
+InlineLightbox.propTypes = {
+    images: PropTypes.arrayOf(
+        PropTypes.shape({
+            alt: PropTypes.string.isRequired,
+            caption: PropTypes.string.isRequired,
+            height: PropTypes.number,
+            src: PropTypes.string.isRequired,
+            width: PropTypes.number,
+        })
+    ).isRequired,
+};
 
 const Container = styled.div`
     display: inline-flex;
