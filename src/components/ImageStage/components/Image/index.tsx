@@ -19,6 +19,8 @@ const defaultImageTransform = {
 type IImageProps = {
     /** Any valid <img /> props to pass to the lightbox img element ie src, alt, caption etc*/
     imgProps: ImagesListItem;
+    /** Affects Width calculation method, depending on whether the Lightbox is Inline or not */
+    inline: boolean;
     /** True if this image is currently shown in pager, otherwise false */
     isCurrentImage: boolean;
     /** Fixed height of the image stage, used to restrict maximum height of images */
@@ -36,6 +38,7 @@ type IImageProps = {
  */
 const Image = ({
     imgProps: { style: imgStyleProp, ...restImgProps },
+    inline,
     isCurrentImage,
     pagerHeight,
     pagerIsDragging,
@@ -227,6 +230,7 @@ const Image = ({
             drag: {
                 filterTaps: true,
             },
+            enabled: !inline,
             eventOptions: {
                 passive: false,
             },
@@ -275,9 +279,12 @@ const Image = ({
                 translateY: newTranslateY,
             });
         },
+        enabled: !inline,
         latency: singleClickToZoom ? 0 : 200,
         ref: imageRef,
     });
+
+    console.log({ inline });
 
     return (
         <AnimatedImage

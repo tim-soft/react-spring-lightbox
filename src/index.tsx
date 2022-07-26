@@ -120,11 +120,12 @@ const Lightbox = ({
             document.removeEventListener('keydown', preventBackgroundScroll);
         };
     });
+
     const imageStage = (
         <ImageStage
             currentIndex={currentIndex}
             images={images}
-            inline
+            inline={inline}
             onClose={onClose}
             onNext={onNext}
             onPrev={onPrev}
@@ -134,9 +135,11 @@ const Lightbox = ({
             singleClickToZoom={singleClickToZoom}
         />
     );
+
     if (inline) {
         return imageStage;
     }
+
     return (
         <CreatePortal>
             <PageContainer

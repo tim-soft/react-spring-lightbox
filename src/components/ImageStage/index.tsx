@@ -12,7 +12,7 @@ type IImageStageProps = {
     /** Array of image objects to be shown in Lightbox */
     images: ImagesList;
     /** Affects Width calculation method, depending on whether the Lightbox is Inline or not */
-    inline?: boolean;
+    inline: boolean;
     /** Function that closes the Lightbox */
     onClose?: () => void;
     /** Function that can be called to disable dragging in the pager */
