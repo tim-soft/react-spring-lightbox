@@ -284,8 +284,6 @@ const Image = ({
         ref: imageRef,
     });
 
-    console.log({ inline });
-
     return (
         <AnimatedImage
             className="lightbox-image"
