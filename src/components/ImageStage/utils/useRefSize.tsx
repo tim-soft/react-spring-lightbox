@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 type RefSize = {
-    height: number;
-    width: number;
+    height: number | undefined;
+    width: number | undefined;
 };
 
-type IUseRefSize = [refSize: RefSize, elementRef: (node: any) => void];
+type Node = HTMLDivElement | null;
+
+type IUseRefSize = [refSize: RefSize, elementRef: (node: any) => void | null];
 
 /**
  * React Hook that returns the current ref size
@@ -15,9 +17,9 @@ type IUseRefSize = [refSize: RefSize, elementRef: (node: any) => void];
  * @returns {elementRef} A callback ref to be used on the container being measured
  */
 const useRefSize = (): IUseRefSize => {
-    const ref = useRef(null);
+    const ref = useRef<HTMLDivElement>(null);
 
-    const [node, setNode] = useState(null);
+    const [node, setNode] = useState<Node>(null);
     const [refSize, setRefSize] = useState<RefSize>({
         height: ref?.current?.clientHeight,
         width: ref?.current?.clientWidth,
@@ -55,6 +57,7 @@ const useRefSize = (): IUseRefSize => {
             };
         }
     }, [node, refSize.height, refSize.width]);
+
     return [refSize, elementRef];
 };
 
