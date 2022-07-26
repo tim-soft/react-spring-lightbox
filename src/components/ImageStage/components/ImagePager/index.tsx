@@ -1,14 +1,17 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { useSprings, animated } from '@react-spring/web';
+import { animated, useSprings } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
-import styled from 'styled-components';
 import Image from '../Image';
+import React, { useEffect, useRef, useState } from 'react';
+import styled from 'styled-components';
 import type { ImagesList } from '../../../../types/ImagesList';
-import useRefSize from '../../utils/useRefSize';
 
 type IImagePager = {
     /** Index of image in images array that is currently shown */
     currentIndex: number;
+    /** image stage height */
+    imageStageHeight: number;
+    /** image stage width */
+    imageStageWidth: number;
     /** Array of image objects to be shown in Lightbox */
     images: ImagesList;
     /** Affects Width calculation method, depending on whether the Lightbox is Inline or not */
@@ -28,40 +31,47 @@ type IImagePager = {
 /**
  * Gesture controlled surface that animates prev/next page changes via spring physics.
  */
-const ImagePager = (
-    {
-        currentIndex,
-        images,
-        inline,
-        onClose,
-        onNext,
-        onPrev,
-        renderImageOverlay,
-        singleClickToZoom,
-    }: IImagePager,
-    containerRef: React.MutableRefObject<HTMLDivElement>
-) => {
+const ImagePager = ({
+    currentIndex,
+    images,
+    imageStageHeight,
+    imageStageWidth,
+    inline,
+    onClose,
+    onNext,
+    onPrev,
+    renderImageOverlay,
+    singleClickToZoom,
+}: IImagePager) => {
     const firstRender = useRef(true);
-    const imageStageRef = useRef(
-        [...Array(images.length)].map(() =>
-            React.createRef<HTMLDivElement>()
-        ) || []
-    );
-    const { width: containerWidth } = useRefSize(containerRef);
 
     const [disableDrag, setDisableDrag] = useState<boolean>(false);
     const [pagerHeight, setPagerHeight] = useState<'100%' | number>('100%');
     const [isDragging, setIsDragging] = useState<boolean>(false);
 
+    //Determine the absolute height of the image pager
+    useEffect(() => {
+        const currPagerHeight = inline
+            ? imageStageHeight
+            : imageStageHeight - 50;
+
+        if (currPagerHeight !== pagerHeight) {
+            setPagerHeight(currPagerHeight);
+        }
+    }, [inline, pagerHeight, imageStageHeight]);
+
     // Generate page positions based on current index
     const getPagePositions = React.useCallback(
         (i: number, down = false, xDelta = 0) => {
-            const x = (i - currentIndex) * containerWidth + (down ? xDelta : 0);
-            if (i < currentIndex - 1 || i > currentIndex + 1)
+            const x =
+                (i - currentIndex) * imageStageWidth + (down ? xDelta : 0);
+
+            if (i < currentIndex - 1 || i > currentIndex + 1) {
                 return { display: 'none', x };
+            }
             return { display: 'flex', x };
         },
-        [currentIndex, containerWidth]
+        [currentIndex, imageStageWidth]
     );
 
     /**
@@ -72,21 +82,6 @@ const ImagePager = (
     const [pagerSprings, springsApi] = useSprings(images.length, (i) =>
         getPagePositions(i)
     );
-
-    //Determine the absolute height of the image pager
-    useEffect(() => {
-        const currImageRef = imageStageRef?.current[currentIndex];
-        let currPagerHeight = 0;
-
-        if (currImageRef && currImageRef?.current) {
-            currPagerHeight = inline
-                ? currImageRef.current.clientHeight
-                : currImageRef.current.clientHeight - 50;
-        }
-        if (pagerHeight !== currPagerHeight) {
-            setPagerHeight(currPagerHeight);
-        }
-    }, [currentIndex, inline, pagerHeight, images]);
 
     // Animate page change if currentIndex changes
     useEffect(() => {
@@ -118,12 +113,18 @@ const ImagePager = (
                 tap,
             }) => {
                 // Disable drag if Image has been zoomed in to allow for panning
-                if (disableDrag || xMovement === 0 || tap) return;
-                if (!isDragging) setIsDragging(true);
+                if (disableDrag || xMovement === 0 || tap) {
+                    return;
+                }
+                if (!isDragging) {
+                    setIsDragging(true);
+                }
 
                 const isHorizontalDrag = Math.abs(xDir) > 0.7;
                 const draggedFarEnough =
-                    down && isHorizontalDrag && distance > containerWidth / 3.5;
+                    down &&
+                    isHorizontalDrag &&
+                    distance > imageStageWidth / 3.5;
                 const draggedFastEnough =
                     down && isHorizontalDrag && velocity > 2;
 
@@ -134,8 +135,11 @@ const ImagePager = (
                     // Cancel gesture event
                     cancel();
 
-                    if (goToIndex > 0) onNext();
-                    else if (goToIndex < 0) onPrev();
+                    if (goToIndex > 0) {
+                        onNext();
+                    } else if (goToIndex < 0) {
+                        onPrev();
+                    }
 
                     return;
                 }
@@ -159,7 +163,9 @@ const ImagePager = (
             },
             onWheel: ({ velocity, direction: [xDir, yDir], ctrlKey }) => {
                 // Disable drag if Image has been zoomed in to allow for panning
-                if (ctrlKey || disableDrag || velocity === 0) return;
+                if (ctrlKey || disableDrag || velocity === 0) {
+                    return;
+                }
 
                 if (!isDragging) {
                     setIsDragging(true);
@@ -171,8 +177,11 @@ const ImagePager = (
                 if (draggedFastEnough) {
                     const goToIndex = xDir + yDir > 0 ? -1 : 1;
 
-                    if (goToIndex > 0) onNext();
-                    else if (goToIndex < 0) onPrev();
+                    if (goToIndex > 0) {
+                        onNext();
+                    } else if (goToIndex < 0) {
+                        onPrev();
+                    }
                 }
             },
             onWheelEnd: () => {
@@ -204,7 +213,6 @@ const ImagePager = (
                             );
                         }
                     }}
-                    ref={imageStageRef.current[i]}
                     role="presentation"
                     style={{
                         display,
@@ -241,7 +249,7 @@ const ImagePager = (
 
 ImagePager.displayName = 'ImagePager';
 
-export default React.forwardRef(ImagePager);
+export default ImagePager;
 
 const ImagePagerContainer = styled.div`
     height: 100%;

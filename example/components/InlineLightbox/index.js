@@ -13,7 +13,9 @@ const InlineLightbox = ({ images }) => {
     React.useEffect(() => {
         setMounted(true);
         inlineCarouselElement?.current?.addEventListener('wheel', preventWheel);
-    }, [inlineCarouselElement]);
+
+        setCurrentImageIndex(0);
+    }, [inlineCarouselElement, images]);
 
     const preventWheel = (e) => {
         e.preventDefault();

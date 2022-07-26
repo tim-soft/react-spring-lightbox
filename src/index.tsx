@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { ImageStage, PageContainer, CreatePortal } from './components';
 import type { ImagesList } from './types/ImagesList';
 
@@ -71,8 +71,6 @@ const Lightbox = ({
     style = {},
     pageTransitionConfig = null,
 }: ILightboxProps) => {
-    const containerRef = useRef(null);
-
     // Handle event listeners for keyboard
     useEffect(() => {
         /**
@@ -122,22 +120,22 @@ const Lightbox = ({
             document.removeEventListener('keydown', preventBackgroundScroll);
         };
     });
+    const imageStage = (
+        <ImageStage
+            currentIndex={currentIndex}
+            images={images}
+            inline
+            onClose={onClose}
+            onNext={onNext}
+            onPrev={onPrev}
+            renderImageOverlay={renderImageOverlay}
+            renderNextButton={renderNextButton}
+            renderPrevButton={renderPrevButton}
+            singleClickToZoom={singleClickToZoom}
+        />
+    );
     if (inline) {
-        return (
-            <ImageStage
-                currentIndex={currentIndex}
-                images={images}
-                inline
-                onClose={onClose}
-                onNext={onNext}
-                onPrev={onPrev}
-                ref={containerRef}
-                renderImageOverlay={renderImageOverlay}
-                renderNextButton={renderNextButton}
-                renderPrevButton={renderPrevButton}
-                singleClickToZoom={singleClickToZoom}
-            />
-        );
+        return imageStage;
     }
     return (
         <CreatePortal>
@@ -148,18 +146,7 @@ const Lightbox = ({
                 style={style}
             >
                 {renderHeader()}
-                <ImageStage
-                    currentIndex={currentIndex}
-                    images={images}
-                    onClose={onClose}
-                    onNext={onNext}
-                    onPrev={onPrev}
-                    ref={containerRef}
-                    renderImageOverlay={renderImageOverlay}
-                    renderNextButton={renderNextButton}
-                    renderPrevButton={renderPrevButton}
-                    singleClickToZoom={singleClickToZoom}
-                />
+                {imageStage}
                 {renderFooter()}
             </PageContainer>
         </CreatePortal>

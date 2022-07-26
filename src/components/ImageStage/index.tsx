@@ -1,6 +1,7 @@
+import ImagePager from './components/ImagePager';
 import React from 'react';
 import styled from 'styled-components';
-import ImagePager from './components/ImagePager';
+import useRefSize from './utils/useRefSize';
 import type { ImagesList } from '../../types/ImagesList';
 
 type IImageStageProps = {
@@ -31,22 +32,19 @@ type IImageStageProps = {
 /**
  * Containing element for ImagePager and prev/next button controls
  */
-const ImageStage = (
-    {
-        className = '',
-        currentIndex,
-        images,
-        inline,
-        onClose,
-        onNext,
-        onPrev,
-        renderImageOverlay,
-        renderNextButton,
-        renderPrevButton,
-        singleClickToZoom,
-    }: IImageStageProps,
-    containerRef: React.MutableRefObject<HTMLDivElement>
-) => {
+const ImageStage = ({
+    className = '',
+    currentIndex,
+    images,
+    inline,
+    onClose,
+    onNext,
+    onPrev,
+    renderImageOverlay,
+    renderNextButton,
+    renderPrevButton,
+    singleClickToZoom,
+}: IImageStageProps) => {
     // Extra sanity check that the next/prev image exists before moving to it
     const canPrev = currentIndex > 0;
     const canNext = currentIndex + 1 < images.length;
@@ -54,20 +52,25 @@ const ImageStage = (
     const onNextImage = canNext ? onNext : () => null;
     const onPrevImage = canPrev ? onPrev : () => null;
 
+    const [{ height: containerHeight, width: containerWidth }, containerRef] =
+        useRefSize();
+
     return (
         <ImageStageContainer
             className={className}
             data-testid="lightbox-image-stage"
+            ref={containerRef}
         >
             {renderPrevButton({ canPrev })}
             <ImagePager
                 currentIndex={currentIndex}
                 images={images}
+                imageStageHeight={containerHeight}
+                imageStageWidth={containerWidth}
                 inline={inline}
                 onClose={onClose}
                 onNext={onNextImage}
                 onPrev={onPrevImage}
-                ref={containerRef}
                 renderImageOverlay={renderImageOverlay}
                 singleClickToZoom={singleClickToZoom}
             />
@@ -76,7 +79,7 @@ const ImageStage = (
     );
 };
 
-export default React.forwardRef(ImageStage);
+export default ImageStage;
 
 const ImageStageContainer = styled.div`
     position: relative;

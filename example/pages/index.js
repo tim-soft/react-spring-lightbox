@@ -74,18 +74,51 @@ let images = [
         src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
         width: 2848,
     },
+    {
+        alt: 'macOS Mojave Dark Mode Setting',
+        caption: 'macOS Mojave Dark Mode Setting',
+        height: 1218,
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png',
+        width: 1200,
+    },
+    {
+        alt: 'Android 9.0 Dark Mode Setting',
+        caption: 'Android 9.0 Dark Mode Setting',
+        height: 600,
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
+        width: 1280,
+    },
+    {
+        alt: 'Windows 10 Dark Mode Setting#',
+        caption: 'Windows 10 Dark Mode Setting#',
+        height: 2035,
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
+        width: 2848,
+    },
+    {
+        alt: 'Android 9.0 Dark Mode Setting',
+        caption: 'Android 9.0 Dark Mode Setting',
+        height: 600,
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
+        width: 1280,
+    },
+    {
+        alt: 'Windows 10 Dark Mode Setting#',
+        caption: 'Windows 10 Dark Mode Setting#',
+        height: 2035,
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
+        width: 2848,
+    },
 ];
 
 const HomePage = () => {
-    const [inlineImages, setInlineImages] = React.useState(images);
-
     const getRandomInt = (min, max) => {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
     };
 
-    const getRandomImageURL = () => {
+    const getRandomImageURL = React.useCallback(() => {
         let randomURL;
         randomURL = `https://picsum.photos/id/${getRandomInt(
             1,
@@ -93,21 +126,37 @@ const HomePage = () => {
         )}/1920/1280`;
 
         return randomURL;
-    };
+    }, []);
 
-    const getRandomImages = (imageArray) => {
-        const altCaption = 'picsum photo';
-        const randomizedArray = imageArray.map((imageObj) => {
-            const imageURL = getRandomImageURL();
-            return {
-                ...imageObj,
-                alt: altCaption,
-                caption: altCaption,
-                src: imageURL,
-            };
-        });
-        return randomizedArray;
-    };
+    const getRandomImages = React.useCallback(
+        (imageArray) => {
+            const altCaption = 'picsum photo';
+            const randomizedArray = imageArray.map((imageObj) => {
+                const imageURL = getRandomImageURL();
+                return {
+                    ...imageObj,
+                    alt: altCaption,
+                    caption: altCaption,
+                    src: imageURL,
+                };
+            });
+            return randomizedArray;
+        },
+        [getRandomImageURL]
+    );
+
+    const [inlineImages, setInlineImages] = React.useState(images);
+    const [showLargeArray, setShowLargeArray] = React.useState(false);
+
+    React.useEffect(() => {
+        const largeArray = getRandomImages([...Array(15)]);
+        const smallArray = getRandomImages([...Array(1)]);
+        if (showLargeArray) {
+            setInlineImages(largeArray);
+        } else {
+            setInlineImages(smallArray);
+        }
+    }, [showLargeArray, getRandomImages]);
 
     return (
         <Container>
@@ -137,6 +186,9 @@ const HomePage = () => {
                     }
                 >
                     Generate new images
+                </Button>
+                <Button onClick={() => setShowLargeArray(!showLargeArray)}>
+                    Switch Image Array
                 </Button>
             </InlineLightboxExampleContainer>
         </Container>
