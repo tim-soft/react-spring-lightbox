@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 type RefSize = {
-    height: number | undefined;
-    width: number | undefined;
+    height: number;
+    width: number;
 };
 
 type Node = HTMLDivElement | null;
@@ -21,8 +21,8 @@ const useRefSize = (): IUseRefSize => {
 
     const [node, setNode] = useState<Node>(null);
     const [refSize, setRefSize] = useState<RefSize>({
-        height: ref?.current?.clientHeight,
-        width: ref?.current?.clientWidth,
+        height: ref.current?.clientHeight || 0,
+        width: ref.current?.clientWidth || 0,
     });
 
     const elementRef = useCallback((node) => {
@@ -32,8 +32,8 @@ const useRefSize = (): IUseRefSize => {
     }, []);
 
     useEffect(() => {
-        if (node) {
-            const handleResize = () => {
+        const handleResize = () => {
+            if (node) {
                 const height = node.clientHeight;
                 const width = node.clientWidth;
                 if (height !== refSize.height || width !== refSize.width) {
@@ -42,21 +42,21 @@ const useRefSize = (): IUseRefSize => {
                         width,
                     });
                 }
-            };
+            }
+        };
+        if (node) {
             setRefSize({
                 height: node.clientHeight,
                 width: node.clientWidth,
             });
-
-            window.addEventListener('resize', handleResize);
-            window.addEventListener('orientationchange', handleResize);
-
-            return () => {
-                window.removeEventListener('resize', handleResize);
-                window.removeEventListener('orientationchange', handleResize);
-            };
         }
-        return;
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('orientationchange', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            window.removeEventListener('orientationchange', handleResize);
+        };
     }, [node, refSize.height, refSize.width]);
 
     return [refSize, elementRef];
