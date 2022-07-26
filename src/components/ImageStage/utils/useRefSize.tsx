@@ -28,6 +28,11 @@ const useRefSize = (): IUseRefSize => {
     const elementRef = useCallback((node) => {
         if (node !== null) {
             setNode(node);
+
+            setRefSize({
+                height: node.clientHeight,
+                width: node.clientWidth,
+            });
         }
     }, []);
 
@@ -44,12 +49,7 @@ const useRefSize = (): IUseRefSize => {
                 }
             }
         };
-        if (node) {
-            setRefSize({
-                height: node.clientHeight,
-                width: node.clientWidth,
-            });
-        }
+
         window.addEventListener('resize', handleResize);
         window.addEventListener('orientationchange', handleResize);
 

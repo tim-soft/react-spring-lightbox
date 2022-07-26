@@ -62,18 +62,20 @@ const ImageStage = ({
             ref={containerRef}
         >
             {renderPrevButton({ canPrev })}
-            <ImagePager
-                currentIndex={currentIndex}
-                images={images}
-                imageStageHeight={containerHeight}
-                imageStageWidth={containerWidth}
-                inline={inline}
-                onClose={onClose}
-                onNext={onNextImage}
-                onPrev={onPrevImage}
-                renderImageOverlay={renderImageOverlay}
-                singleClickToZoom={singleClickToZoom}
-            />
+            {containerWidth && (
+                <ImagePager
+                    currentIndex={currentIndex}
+                    images={images}
+                    imageStageHeight={containerHeight}
+                    imageStageWidth={containerWidth}
+                    inline={inline}
+                    onClose={onClose}
+                    onNext={onNextImage}
+                    onPrev={onPrevImage}
+                    renderImageOverlay={renderImageOverlay}
+                    singleClickToZoom={singleClickToZoom}
+                />
+            )}
             {renderNextButton({ canNext })}
         </ImageStageContainer>
     );
