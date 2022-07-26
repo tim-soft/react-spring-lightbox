@@ -56,6 +56,7 @@ const useRefSize = (): IUseRefSize => {
                 window.removeEventListener('orientationchange', handleResize);
             };
         }
+        return;
     }, [node, refSize.height, refSize.width]);
 
     return [refSize, elementRef];
