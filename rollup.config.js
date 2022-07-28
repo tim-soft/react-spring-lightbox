@@ -3,6 +3,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import filesize from 'rollup-plugin-filesize';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
+// eslint-disable-next-line import/no-named-as-default
 import babel from '@rollup/plugin-babel';
 
 import pkg from './package.json';
