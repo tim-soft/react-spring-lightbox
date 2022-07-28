@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 
 type IUseDoubleClickProps = {
+    /** Set to false to disable onDoubleClick/onSingleClick  */
+    enabled?: boolean;
     /** The amount of time (in milliseconds) to wait before differentiating a single from a double click */
     latency?: number;
     /** A callback function for double click events */
@@ -18,6 +20,7 @@ type IUseDoubleClickProps = {
 const useDoubleClick = ({
     ref,
     latency = 300,
+    enabled = true,
     onSingleClick = () => null,
     onDoubleClick = () => null,
 }: IUseDoubleClickProps) => {
@@ -27,14 +30,16 @@ const useDoubleClick = ({
         let timer: ReturnType<typeof setTimeout>;
 
         const handleClick = (e: MouseEvent) => {
-            clickCount += 1;
+            if (enabled) {
+                clickCount += 1;
 
-            timer = setTimeout(() => {
-                if (clickCount === 1) onSingleClick(e);
-                else if (clickCount === 2) onDoubleClick(e);
+                timer = setTimeout(() => {
+                    if (clickCount === 1) onSingleClick(e);
+                    else if (clickCount === 2) onDoubleClick(e);
 
-                clickCount = 0;
-            }, latency);
+                    clickCount = 0;
+                }, latency);
+            }
         };
 
         // Add event listener for click events

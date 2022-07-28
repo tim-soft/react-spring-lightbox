@@ -1,12 +1,12 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useSpring, animated, to } from '@react-spring/web';
-import { useGesture } from 'react-use-gesture';
-import styled from 'styled-components';
+import { animated, to, useSpring } from '@react-spring/web';
 import {
-    useDoubleClick,
-    imageIsOutOfBounds,
     getTranslateOffsetsFromScale,
+    imageIsOutOfBounds,
+    useDoubleClick,
 } from '../../utils';
+import { useGesture } from 'react-use-gesture';
+import React, { useEffect, useRef, useState } from 'react';
+import styled from 'styled-components';
 import type { ImagesListItem } from '../../../../types/ImagesList';
 
 const defaultImageTransform = {
@@ -19,6 +19,8 @@ const defaultImageTransform = {
 type IImageProps = {
     /** Any valid <img /> props to pass to the lightbox img element ie src, alt, caption etc*/
     imgProps: ImagesListItem;
+    /** Affects Width calculation method, depending on whether the Lightbox is Inline or not */
+    inline: boolean;
     /** True if this image is currently shown in pager, otherwise false */
     isCurrentImage: boolean;
     /** Fixed height of the image stage, used to restrict maximum height of images */
@@ -36,6 +38,7 @@ type IImageProps = {
  */
 const Image = ({
     imgProps: { style: imgStyleProp, ...restImgProps },
+    inline,
     isCurrentImage,
     pagerHeight,
     pagerIsDragging,
@@ -102,8 +105,12 @@ const Image = ({
                     setIsPanningImage(true);
                 }
 
-                if (touches > 1) return;
-                if (pinching || scale.get() <= 1) return;
+                if (touches > 1) {
+                    return;
+                }
+                if (pinching || scale.get() <= 1) {
+                    return;
+                }
 
                 // Prevent dragging image out of viewport
                 if (scale.get() > 1 && imageIsOutOfBounds(imageRef)) {
@@ -148,7 +155,9 @@ const Image = ({
                 setDisableDrag(true);
 
                 // Disable click to zoom during pinch
-                if (xMovement && !isPanningImage) setIsPanningImage(true);
+                if (xMovement && !isPanningImage) {
+                    setIsPanningImage(true);
+                }
 
                 // Don't calculate new translate offsets on final frame
                 if (last) {
@@ -187,22 +196,26 @@ const Image = ({
                     });
 
                 // Restrict the amount of zoom between half and 3x image size
-                if (pinchScale < 0.5)
+                if (pinchScale < 0.5) {
                     springApi.start({ pinching: true, scale: 0.5 });
-                else if (pinchScale > 3.0)
+                } else if (pinchScale > 3.0) {
                     springApi.start({ pinching: true, scale: 3.0 });
-                else
+                } else {
                     springApi.start({
                         pinching: true,
                         scale: pinchScale,
                         translateX: newTranslateX,
                         translateY: newTranslateY,
                     });
+                }
             },
             onPinchEnd: () => {
                 if (!pagerIsDragging) {
-                    if (scale.get() > 1) setDisableDrag(true);
-                    else springApi.start(defaultImageTransform);
+                    if (scale.get() > 1) {
+                        setDisableDrag(true);
+                    } else {
+                        springApi.start(defaultImageTransform);
+                    }
                     // Add small timeout to prevent onClick handler from firing after panning
                     setTimeout(() => setIsPanningImage(false), 100);
                 }
@@ -217,6 +230,7 @@ const Image = ({
             drag: {
                 filterTaps: true,
             },
+            enabled: !inline,
             eventOptions: {
                 passive: false,
             },
@@ -265,6 +279,7 @@ const Image = ({
                 translateY: newTranslateY,
             });
         },
+        enabled: !inline,
         latency: singleClickToZoom ? 0 : 200,
         ref: imageRef,
     });
@@ -304,6 +319,7 @@ export default Image;
 
 const AnimatedImage = styled(animated.img)`
     width: auto;
+    height: auto;
     max-width: 100%;
     user-select: none;
     touch-action: none;

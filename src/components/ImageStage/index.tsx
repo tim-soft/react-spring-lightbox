@@ -1,15 +1,20 @@
+import ImagePager from './components/ImagePager';
 import React from 'react';
 import styled from 'styled-components';
-import ImagePager from './components/ImagePager';
+import useRefSize from './utils/useRefSize';
 import type { ImagesList } from '../../types/ImagesList';
 
 type IImageStageProps = {
+    /** classnames are applied to the root ImageStage component */
+    className?: string;
     /** Index of image in images array that is currently shown */
     currentIndex: number;
     /** Array of image objects to be shown in Lightbox */
     images: ImagesList;
+    /** Affects Width calculation method, depending on whether the Lightbox is Inline or not */
+    inline: boolean;
     /** Function that closes the Lightbox */
-    onClose: () => void;
+    onClose?: () => void;
     /** Function that can be called to disable dragging in the pager */
     onNext: () => void;
     /** True if this image is currently shown in pager, otherwise false */
@@ -28,8 +33,10 @@ type IImageStageProps = {
  * Containing element for ImagePager and prev/next button controls
  */
 const ImageStage = ({
+    className = '',
     currentIndex,
     images,
+    inline,
     onClose,
     onNext,
     onPrev,
@@ -42,21 +49,33 @@ const ImageStage = ({
     const canPrev = currentIndex > 0;
     const canNext = currentIndex + 1 < images.length;
 
+    const onNextImage = canNext ? onNext : () => null;
+    const onPrevImage = canPrev ? onPrev : () => null;
+
+    const [{ height: containerHeight, width: containerWidth }, containerRef] =
+        useRefSize();
+
     return (
         <ImageStageContainer
-            className="lightbox-image-stage"
+            className={className}
             data-testid="lightbox-image-stage"
+            ref={containerRef}
         >
             {renderPrevButton({ canPrev })}
-            <ImagePager
-                currentIndex={currentIndex}
-                images={images}
-                onClose={onClose}
-                onNext={onNext}
-                onPrev={onPrev}
-                renderImageOverlay={renderImageOverlay}
-                singleClickToZoom={singleClickToZoom}
-            />
+            {containerWidth && (
+                <ImagePager
+                    currentIndex={currentIndex}
+                    images={images}
+                    imageStageHeight={containerHeight}
+                    imageStageWidth={containerWidth}
+                    inline={inline}
+                    onClose={onClose}
+                    onNext={onNextImage}
+                    onPrev={onPrevImage}
+                    renderImageOverlay={renderImageOverlay}
+                    singleClickToZoom={singleClickToZoom}
+                />
+            )}
             {renderNextButton({ canNext })}
         </ImageStageContainer>
     );
@@ -65,7 +84,6 @@ const ImageStage = ({
 export default ImageStage;
 
 const ImageStageContainer = styled.div`
-    flex-grow: 1;
     position: relative;
     height: 100%;
     width: 100%;

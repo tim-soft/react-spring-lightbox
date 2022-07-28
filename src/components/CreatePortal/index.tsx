@@ -47,13 +47,13 @@ class CreatePortal extends React.Component<ICreatePortal> {
 
     preventWheel = (e: WheelEvent) => e.preventDefault();
 
-    render(): React.ReactPortal | null {
+    render() {
         // Return null during SSR
         if (this.portalContainer === undefined) return null;
 
         const { children } = this.props;
 
-        return ReactDOM.createPortal(children, this.portalContainer);
+        return <>{ReactDOM.createPortal(children, this.portalContainer)}</>;
     }
 }
 

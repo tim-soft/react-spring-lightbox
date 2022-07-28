@@ -11,10 +11,12 @@ type ILightboxProps = {
     currentIndex: number;
     /** Array of images to be shown in Lightbox, each image object may contain any valid 'img' attribute with the exceptions of 'draggable', 'onClick', 'onDragStart' and 'ref' */
     images: ImagesList;
+    /** Determines whether the Lightbox returns just an Inline carousel (ImageStage) */
+    inline?: boolean;
     /** Flag that dictates if the lightbox is open or closed */
     isOpen: boolean;
     /** Function that closes the Lightbox */
-    onClose: () => void;
+    onClose?: () => void;
     /** Function that changes currentIndex to next image in images */
     onNext: () => void;
     /** Function that changes currentIndex to previous image in images */
@@ -54,6 +56,7 @@ type ILightboxProps = {
 const Lightbox = ({
     isOpen,
     onClose,
+    inline = false,
     images = [],
     currentIndex,
     onPrev,
@@ -100,7 +103,7 @@ const Lightbox = ({
                         onNext();
                         break;
                     case 'Escape':
-                        onClose();
+                        onClose && onClose();
                         break;
                     default:
                         e.preventDefault();
@@ -118,6 +121,25 @@ const Lightbox = ({
         };
     });
 
+    const imageStage = (
+        <ImageStage
+            currentIndex={currentIndex}
+            images={images}
+            inline={inline}
+            onClose={onClose}
+            onNext={onNext}
+            onPrev={onPrev}
+            renderImageOverlay={renderImageOverlay}
+            renderNextButton={renderNextButton}
+            renderPrevButton={renderPrevButton}
+            singleClickToZoom={singleClickToZoom}
+        />
+    );
+
+    if (inline) {
+        return imageStage;
+    }
+
     return (
         <CreatePortal>
             <PageContainer
@@ -127,17 +149,7 @@ const Lightbox = ({
                 style={style}
             >
                 {renderHeader()}
-                <ImageStage
-                    currentIndex={currentIndex}
-                    images={images}
-                    onClose={onClose}
-                    onNext={onNext}
-                    onPrev={onPrev}
-                    renderImageOverlay={renderImageOverlay}
-                    renderNextButton={renderNextButton}
-                    renderPrevButton={renderPrevButton}
-                    singleClickToZoom={singleClickToZoom}
-                />
+                {imageStage}
                 {renderFooter()}
             </PageContainer>
         </CreatePortal>

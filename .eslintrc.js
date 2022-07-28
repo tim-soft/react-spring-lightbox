@@ -15,7 +15,6 @@ module.exports = {
         'plugin:import/warnings',
         'plugin:@typescript-eslint/recommended',
         'plugin:prettier/recommended',
-        'prettier/@typescript-eslint',
     ],
     globals: {
         document: true,
@@ -36,6 +35,7 @@ module.exports = {
     ],
     root: true,
     rules: {
+        'prettier/prettier': ['error', { endOfLine: 'auto' }],
         // Enforce React Hooks rules
         // https://www.npmjs.com/package/eslint-plugin-react-hooks
         'react-hooks/rules-of-hooks': 'error',
