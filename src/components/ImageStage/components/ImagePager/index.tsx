@@ -194,6 +194,9 @@ const ImagePager = ({
             drag: {
                 filterTaps: true,
             },
+            wheel: {
+                enabled: !inline,
+            },
         }
     );
 
