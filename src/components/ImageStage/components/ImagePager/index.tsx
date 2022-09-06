@@ -204,6 +204,7 @@ const ImagePager = ({
         <ImagePagerContainer>
             {pagerSprings.map(({ display, x }, i) => (
                 <AnimatedImagePager
+                    $inline={inline}
                     {...bind()}
                     className="lightbox-image-pager"
                     key={i}
@@ -227,6 +228,7 @@ const ImagePager = ({
                     <PagerContentWrapper>
                         <PagerInnerContentWrapper>
                             <ImageContainer
+                                $inline={inline}
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     e.nativeEvent.stopImmediatePropagation();
@@ -272,7 +274,7 @@ const PagerContentWrapper = styled.div`
     justify-content: center;
 `;
 
-const AnimatedImagePager = styled(animated.div)`
+const AnimatedImagePager = styled(animated.div)<{ $inline: boolean }>`
     position: absolute;
     top: 0px;
     left: 0px;
@@ -281,16 +283,16 @@ const AnimatedImagePager = styled(animated.div)`
     height: 100%;
     width: 100%;
     will-change: transform;
-    touch-action: none;
+    touch-action: ${({ $inline }) => (!$inline ? 'none' : 'pan-y')};
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 `;
 
-const ImageContainer = styled.div`
+const ImageContainer = styled.div<{ $inline: boolean }>`
     position: relative;
-    touch-action: none;
+    touch-action: ${({ $inline }) => (!$inline ? 'none' : 'pan-y')};
     user-select: none;
     display: flex;
     justify-content: center;
