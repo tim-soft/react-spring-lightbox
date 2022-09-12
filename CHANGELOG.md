@@ -8,14 +8,14 @@ All notable changes to this project will be documented in this file.
 
 ## [1.7.0] - 2022-07-28
 
-- A few small bug fixes in situations where the `items` array may change size
-- Upgrade several dependencies
-    - "@react-spring/web": "9.5.2"
-    - "rollup": "^2.77.2",
+-   A few small bug fixes in situations where the `items` array may change size
+-   Upgrade several dependencies
+    -   "@react-spring/web": "9.5.2"
+    -   "rollup": "^2.77.2",
 
 ### Added
 
-- `Lightbox` can now be used as a slider component embedded in a page like slick-slider by using the `inline` prop
+-   `Lightbox` can now be used as a slider component embedded in a page like slick-slider by using the `inline` prop
 
 ## [1.6.0] - 2021-06-06
 

@@ -286,6 +286,7 @@ const Image = ({
 
     return (
         <AnimatedImage
+            $inline={inline}
             className="lightbox-image"
             draggable="false"
             onClick={(e: React.MouseEvent<HTMLImageElement>) => {
@@ -317,12 +318,12 @@ Image.displayName = 'Image';
 
 export default Image;
 
-const AnimatedImage = styled(animated.img)`
+const AnimatedImage = styled(animated.img)<{ $inline: boolean }>`
     width: auto;
     height: auto;
     max-width: 100%;
     user-select: none;
-    touch-action: none;
+    touch-action: ${({ $inline }) => (!$inline ? 'none' : 'pan-y')};
     ::selection {
         background: none;
     }
