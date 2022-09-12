@@ -6,6 +6,12 @@ All notable changes to this project will be documented in this file.
 
 -   Add `swipe up` to close lightbox
 
+## [1.7.1] - 2022-09-12
+
+### Fixed
+
+-   Allow vertical scrolling with an InlineLightbox on mobile (even while finger is over the image)
+
 ## [1.7.0] - 2022-07-28
 
 -   A few small bug fixes in situations where the `items` array may change size
