@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Lightbox from '../../../src';
+import Lightbox from 'react-spring-lightbox';
 import LightboxArrowButton from '../GalleryLightbox/components/LightboxArrowButton';
 
 const InlineLightbox = ({ images }) => {

@@ -30,8 +30,5 @@
         "not dead",
         "not ie <= 11",
         "not op_mini all"
-    ],
-    "devDependencies": {
-        "babel-plugin-styled-components": "link:../node_modules/babel-plugin-styled-components"
-    }
+    ]
 }
