@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 type ICreatePortal = {
-    children: React.ReactNode;
+    children: any;
 };
 
 /**

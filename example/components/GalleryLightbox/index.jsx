@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Color from 'color';
 import Gallery from 'react-photo-gallery';
-import Lightbox from 'react-spring-lightbox';
+import Lightbox from '../../../src';
 import GridImage from './components/GridImage';
 import LightboxHeader from './components/LightboxHeader';
 import LightboxArrowButton from './components/LightboxArrowButton';
@@ -20,7 +20,7 @@ class BlogImageGallery extends React.Component {
                 height: PropTypes.number,
                 src: PropTypes.string.isRequired,
                 width: PropTypes.number,
-            })
+            }),
         ).isRequired,
     };
 
@@ -164,7 +164,7 @@ class BlogImageGallery extends React.Component {
 
 export default BlogImageGallery;
 
-const GalleryContainer = styled.section`
+const GalleryContainer = styled.div`
     overflow-y: auto;
     max-height: calc(100% - 4em);
     padding: 2em;

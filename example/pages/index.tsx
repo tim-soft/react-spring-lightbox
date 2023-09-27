@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import GalleryLightbox from '../components/GalleryLightbox';
 import InlineLightbox from '../components/InlineLightbox';
 
-let images = [
+const images = [
     {
         alt: 'Windows 10 Dark Mode Setting',
         caption: 'Windows 10 Dark Mode Setting',
@@ -119,13 +119,7 @@ const HomePage = () => {
     };
 
     const getRandomImageURL = React.useCallback(() => {
-        let randomURL;
-        randomURL = `https://picsum.photos/id/${getRandomInt(
-            1,
-            500
-        )}/1920/1280`;
-
-        return randomURL;
+        return `https://picsum.photos/id/${getRandomInt(1, 200)}/1920/1280`;
     }, []);
 
     const getRandomImages = React.useCallback(
@@ -142,11 +136,11 @@ const HomePage = () => {
             });
             return randomizedArray;
         },
-        [getRandomImageURL]
+        [getRandomImageURL],
     );
 
     const [inlineImages, setInlineImages] = React.useState(images);
-    const [showLargeArray, setShowLargeArray] = React.useState(false);
+    const [showLargeArray, setShowLargeArray] = React.useState(true);
 
     React.useEffect(() => {
         const largeArray = getRandomImages([...Array(15)]);

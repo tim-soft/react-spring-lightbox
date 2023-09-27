@@ -16,7 +16,7 @@ describe('Lightbox', () => {
             render(
                 <Lightbox
                     renderHeader={() => <header data-testid="header" />}
-                />
+                />,
             );
 
             const lightboxContainer = screen.getByTestId('lightbox-container');
@@ -36,7 +36,7 @@ describe('Lightbox', () => {
             render(
                 <Lightbox
                     renderFooter={() => <footer data-testid="footer" />}
-                />
+                />,
             );
 
             const lightboxContainer = screen.getByTestId('lightbox-container');
@@ -63,7 +63,7 @@ describe('Lightbox', () => {
                     renderPrevButton={() => (
                         <button data-testid="prev-button" type="button" />
                     )}
-                />
+                />,
             );
 
             const prevButton = screen.getByTestId('next-button');

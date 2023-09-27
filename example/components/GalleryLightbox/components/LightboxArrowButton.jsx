@@ -22,7 +22,7 @@ const ArrowButton = ({ className, disabled, onClick, position }) => {
                         {position === 'right' && <IoIosArrowForward />}
                     </Button>
                 </StyledAnimatedDiv>
-            )
+            ),
     );
 };
 

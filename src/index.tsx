@@ -54,22 +54,22 @@ type ILightboxProps = {
  * @see https://github.com/styled-components/styled-components
  */
 const Lightbox = ({
+    className = '',
+    currentIndex,
+    images = [],
+    inline = false,
     isOpen,
     onClose,
-    inline = false,
-    images = [],
-    currentIndex,
-    onPrev,
     onNext,
-    renderHeader = () => null,
+    onPrev,
+    pageTransitionConfig = null,
     renderFooter = () => null,
-    renderPrevButton = () => null,
-    renderNextButton = () => null,
+    renderHeader = () => null,
     renderImageOverlay = () => null,
-    className = '',
+    renderNextButton = () => null,
+    renderPrevButton = () => null,
     singleClickToZoom = false,
     style = {},
-    pageTransitionConfig = null,
 }: ILightboxProps) => {
     // Handle event listeners for keyboard
     useEffect(() => {

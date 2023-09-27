@@ -4,7 +4,7 @@
  * @returns True if image needs to be resized to fit viewport, otherwise false
  */
 const imageIsOutOfBounds = (
-    imageRef: React.RefObject<HTMLImageElement>
+    imageRef: React.RefObject<HTMLImageElement>,
 ): boolean => {
     // If no ref is provided, return false
     if (!imageRef.current) {

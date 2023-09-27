@@ -1,17 +1,14 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import Lightbox from 'react-spring-lightbox';
+import Lightbox from '../../../src';
 import LightboxArrowButton from '../GalleryLightbox/components/LightboxArrowButton';
 
 const InlineLightbox = ({ images }) => {
     const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
-    const [mounted, setMounted] = React.useState(false);
-
     const inlineCarouselElement = React.useRef();
 
     React.useEffect(() => {
-        setMounted(true);
         inlineCarouselElement?.current?.addEventListener('wheel', preventWheel);
 
         setCurrentImageIndex(0);
@@ -34,38 +31,36 @@ const InlineLightbox = ({ images }) => {
         canPrev ? setCurrentImageIndex(currentImageIndex - 1) : null;
     };
 
-    if (typeof window === 'undefined') {
-        return null;
-    }
+    // if (typeof window === 'undefined') {
+    //     return null;
+    // }
 
     return (
-        mounted && (
-            <Container ref={inlineCarouselElement}>
-                <Lightbox
-                    currentIndex={currentImageIndex}
-                    images={images}
-                    inline
-                    isOpen
-                    onNext={gotoNext}
-                    onPrev={gotoPrevious}
-                    renderNextButton={({ canNext }) => (
-                        <StyledLightboxArrowButton
-                            disabled={!canNext}
-                            onClick={gotoNext}
-                            position="right"
-                        />
-                    )}
-                    renderPrevButton={({ canPrev }) => (
-                        <StyledLightboxArrowButton
-                            disabled={!canPrev}
-                            onClick={gotoPrevious}
-                            position="left"
-                        />
-                    )}
-                    singleClickToZoom
-                />
-            </Container>
-        )
+        <Container ref={inlineCarouselElement}>
+            <Lightbox
+                currentIndex={currentImageIndex}
+                images={images}
+                inline
+                isOpen
+                onNext={gotoNext}
+                onPrev={gotoPrevious}
+                renderNextButton={({ canNext }) => (
+                    <StyledLightboxArrowButton
+                        disabled={!canNext}
+                        onClick={gotoNext}
+                        position="right"
+                    />
+                )}
+                renderPrevButton={({ canPrev }) => (
+                    <StyledLightboxArrowButton
+                        disabled={!canPrev}
+                        onClick={gotoPrevious}
+                        position="left"
+                    />
+                )}
+                singleClickToZoom
+            />
+        </Container>
     );
 };
 
@@ -79,7 +74,7 @@ InlineLightbox.propTypes = {
             height: PropTypes.number,
             src: PropTypes.string.isRequired,
             width: PropTypes.number,
-        })
+        }),
     ).isRequired,
 };
 

@@ -25,7 +25,7 @@ const useRefSize = (): IUseRefSize => {
         width: ref.current?.clientWidth || 0,
     });
 
-    const elementRef = useCallback((node) => {
+    const elementRef = useCallback((node: Node) => {
         if (node !== null) {
             setNode(node);
 

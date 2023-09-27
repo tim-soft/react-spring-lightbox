@@ -35,7 +35,7 @@ LightboxHeader.propTypes = {
             height: PropTypes.number,
             src: PropTypes.string.isRequired,
             width: PropTypes.number,
-        })
+        }),
     ).isRequired,
     onClose: PropTypes.func.isRequired,
 };

@@ -62,7 +62,7 @@ const ImageStage = ({
             ref={containerRef}
         >
             {renderPrevButton({ canPrev })}
-            {containerWidth && (
+            {containerWidth ? (
                 <ImagePager
                     currentIndex={currentIndex}
                     images={images}
@@ -75,6 +75,8 @@ const ImageStage = ({
                     renderImageOverlay={renderImageOverlay}
                     singleClickToZoom={singleClickToZoom}
                 />
+            ) : (
+                <div>todo: write ssr pager</div>
             )}
             {renderNextButton({ canNext })}
         </ImageStageContainer>
