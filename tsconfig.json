@@ -21,6 +21,7 @@
         "isolatedModules": true,
         "skipLibCheck": true
     },
-    "include": ["src"],
-    "exclude": ["node_modules", "dist", "example", "src/__tests__"]
+    "include": ["src", "jest-setup.ts"],
+    "exclude": ["node_modules", "dist", "example", "src/__tests__"],
+    "types": ["node", "jest", "@testing-library/jest-dom"]
 }
