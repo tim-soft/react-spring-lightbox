@@ -25,8 +25,8 @@
     "jsnext:main": "dist/index.es.js",
     "types": "dist/index.d.ts",
     "engines": {
-        "node": ">=8",
-        "npm": ">=5"
+        "node": ">=16",
+        "npm": ">=7"
     },
     "scripts": {
         "fix": "yarn fix:eslint && yarn fix:prettier",
