@@ -31,10 +31,6 @@ const InlineLightbox = ({ images }) => {
         canPrev ? setCurrentImageIndex(currentImageIndex - 1) : null;
     };
 
-    // if (typeof window === 'undefined') {
-    //     return null;
-    // }
-
     return (
         <Container ref={inlineCarouselElement}>
             <Lightbox
