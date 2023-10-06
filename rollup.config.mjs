@@ -15,13 +15,6 @@ export default {
             interop: 'auto',
             sourcemap: true,
         },
-        {
-            exports: 'default',
-            file: 'dist/index.es.js',
-            format: 'es',
-            interop: 'auto',
-            sourcemap: true,
-        },
     ],
     plugins: [
         nodeExternals(),
