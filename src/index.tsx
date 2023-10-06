@@ -30,9 +30,9 @@ type ILightboxProps = {
     /** A React component that renders inside the image stage, useful for making overlays over the image */
     renderImageOverlay?: () => React.ReactNode;
     /** A React component that is used for next button in image pager */
-    renderNextButton?: () => React.ReactNode;
+    renderNextButton?: ({ canNext }: { canNext: boolean }) => React.ReactNode;
     /** A React component that is used for previous button in image pager */
-    renderPrevButton?: () => React.ReactNode;
+    renderPrevButton?: ({ canPrev }: { canPrev: boolean }) => React.ReactNode;
     /** Overrides the default behavior of double clicking causing an image zoom to a single click */
     singleClickToZoom?: boolean;
     /** Inline styles that are applied to the root lightbox component */
