@@ -3,6 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import useRefSize from './utils/useRefSize';
 import type { ImagesList } from '../../types/ImagesList';
+import SSRImagePager from './components/SSRImagePager/SSRImagePager';
 
 type IImageStageProps = {
     /** classnames are applied to the root ImageStage component */
@@ -62,7 +63,7 @@ const ImageStage = ({
             ref={containerRef}
         >
             {renderPrevButton({ canPrev })}
-            {containerWidth && (
+            {containerWidth ? (
                 <ImagePager
                     currentIndex={currentIndex}
                     images={images}
@@ -75,7 +76,9 @@ const ImageStage = ({
                     renderImageOverlay={renderImageOverlay}
                     singleClickToZoom={singleClickToZoom}
                 />
-            )}
+            ) : inline ? (
+                <SSRImagePager currentIndex={currentIndex} images={images} />
+            ) : null}
             {renderNextButton({ canNext })}
         </ImageStageContainer>
     );

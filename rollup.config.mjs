@@ -1,35 +1,23 @@
-import path from 'path';
 import commonjs from '@rollup/plugin-commonjs';
 import filesize from 'rollup-plugin-filesize';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
-import { terser } from 'rollup-plugin-terser';
-// eslint-disable-next-line import/no-named-as-default
-import babel from '@rollup/plugin-babel';
-
-import pkg from './package.json';
-
-const root = process.platform === 'win32' ? path.resolve('/') : '/';
+import { babel } from '@rollup/plugin-babel';
+import terser from '@rollup/plugin-terser';
+import { nodeExternals } from 'rollup-plugin-node-externals';
 
 export default {
-    external: (id) =>
-        (!id.startsWith('.') && !id.startsWith(root)) ||
-        id.includes('@babel/runtime'),
     input: './src/index.tsx',
     output: [
         {
             exports: 'default',
-            file: pkg.main,
+            file: 'dist/index.cjs.js',
             format: 'cjs',
-            sourcemap: true,
-        },
-        {
-            exports: 'default',
-            file: pkg.module,
-            format: 'es',
+            interop: 'auto',
             sourcemap: true,
         },
     ],
     plugins: [
+        nodeExternals(),
         nodeResolve(),
         commonjs({
             extensions: ['.js', '.jsx', '.ts', '.tsx'],

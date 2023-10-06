@@ -17,7 +17,7 @@ const images: ImagesListType = [
 ];
 
 const SimpleLightbox = (
-    props: Partial<React.ComponentProps<typeof Lightbox>>
+    props: Partial<React.ComponentProps<typeof Lightbox>>,
 ) => {
     const [currentImageIndex, setCurrentIndex] = useState(0);
 

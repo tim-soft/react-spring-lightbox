@@ -6,7 +6,7 @@ import {
 } from '../../utils';
 import { useGesture } from 'react-use-gesture';
 import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
+import styled, { AnyStyledComponent } from 'styled-components';
 import type { ImagesListItem } from '../../../../types/ImagesList';
 
 const defaultImageTransform = {
@@ -88,13 +88,13 @@ const Image = ({
     useGesture(
         {
             onDrag: ({
-                movement: [xMovement, yMovement],
-                pinching,
                 cancel,
                 first,
                 memo = { initialTranslateX: 0, initialTranslateY: 0 },
-                touches,
+                movement: [xMovement, yMovement],
+                pinching,
                 tap,
+                touches,
             }) => {
                 if (pagerIsDragging || scale.get() === 1 || tap) {
                     return;
@@ -140,12 +140,12 @@ const Image = ({
                 }
             },
             onPinch: ({
+                cancel,
+                ctrlKey,
+                event,
+                last,
                 movement: [xMovement],
                 origin: [touchOriginX, touchOriginY],
-                event,
-                ctrlKey,
-                last,
-                cancel,
             }) => {
                 if (pagerIsDragging) {
                     return;
@@ -234,13 +234,13 @@ const Image = ({
             eventOptions: {
                 passive: false,
             },
-        }
+        },
     );
 
     // Handle click/tap on image
     useDoubleClick({
         [singleClickToZoom ? 'onSingleClick' : 'onDoubleClick']: (
-            e: MouseEvent
+            e: MouseEvent,
         ) => {
             if (pagerIsDragging || isPanningImage) {
                 e.stopPropagation();
@@ -267,7 +267,7 @@ const Image = ({
                     pinchDelta,
                     scale: scale.get(),
                     touchOrigin: [touchOriginX, touchOriginY],
-                }
+                },
             );
 
             // Disable dragging in pager
@@ -304,7 +304,7 @@ const Image = ({
                 maxHeight: pagerHeight,
                 transform: to(
                     [scale, translateX, translateY],
-                    (s, x, y) => `translate(${x}px, ${y}px) scale(${s})`
+                    (s, x, y) => `translate(${x}px, ${y}px) scale(${s})`,
                 ),
                 ...(isCurrentImage && { willChange: 'transform' }),
             }}
@@ -318,7 +318,7 @@ Image.displayName = 'Image';
 
 export default Image;
 
-const AnimatedImage = styled(animated.img)<{ $inline: boolean }>`
+const AnimatedImage = styled(animated.img as AnyStyledComponent)`
     width: auto;
     height: auto;
     max-width: 100%;

@@ -7,10 +7,11 @@ module.exports = {
     collectCoverage: true,
     coveragePathIgnorePatterns: ['/node_modules/', '/__tests__/'],
     preset: 'ts-jest',
-    setupFilesAfterEnv: [
-        '@testing-library/jest-dom/extend-expect',
-        'babel-polyfill',
-    ],
+    setupFilesAfterEnv: ['babel-polyfill', '<rootDir>/jest-setup.ts'],
     testEnvironment: 'jsdom',
     testMatch: ['**/__tests__/**/*.(spec|test).[jt]s?(x)'],
+    transform: {
+        '^.+\\.(js|jsx)$': 'babel-jest',
+        '^.+\\.(ts|tsx)?$': 'ts-jest',
+    },
 };

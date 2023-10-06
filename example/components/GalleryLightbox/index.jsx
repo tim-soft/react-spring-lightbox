@@ -20,7 +20,7 @@ class BlogImageGallery extends React.Component {
                 height: PropTypes.number,
                 src: PropTypes.string.isRequired,
                 width: PropTypes.number,
-            })
+            }),
         ).isRequired,
     };
 
@@ -164,7 +164,7 @@ class BlogImageGallery extends React.Component {
 
 export default BlogImageGallery;
 
-const GalleryContainer = styled.section`
+const GalleryContainer = styled.div`
     overflow-y: auto;
     max-height: calc(100% - 4em);
     padding: 2em;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTransition, animated, config } from '@react-spring/web';
-import styled from 'styled-components';
+import styled, { AnyStyledComponent } from 'styled-components';
 
 type IPageContainerProps = {
     /** All child components of Lightbox */
@@ -51,7 +51,7 @@ const PageContainer = ({
                         >
                             {children}
                         </AnimatedPageContainer>
-                    )
+                    ),
             )}
         </>
     );
@@ -59,7 +59,7 @@ const PageContainer = ({
 
 export default PageContainer;
 
-const AnimatedPageContainer = styled(animated.div)`
+const AnimatedPageContainer = styled(animated.div as AnyStyledComponent)`
     display: flex;
     flex-direction: column;
     position: fixed;

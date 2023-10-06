@@ -18,11 +18,11 @@ type IUseDoubleClickProps = {
  * and report updates from the 'resize' window event
  */
 const useDoubleClick = ({
-    ref,
-    latency = 300,
     enabled = true,
-    onSingleClick = () => null,
+    latency = 300,
     onDoubleClick = () => null,
+    onSingleClick = () => null,
+    ref,
 }: IUseDoubleClickProps) => {
     useEffect(() => {
         const clickRef = ref.current;

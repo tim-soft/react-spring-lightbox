@@ -2,7 +2,7 @@ import { animated, useSprings } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import Image from '../Image';
 import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
+import styled, { AnyStyledComponent } from 'styled-components';
 import type { ImagesList } from '../../../../types/ImagesList';
 
 type IImagePager = {
@@ -71,7 +71,7 @@ const ImagePager = ({
             }
             return { display: 'flex', x };
         },
-        [currentIndex, imageStageWidth]
+        [currentIndex, imageStageWidth],
     );
 
     /**
@@ -80,7 +80,7 @@ const ImagePager = ({
      * @see https://www.react-spring.io/docs/hooks/use-springs
      */
     const [pagerSprings, springsApi] = useSprings(images.length, (i) =>
-        getPagePositions(i)
+        getPagePositions(i),
     );
 
     // Animate page change if currentIndex changes
@@ -102,15 +102,15 @@ const ImagePager = ({
     const bind = useGesture(
         {
             onDrag: ({
+                active,
+                cancel,
+                direction: [xDir],
+                distance,
                 down,
                 movement: [xMovement],
-                direction: [xDir],
-                velocity,
-                distance,
-                cancel,
-                active,
-                touches,
                 tap,
+                touches,
+                velocity,
             }) => {
                 // Disable drag if Image has been zoomed in to allow for panning
                 if (disableDrag || xMovement === 0 || tap) {
@@ -161,7 +161,7 @@ const ImagePager = ({
                     setTimeout(() => setIsDragging(false), 100);
                 }
             },
-            onWheel: ({ velocity, direction: [xDir, yDir], ctrlKey }) => {
+            onWheel: ({ ctrlKey, direction: [xDir, yDir], velocity }) => {
                 // Disable drag if Image has been zoomed in to allow for panning
                 if (ctrlKey || disableDrag || velocity === 0) {
                     return;
@@ -197,7 +197,7 @@ const ImagePager = ({
             wheel: {
                 enabled: !inline,
             },
-        }
+        },
     );
 
     return (
@@ -221,7 +221,7 @@ const ImagePager = ({
                     style={{
                         display,
                         transform: x.to(
-                            (xInterp: number) => `translateX(${xInterp}px)`
+                            (xInterp: number) => `translateX(${xInterp}px)`,
                         ),
                     }}
                 >
@@ -274,7 +274,9 @@ const PagerContentWrapper = styled.div`
     justify-content: center;
 `;
 
-const AnimatedImagePager = styled(animated.div)<{ $inline: boolean }>`
+const AnimatedImagePager = styled(animated.span as AnyStyledComponent)<{
+    $inline: boolean;
+}>`
     position: absolute;
     top: 0px;
     left: 0px;

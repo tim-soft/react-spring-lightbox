@@ -20,11 +20,11 @@ type ITranslateOffsetsReturnType = [translateX: number, translateY: number];
  * @returns {array} The next [x,y] translate values to apply to image
  */
 const getTranslateOffsetsFromScale = ({
-    imageRef,
-    scale,
-    pinchDelta,
-    touchOrigin: [touchOriginX, touchOriginY],
     currentTranslate: [translateX, translateY],
+    imageRef,
+    pinchDelta,
+    scale,
+    touchOrigin: [touchOriginX, touchOriginY],
 }: IGetTranslateOffsetsFromScale): ITranslateOffsetsReturnType => {
     if (!imageRef?.current) {
         return [0, 0];

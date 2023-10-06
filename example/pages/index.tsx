@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import GalleryLightbox from '../components/GalleryLightbox';
 import InlineLightbox from '../components/InlineLightbox';
 
-let images = [
+const images = [
     {
         alt: 'Windows 10 Dark Mode Setting',
         caption: 'Windows 10 Dark Mode Setting',
@@ -111,52 +111,34 @@ let images = [
     },
 ];
 
-const HomePage = () => {
+const getRandomImages = (numImages: number) => {
+    const imageArray = [...new Array(numImages)];
+
     const getRandomInt = (min, max) => {
         min = Math.ceil(min);
         max = Math.floor(max);
         return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
     };
 
-    const getRandomImageURL = React.useCallback(() => {
-        let randomURL;
-        randomURL = `https://picsum.photos/id/${getRandomInt(
+    const altCaption = 'picsum photo';
+    const randomizedArray = imageArray.map((imageObj) => {
+        const imageURL = `https://picsum.photos/id/${getRandomInt(
             1,
-            500
+            200,
         )}/1920/1280`;
+        return {
+            ...imageObj,
+            alt: altCaption,
+            caption: altCaption,
+            src: imageURL,
+        };
+    });
 
-        return randomURL;
-    }, []);
+    return randomizedArray;
+};
 
-    const getRandomImages = React.useCallback(
-        (imageArray) => {
-            const altCaption = 'picsum photo';
-            const randomizedArray = imageArray.map((imageObj) => {
-                const imageURL = getRandomImageURL();
-                return {
-                    ...imageObj,
-                    alt: altCaption,
-                    caption: altCaption,
-                    src: imageURL,
-                };
-            });
-            return randomizedArray;
-        },
-        [getRandomImageURL]
-    );
-
-    const [inlineImages, setInlineImages] = React.useState(images);
-    const [showLargeArray, setShowLargeArray] = React.useState(false);
-
-    React.useEffect(() => {
-        const largeArray = getRandomImages([...Array(15)]);
-        const smallArray = getRandomImages([...Array(1)]);
-        if (showLargeArray) {
-            setInlineImages(largeArray);
-        } else {
-            setInlineImages(smallArray);
-        }
-    }, [showLargeArray, getRandomImages]);
+const HomePage = () => {
+    const [inlineImages, setInlineImages] = React.useState(getRandomImages(15));
 
     return (
         <Container>
@@ -175,19 +157,27 @@ const HomePage = () => {
                     <OtherInlineContent>
                         🎉🎉Inline content🎉🎉
                     </OtherInlineContent>
-                    <InlineLightbox images={inlineImages} />
+                    <InlineLightbox images={images} />
                     <OtherInlineContent>
                         🎉🎉Inline content🎉🎉
                     </OtherInlineContent>
                 </InlineLightboxExample>
                 <Button
                     onClick={() =>
-                        setInlineImages(getRandomImages(inlineImages))
+                        setInlineImages(getRandomImages(inlineImages.length))
                     }
                 >
                     Generate new images
                 </Button>
-                <Button onClick={() => setShowLargeArray(!showLargeArray)}>
+                <Button
+                    onClick={() => {
+                        if (inlineImages.length === 1) {
+                            setInlineImages(getRandomImages(15));
+                        } else {
+                            setInlineImages(getRandomImages(1));
+                        }
+                    }}
+                >
                     Switch Image Array
                 </Button>
             </InlineLightboxExampleContainer>

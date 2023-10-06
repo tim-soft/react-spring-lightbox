@@ -13,7 +13,6 @@
         "noImplicitThis": true,
         "noImplicitAny": true,
         "strictNullChecks": true,
-        "suppressImplicitAnyIndexErrors": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "allowSyntheticDefaultImports": true,
@@ -23,5 +22,6 @@
         "skipLibCheck": true
     },
     "include": ["src"],
-    "exclude": ["node_modules", "dist", "example", "src/__tests__"]
+    "exclude": ["node_modules", "dist", "example", "src/__tests__"],
+    "types": ["node", "jest", "@testing-library/jest-dom"]
 }
