@@ -6,6 +6,19 @@ All notable changes to this project will be documented in this file.
 
 -   Add `swipe up` to close lightbox
 
+## [1.8.0] - 2023-10-06
+
+-   Add inline mode SSR support
+-   fix next.js + styled-components + SWC client/server classname mismatch error
+-   Upgrade several dependencies
+    -   @react-spring/web ^9.7
+    -   rollup 3
+    -   typescript 5
+
+### Potentially Breaking
+
+    This release removes the esm build as it doesn't work well with next.js + SWC compiler
+
 ## [1.7.1] - 2022-09-12
 
 ### Fixed
