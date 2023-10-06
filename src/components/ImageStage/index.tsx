@@ -76,16 +76,9 @@ const ImageStage = ({
                     renderImageOverlay={renderImageOverlay}
                     singleClickToZoom={singleClickToZoom}
                 />
-            ) : (
-                <>
-                    {inline ? (
-                        <SSRImagePager
-                            currentIndex={currentIndex}
-                            images={images}
-                        />
-                    ) : null}
-                </>
-            )}
+            ) : inline ? (
+                <SSRImagePager currentIndex={currentIndex} images={images} />
+            ) : null}
             {renderNextButton({ canNext })}
         </ImageStageContainer>
     );
