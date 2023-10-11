@@ -10,7 +10,7 @@ type ILightboxProps = {
     /** Index of image in images array that is currently shown */
     currentIndex: number;
     /** Array of images to be shown in Lightbox, each image object may contain any valid 'img' attribute with the exceptions of 'draggable', 'onClick', 'onDragStart' and 'ref' */
-    images: ImagesList;
+    images: React.ReactNode[];
     /** Determines whether the Lightbox returns just an Inline carousel (ImageStage) */
     inline?: boolean;
     /** Flag that dictates if the lightbox is open or closed */

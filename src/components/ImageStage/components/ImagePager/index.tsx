@@ -3,7 +3,6 @@ import { useGesture } from 'react-use-gesture';
 import Image from '../Image';
 import React, { useEffect, useRef, useState } from 'react';
 import styled, { AnyStyledComponent } from 'styled-components';
-import type { ImagesList } from '../../../../types/ImagesList';
 
 type IImagePager = {
     /** Index of image in images array that is currently shown */
@@ -13,7 +12,7 @@ type IImagePager = {
     /** image stage width */
     imageStageWidth: number;
     /** Array of image objects to be shown in Lightbox */
-    images: ImagesList;
+    images: React.ReactNode[];
     /** Affects Width calculation method, depending on whether the Lightbox is Inline or not */
     inline: boolean;
     /** Function that closes the Lightbox */

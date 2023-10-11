@@ -1,4 +1,4 @@
-import { FiHeart, FiPrinter, FiShare } from 'react-icons/fi';
+// import { FiHeart, FiPrinter, FiShare } from 'react-icons/fi';
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
@@ -8,6 +8,114 @@ import Lightbox from 'react-spring-lightbox';
 import GridImage from './components/GridImage';
 import LightboxHeader from './components/LightboxHeader';
 import LightboxArrowButton from './components/LightboxArrowButton';
+
+const mosaicImages = [
+    {
+        alt: 'Windows 10 Dark Mode Setting',
+        caption: 'Windows 10 Dark Mode Setting',
+        height: 2035,
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
+        width: 2848,
+    },
+    {
+        alt: 'macOS Mojave Dark Mode Setting',
+        caption: 'macOS Mojave Dark Mode Setting',
+        height: 1218,
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png',
+        width: 1200,
+    },
+    {
+        alt: 'Android 9.0 Dark Mode Setting',
+        caption: 'Android 9.0 Dark Mode Setting',
+        height: 600,
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
+        width: 1280,
+    },
+    {
+        alt: 'Windows 10 Dark Mode Setting#',
+        caption: 'Windows 10 Dark Mode Setting#',
+        height: 2035,
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
+        width: 2848,
+    },
+    {
+        alt: 'Windows 10 Dark Mode Setting',
+        caption: 'Windows 10 Dark Mode Setting',
+        height: 2035,
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
+        width: 2848,
+    },
+    {
+        alt: 'macOS Mojave Dark Mode Setting',
+        caption: 'macOS Mojave Dark Mode Setting',
+        height: 1218,
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png',
+        width: 1200,
+    },
+    {
+        alt: 'Android 9.0 Dark Mode Setting',
+        caption: 'Android 9.0 Dark Mode Setting',
+        height: 600,
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
+        width: 1280,
+    },
+    {
+        alt: 'Windows 10 Dark Mode Setting#',
+        caption: 'Windows 10 Dark Mode Setting#',
+        height: 2035,
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
+        width: 2848,
+    },
+    {
+        alt: 'Android 9.0 Dark Mode Setting',
+        caption: 'Android 9.0 Dark Mode Setting',
+        height: 600,
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
+        width: 1280,
+    },
+    {
+        alt: 'Windows 10 Dark Mode Setting#',
+        caption: 'Windows 10 Dark Mode Setting#',
+        height: 2035,
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
+        width: 2848,
+    },
+    {
+        alt: 'macOS Mojave Dark Mode Setting',
+        caption: 'macOS Mojave Dark Mode Setting',
+        height: 1218,
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png',
+        width: 1200,
+    },
+    {
+        alt: 'Android 9.0 Dark Mode Setting',
+        caption: 'Android 9.0 Dark Mode Setting',
+        height: 600,
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
+        width: 1280,
+    },
+    {
+        alt: 'Windows 10 Dark Mode Setting#',
+        caption: 'Windows 10 Dark Mode Setting#',
+        height: 2035,
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
+        width: 2848,
+    },
+    {
+        alt: 'Android 9.0 Dark Mode Setting',
+        caption: 'Android 9.0 Dark Mode Setting',
+        height: 600,
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
+        width: 1280,
+    },
+    {
+        alt: 'Windows 10 Dark Mode Setting#',
+        caption: 'Windows 10 Dark Mode Setting#',
+        height: 2035,
+        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
+        width: 2848,
+    },
+];
 
 class BlogImageGallery extends React.Component {
     static propTypes = {
@@ -96,15 +204,6 @@ class BlogImageGallery extends React.Component {
         const { clientSide, currentImageIndex, lightboxIsOpen } = this.state;
         const { galleryTitle, imageMasonryDirection, images } = this.props;
 
-        // remove the height and width props for the lightbox images array
-        const listboxImages = [...images].map((image) => {
-            const newImage = { ...image };
-            delete newImage.height;
-            delete newImage.width;
-
-            return newImage;
-        });
-
         return (
             <GalleryContainer>
                 {clientSide && (
@@ -113,14 +212,14 @@ class BlogImageGallery extends React.Component {
                         direction={imageMasonryDirection}
                         margin={6}
                         onClick={this.openLightbox}
-                        photos={images}
+                        photos={mosaicImages}
                         renderImage={GridImage}
                     />
                 )}
                 <StyledLightbox
                     currentIndex={currentImageIndex}
                     galleryTitle={galleryTitle}
-                    images={listboxImages}
+                    images={images}
                     isOpen={lightboxIsOpen}
                     onClose={this.closeLightbox}
                     onNext={this.gotoNext}
@@ -133,14 +232,14 @@ class BlogImageGallery extends React.Component {
                             onClose={this.closeLightbox}
                         />
                     )}
-                    renderImageOverlay={() => (
-                        <ImageOverlay>
-                            <p>Create your own UI</p>
-                            <FiPrinter size="3em" />
-                            <FiShare size="3em" />
-                            <FiHeart size="3em" />
-                        </ImageOverlay>
-                    )}
+                    // renderImageOverlay={() => (
+                    //     <ImageOverlay>
+                    //         <p>Create your own UI</p>
+                    //         <FiPrinter size="3em" />
+                    //         <FiShare size="3em" />
+                    //         <FiHeart size="3em" />
+                    //     </ImageOverlay>
+                    // )}
                     renderNextButton={({ canNext }) => (
                         <LightboxArrowButton
                             disabled={!canNext}
@@ -182,29 +281,29 @@ const StyledLightbox = styled(Lightbox)`
     }
 `;
 
-const ImageOverlay = styled.div`
-    position: absolute;
-    top: 0%;
-    right: 0%;
-    border: ${({ theme }) => theme.pageContentSelectionColor} 1px solid;
-    background: rgba(39, 39, 39, 0.5);
-    p {
-        color: ${({ theme }) => theme.pageContentSelectionColor};
-        text-align: center;
-        font-weight: bold;
-        font-size: 1.2em;
-        margin: 0.5em 0;
-    }
-    svg {
-        border: white 1px solid;
-        fill: ${({ theme }) => theme.pageContentSelectionColor};
-        margin: 10px;
-        padding: 5px;
-        :hover {
-            border: ${({ theme }) => theme.pageContentSelectionColor} 1px solid;
-            fill: ${({ theme }) =>
-                new Color(theme.pageContentSelectionColor).darken(0.57).hex()};
-            cursor: pointer;
-        }
-    }
-`;
+// const ImageOverlay = styled.div`
+//     position: absolute;
+//     top: 0%;
+//     right: 0%;
+//     border: ${({ theme }) => theme.pageContentSelectionColor} 1px solid;
+//     background: rgba(39, 39, 39, 0.5);
+//     p {
+//         color: ${({ theme }) => theme.pageContentSelectionColor};
+//         text-align: center;
+//         font-weight: bold;
+//         font-size: 1.2em;
+//         margin: 0.5em 0;
+//     }
+//     svg {
+//         border: white 1px solid;
+//         fill: ${({ theme }) => theme.pageContentSelectionColor};
+//         margin: 10px;
+//         padding: 5px;
+//         :hover {
+//             border: ${({ theme }) => theme.pageContentSelectionColor} 1px solid;
+//             fill: ${({ theme }) =>
+//                 new Color(theme.pageContentSelectionColor).darken(0.57).hex()};
+//             cursor: pointer;
+//         }
+//     }
+// `;

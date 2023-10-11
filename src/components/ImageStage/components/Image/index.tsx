@@ -7,7 +7,6 @@ import {
 import { useGesture } from 'react-use-gesture';
 import React, { useEffect, useRef, useState } from 'react';
 import styled, { AnyStyledComponent } from 'styled-components';
-import type { ImagesListItem } from '../../../../types/ImagesList';
 
 const defaultImageTransform = {
     pinching: false,
@@ -18,7 +17,7 @@ const defaultImageTransform = {
 
 type IImageProps = {
     /** Any valid <img /> props to pass to the lightbox img element ie src, alt, caption etc*/
-    imgProps: ImagesListItem;
+    imgProps: React.ReactNode;
     /** Affects Width calculation method, depending on whether the Lightbox is Inline or not */
     inline: boolean;
     /** True if this image is currently shown in pager, otherwise false */
@@ -37,7 +36,7 @@ type IImageProps = {
  * Animates pinch-zoom + panning on image using spring physics
  */
 const Image = ({
-    imgProps: { style: imgStyleProp, ...restImgProps },
+    imgProps,
     inline,
     isCurrentImage,
     pagerHeight,
@@ -285,7 +284,7 @@ const Image = ({
     });
 
     return (
-        <AnimatedImage
+        <AnimatedPage
             $inline={inline}
             className="lightbox-image"
             draggable="false"
@@ -300,7 +299,6 @@ const Image = ({
             }}
             ref={imageRef}
             style={{
-                ...imgStyleProp,
                 maxHeight: pagerHeight,
                 transform: to(
                     [scale, translateX, translateY],
@@ -308,9 +306,9 @@ const Image = ({
                 ),
                 ...(isCurrentImage && { willChange: 'transform' }),
             }}
-            // Include any valid img html attributes provided in the <Lightbox /> images prop
-            {...(restImgProps as React.ComponentProps<typeof animated.img>)}
-        />
+        >
+            {imgProps}
+        </AnimatedPage>
     );
 };
 
@@ -318,7 +316,7 @@ Image.displayName = 'Image';
 
 export default Image;
 
-const AnimatedImage = styled(animated.img as AnyStyledComponent)`
+const AnimatedPage = styled(animated.div as AnyStyledComponent)`
     width: auto;
     height: auto;
     max-width: 100%;
@@ -326,5 +324,13 @@ const AnimatedImage = styled(animated.img as AnyStyledComponent)`
     touch-action: ${({ $inline }) => (!$inline ? 'none' : 'pan-y')};
     ::selection {
         background: none;
+    }
+
+    overflow: hidden;
+
+    > * {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
     }
 `;

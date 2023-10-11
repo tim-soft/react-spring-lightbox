@@ -2,7 +2,6 @@ import ImagePager from './components/ImagePager';
 import React from 'react';
 import styled from 'styled-components';
 import useRefSize from './utils/useRefSize';
-import type { ImagesList } from '../../types/ImagesList';
 import SSRImagePager from './components/SSRImagePager/SSRImagePager';
 
 type IImageStageProps = {
@@ -11,7 +10,7 @@ type IImageStageProps = {
     /** Index of image in images array that is currently shown */
     currentIndex: number;
     /** Array of image objects to be shown in Lightbox */
-    images: ImagesList;
+    images: React.ReactNode[];
     /** Affects Width calculation method, depending on whether the Lightbox is Inline or not */
     inline: boolean;
     /** Function that closes the Lightbox */
