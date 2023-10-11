@@ -2,113 +2,38 @@ import * as React from 'react';
 import styled from 'styled-components';
 import GalleryLightbox from '../components/GalleryLightbox';
 import InlineLightbox from '../components/InlineLightbox';
+import Image from 'next/image';
 
-const images = [
-    {
-        alt: 'Windows 10 Dark Mode Setting',
-        caption: 'Windows 10 Dark Mode Setting',
-        height: 2035,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
-        width: 2848,
-    },
-    {
-        alt: 'macOS Mojave Dark Mode Setting',
-        caption: 'macOS Mojave Dark Mode Setting',
-        height: 1218,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png',
-        width: 1200,
-    },
-    {
-        alt: 'Android 9.0 Dark Mode Setting',
-        caption: 'Android 9.0 Dark Mode Setting',
-        height: 600,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
-        width: 1280,
-    },
-    {
-        alt: 'Windows 10 Dark Mode Setting#',
-        caption: 'Windows 10 Dark Mode Setting#',
-        height: 2035,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
-        width: 2848,
-    },
-    {
-        alt: 'Windows 10 Dark Mode Setting',
-        caption: 'Windows 10 Dark Mode Setting',
-        height: 2035,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
-        width: 2848,
-    },
-    {
-        alt: 'macOS Mojave Dark Mode Setting',
-        caption: 'macOS Mojave Dark Mode Setting',
-        height: 1218,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png',
-        width: 1200,
-    },
-    {
-        alt: 'Android 9.0 Dark Mode Setting',
-        caption: 'Android 9.0 Dark Mode Setting',
-        height: 600,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
-        width: 1280,
-    },
-    {
-        alt: 'Windows 10 Dark Mode Setting#',
-        caption: 'Windows 10 Dark Mode Setting#',
-        height: 2035,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
-        width: 2848,
-    },
-    {
-        alt: 'Android 9.0 Dark Mode Setting',
-        caption: 'Android 9.0 Dark Mode Setting',
-        height: 600,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
-        width: 1280,
-    },
-    {
-        alt: 'Windows 10 Dark Mode Setting#',
-        caption: 'Windows 10 Dark Mode Setting#',
-        height: 2035,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
-        width: 2848,
-    },
-    {
-        alt: 'macOS Mojave Dark Mode Setting',
-        caption: 'macOS Mojave Dark Mode Setting',
-        height: 1218,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png',
-        width: 1200,
-    },
-    {
-        alt: 'Android 9.0 Dark Mode Setting',
-        caption: 'Android 9.0 Dark Mode Setting',
-        height: 600,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
-        width: 1280,
-    },
-    {
-        alt: 'Windows 10 Dark Mode Setting#',
-        caption: 'Windows 10 Dark Mode Setting#',
-        height: 2035,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
-        width: 2848,
-    },
-    {
-        alt: 'Android 9.0 Dark Mode Setting',
-        caption: 'Android 9.0 Dark Mode Setting',
-        height: 600,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg',
-        width: 1280,
-    },
-    {
-        alt: 'Windows 10 Dark Mode Setting#',
-        caption: 'Windows 10 Dark Mode Setting#',
-        height: 2035,
-        src: 'https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg',
-        width: 2848,
-    },
+const images: React.ReactNode[] = [
+    <div key="0">
+        <iframe
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            frameBorder="0"
+            height="384"
+            src="https://www.youtube.com/embed/fkrCWWumg1I?si=le414o7EvI8Wijn-"
+            title="YouTube video player"
+            width="450"
+        ></iframe>
+    </div>,
+    <div key="1">
+        <h2>hello!</h2>
+    </div>,
+    <Image
+        alt="dark mode"
+        height={2035}
+        key="2"
+        src="https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg"
+        width={2848}
+    />,
+    <img
+        key="3"
+        src="https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png"
+    />,
+    <img
+        key="4"
+        src="https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg"
+    />,
 ];
 
 const getRandomImages = (numImages: number) => {
@@ -121,17 +46,13 @@ const getRandomImages = (numImages: number) => {
     };
 
     const altCaption = 'picsum photo';
-    const randomizedArray = imageArray.map((imageObj) => {
+    const randomizedArray = imageArray.map(() => {
         const imageURL = `https://picsum.photos/id/${getRandomInt(
             1,
             200,
         )}/1920/1280`;
-        return {
-            ...imageObj,
-            alt: altCaption,
-            caption: altCaption,
-            src: imageURL,
-        };
+
+        return <img alt={altCaption} key={imageURL} />;
     });
 
     return randomizedArray;
