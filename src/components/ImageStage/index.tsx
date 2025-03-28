@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import useRefSize from './utils/useRefSize';
 import type { ImagesList } from '../../types/ImagesList';
 import SSRImagePager from './components/SSRImagePager/SSRImagePager';
+import VideoEmbed from '../VideoEmbed';
 
 type IImageStageProps = {
     /** classnames are applied to the root ImageStage component */
@@ -26,12 +27,16 @@ type IImageStageProps = {
     renderNextButton: ({ canNext }: { canNext: boolean }) => React.ReactNode;
     /** A React component that is used for previous button in image pager */
     renderPrevButton: ({ canPrev }: { canPrev: boolean }) => React.ReactNode;
+    /** Whether to show video instead of images */
+    showVideo?: boolean;
     /** Overrides the default behavior of double clicking causing an image zoom to a single click */
     singleClickToZoom: boolean;
+    /** Optional video ID for YouTube video */
+    videoId?: string;
 };
 
 /**
- * Containing element for ImagePager and prev/next button controls
+ * Containing element for ImagePager/VideoEmbed and prev/next button controls
  */
 const ImageStage = ({
     className = '',
@@ -44,7 +49,9 @@ const ImageStage = ({
     renderImageOverlay,
     renderNextButton,
     renderPrevButton,
+    showVideo = false,
     singleClickToZoom,
+    videoId,
 }: IImageStageProps) => {
     // Extra sanity check that the next/prev image exists before moving to it
     const canPrev = currentIndex > 0;
@@ -64,18 +71,25 @@ const ImageStage = ({
         >
             {renderPrevButton({ canPrev })}
             {containerWidth ? (
-                <ImagePager
-                    currentIndex={currentIndex}
-                    images={images}
-                    imageStageHeight={containerHeight}
-                    imageStageWidth={containerWidth}
-                    inline={inline}
-                    onClose={onClose}
-                    onNext={onNextImage}
-                    onPrev={onPrevImage}
-                    renderImageOverlay={renderImageOverlay}
-                    singleClickToZoom={singleClickToZoom}
-                />
+                showVideo && videoId ? (
+                    <VideoEmbed
+                        style={{ height: '100%', width: '100%' }}
+                        videoId={videoId}
+                    />
+                ) : (
+                    <ImagePager
+                        currentIndex={currentIndex}
+                        images={images}
+                        imageStageHeight={containerHeight}
+                        imageStageWidth={containerWidth}
+                        inline={inline}
+                        onClose={onClose}
+                        onNext={onNextImage}
+                        onPrev={onPrevImage}
+                        renderImageOverlay={renderImageOverlay}
+                        singleClickToZoom={singleClickToZoom}
+                    />
+                )
             ) : inline ? (
                 <SSRImagePager currentIndex={currentIndex} images={images} />
             ) : null}
