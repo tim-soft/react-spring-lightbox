@@ -73,6 +73,9 @@ const ImageStage = ({
             {containerWidth ? (
                 showVideo && videoId ? (
                     <VideoEmbed
+                        inline={inline}
+                        onNext={onNextImage}
+                        onPrev={onPrevImage}
                         style={{ height: '100%', width: '100%' }}
                         videoId={videoId}
                     />
