@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import GalleryLightbox from '../components/GalleryLightbox';
 import InlineLightbox from '../components/InlineLightbox';
+import Link from 'next/link';
 
 const images = [
     {
@@ -142,6 +143,9 @@ const HomePage = () => {
 
     return (
         <Container>
+            <Nav>
+                <Link href="/video-lightbox">Video Lightbox Example</Link>
+            </Nav>
             <GalleryLightboxExample>
                 <StyledH2>Gallery Lightbox</StyledH2>
                 <GalleryLightbox
@@ -239,4 +243,10 @@ const OtherInlineContent = styled.div`
 
 const StyledH2 = styled.h2`
     text-align: center;
+`;
+
+const Nav = styled.nav`
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2em;
 `;
