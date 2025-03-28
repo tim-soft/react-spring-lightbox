@@ -33,10 +33,14 @@ type ILightboxProps = {
     renderNextButton?: ({ canNext }: { canNext: boolean }) => React.ReactNode;
     /** A React component that is used for previous button in image pager */
     renderPrevButton?: ({ canPrev }: { canPrev: boolean }) => React.ReactNode;
+    /** Whether to show video instead of images */
+    showVideo?: boolean;
     /** Overrides the default behavior of double clicking causing an image zoom to a single click */
     singleClickToZoom?: boolean;
     /** Inline styles that are applied to the root lightbox component */
     style?: React.CSSProperties;
+    /** Optional video ID for YouTube video */
+    videoId?: string;
 };
 
 /**
@@ -68,8 +72,10 @@ const Lightbox = ({
     renderImageOverlay = () => null,
     renderNextButton = () => null,
     renderPrevButton = () => null,
+    showVideo = false,
     singleClickToZoom = false,
     style = {},
+    videoId,
 }: ILightboxProps) => {
     // Handle event listeners for keyboard
     useEffect(() => {
@@ -132,7 +138,9 @@ const Lightbox = ({
             renderImageOverlay={renderImageOverlay}
             renderNextButton={renderNextButton}
             renderPrevButton={renderPrevButton}
+            showVideo={showVideo}
             singleClickToZoom={singleClickToZoom}
+            videoId={videoId}
         />
     );
 
