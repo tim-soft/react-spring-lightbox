@@ -115,7 +115,9 @@
     ],
     "dependencies": {
         "@babel/runtime": "^7.23.1",
+        "@react-spring/rafz": "^9.7.5",
         "@react-spring/web": "^9.7.3",
+        "react-spring-lightbox": "^1.8.0",
         "react-use-gesture": "9.1.3"
     }
 }
