@@ -143,9 +143,6 @@ const HomePage = () => {
 
     return (
         <Container>
-            <Nav>
-                <Link href="/video-lightbox">Video Lightbox Example</Link>
-            </Nav>
             <GalleryLightboxExample>
                 <StyledH2>Gallery Lightbox</StyledH2>
                 <GalleryLightbox
@@ -185,6 +182,11 @@ const HomePage = () => {
                     Switch Image Array
                 </Button>
             </InlineLightboxExampleContainer>
+            <hr />
+            <StyledH2>Video in Lightbox</StyledH2>
+            <Nav>
+                <Link href="/video-lightbox">Video in Lightbox Example</Link>
+            </Nav>
         </Container>
     );
 };
@@ -249,4 +251,12 @@ const Nav = styled.nav`
     display: flex;
     justify-content: center;
     margin-bottom: 2em;
+
+    a {
+        color: #7fffd4;
+        font-weight: bold;
+        &:hover {
+            text-decoration: none;
+        }
+    }
 `;
