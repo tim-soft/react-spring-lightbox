@@ -6,6 +6,7 @@ const images = [
     {
         alt: 'Sample Video 1',
         caption: 'First Video',
+        src: 'https://picsum.photos/800/600?random=2',
         type: 'video',
         videoId: 'dQw4w9WgXcQ', // Rick Astley - Never Gonna Give You Up
     },
