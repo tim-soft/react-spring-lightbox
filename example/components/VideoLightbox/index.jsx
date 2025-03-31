@@ -13,29 +13,25 @@ const VideoLightbox = ({ description, galleryTitle, images }) => {
     const canPrev = currentImageIndex > 0;
     const canNext = currentImageIndex + 1 < images.length;
 
+    React.useEffect(() => {
+        if (images[currentImageIndex].type === 'video') {
+            setShowVideo(true);
+            setVideoId(images[currentImageIndex].videoId);
+        } else {
+            setShowVideo(false);
+            setVideoId('');
+        }
+    }, [currentImageIndex, images]);
+
     const gotoNext = () => {
         if (canNext) {
             setCurrentIndex(currentImageIndex + 1);
-            // If next item is a video, show it
-            if (images[currentImageIndex + 1].type === 'video') {
-                setShowVideo(true);
-                setVideoId(images[currentImageIndex + 1].videoId);
-            } else {
-                setShowVideo(false);
-            }
         }
     };
 
     const gotoPrevious = () => {
         if (canPrev) {
             setCurrentIndex(currentImageIndex - 1);
-            // If previous item is a video, show it
-            if (images[currentImageIndex - 1].type === 'video') {
-                setShowVideo(true);
-                setVideoId(images[currentImageIndex - 1].videoId);
-            } else {
-                setShowVideo(false);
-            }
         }
     };
 
