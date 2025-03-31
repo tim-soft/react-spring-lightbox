@@ -37,7 +37,7 @@ const VideoLightboxPage = () => {
 export default VideoLightboxPage;
 
 const PageContainer = styled.div`
-    padding: 2em;
+    padding: 32px;
     max-width: 1200px;
     margin: 0 auto;
 `;

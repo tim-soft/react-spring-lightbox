@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import { useGesture } from 'react-use-gesture';
 
 type VideoEmbedProps = {
-    /** Optional aspect ratio (default 16:9) */
-    aspectRatio?: string;
     /** Optional CSS class name */
     className?: string;
     /** Affects Width calculation method, depending on whether the Lightbox is Inline or not */
@@ -25,7 +23,6 @@ type VideoEmbedProps = {
  * Renders a YouTube video embed with responsive sizing and gesture navigation
  */
 const VideoEmbed = ({
-    aspectRatio = '16:9',
     className = '',
     inline = false,
     onNext,
@@ -36,10 +33,6 @@ const VideoEmbed = ({
 }: VideoEmbedProps) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [isDragging, setIsDragging] = useState<boolean>(false);
-
-    // Calculate padding based on aspect ratio
-    const [width, height] = aspectRatio.split(':').map(Number);
-    const paddingTop = `${(height / width) * 100}%`;
 
     // Gesture handling for navigation
     const bind = useGesture(
@@ -119,15 +112,16 @@ const VideoEmbed = ({
         <VideoWrapper
             ref={wrapperRef}
             {...bind()}
-            $paddingTop={paddingTop}
-            className={`video-embed-wrapper${className ? ` ${className}` : ''}`}
+            className={`video-wrapper${className ? ` ${className}` : ''}`}
             style={style}
         >
-            <StyledIframe
-                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            <iframe
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
-                src={`https://www.youtube.com/embed/${videoId}?autoplay=0&mute=1`}
+                height="480"
+                src={`https://www.youtube.com/embed/${videoId}`}
                 title={title}
+                width="853"
             />
         </VideoWrapper>
     );
@@ -135,21 +129,14 @@ const VideoEmbed = ({
 
 export default VideoEmbed;
 
-const VideoWrapper = styled.div<{ $paddingTop: string }>`
-    position: relative;
-    width: 100%;
-    height: 0;
-    padding-top: ${({ $paddingTop }) => $paddingTop};
-    touch-action: pan-y pinch-zoom;
-    user-select: none;
-`;
-
-const StyledIframe = styled.iframe`
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
+const VideoWrapper = styled.div`
     height: 100%;
-    border: 0;
-    pointer-events: auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    iframe {
+        border: 0;
+    }
 `;

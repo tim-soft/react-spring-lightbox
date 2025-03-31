@@ -39,14 +39,6 @@ const VideoLightbox = ({ description, galleryTitle, images }) => {
         }
     };
 
-    // Handle video button click
-    const handleVideoClick = () => {
-        if (images[currentImageIndex].type === 'video') {
-            setShowVideo(true);
-            setVideoId(images[currentImageIndex].videoId);
-        }
-    };
-
     return (
         <Container>
             <Lightbox
@@ -83,9 +75,6 @@ const VideoLightbox = ({ description, galleryTitle, images }) => {
                 singleClickToZoom
                 videoId={videoId}
             />
-            {!showVideo && images[currentImageIndex].type === 'video' && (
-                <VideoButton onClick={handleVideoClick}>Play Video</VideoButton>
-            )}
         </Container>
     );
 };
@@ -119,25 +108,5 @@ const StyledLightboxArrowButton = styled(LightboxArrowButton)`
     z-index: 10;
     button {
         font-size: 25px;
-    }
-`;
-
-const VideoButton = styled.button`
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 20;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background 0.2s;
-
-    &:hover {
-        background: rgba(0, 0, 0, 0.9);
     }
 `;
