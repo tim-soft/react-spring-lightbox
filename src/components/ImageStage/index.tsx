@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import useRefSize from './utils/useRefSize';
 import type { ImagesList } from '../../types/ImagesList';
 import SSRImagePager from './components/SSRImagePager/SSRImagePager';
-import VideoEmbed from '../VideoEmbed';
+import VideoPager from './components/VideoPager';
 
 type IImageStageProps = {
     /** classnames are applied to the root ImageStage component */
@@ -72,11 +72,16 @@ const ImageStage = ({
             {renderPrevButton({ canPrev })}
             {containerWidth ? (
                 showVideo && videoId ? (
-                    <VideoEmbed
+                    <VideoPager
+                        currentIndex={currentIndex}
+                        images={images}
+                        imageStageHeight={containerHeight}
+                        imageStageWidth={containerWidth}
                         inline={inline}
+                        onClose={onClose}
                         onNext={onNextImage}
                         onPrev={onPrevImage}
-                        style={{ height: '100%', width: '100%' }}
+                        renderImageOverlay={renderImageOverlay}
                         videoId={videoId}
                     />
                 ) : (

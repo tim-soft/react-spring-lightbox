@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useGesture } from 'react-use-gesture';
 
@@ -11,6 +11,8 @@ type VideoEmbedProps = {
     onNext?: () => void;
     /** Function to navigate to previous item */
     onPrev?: () => void;
+    /** Callback when video interaction starts/ends */
+    onVideoInteraction?: (isInteracting: boolean) => void;
     /** Optional inline styles */
     style?: React.CSSProperties;
     /** Optional title for the iframe (default: "YouTube video player") */
@@ -27,12 +29,18 @@ const VideoEmbed = ({
     inline = false,
     onNext,
     onPrev,
+    onVideoInteraction,
     style = {},
     title = 'YouTube video player',
     videoId,
 }: VideoEmbedProps) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [isDragging, setIsDragging] = useState<boolean>(false);
+
+    // Notify parent of video interaction state changes
+    useEffect(() => {
+        onVideoInteraction?.(isDragging);
+    }, [isDragging, onVideoInteraction]);
 
     // Gesture handling for navigation
     const bind = useGesture(
