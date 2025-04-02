@@ -76,7 +76,6 @@ const VideoLightbox = ({ galleryTitle, images }) => {
 export default VideoLightbox;
 
 VideoLightbox.propTypes = {
-    description: PropTypes.string,
     galleryTitle: PropTypes.string,
     images: PropTypes.arrayOf(
         PropTypes.shape({
