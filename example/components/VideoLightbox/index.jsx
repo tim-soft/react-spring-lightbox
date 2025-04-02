@@ -5,7 +5,7 @@ import Lightbox from 'react-spring-lightbox';
 import LightboxArrowButton from '../GalleryLightbox/components/LightboxArrowButton';
 import LightboxHeader from '../GalleryLightbox/components/LightboxHeader';
 
-const VideoLightbox = ({ description, galleryTitle, images }) => {
+const VideoLightbox = ({ galleryTitle, images }) => {
     const [currentImageIndex, setCurrentIndex] = React.useState(0);
     const [showVideo, setShowVideo] = React.useState(false);
     const [videoId, setVideoId] = React.useState('');
@@ -46,7 +46,6 @@ const VideoLightbox = ({ description, galleryTitle, images }) => {
                 renderHeader={() => (
                     <LightboxHeader
                         currentIndex={currentImageIndex}
-                        description={description}
                         galleryTitle={galleryTitle}
                         images={images}
                         onClose={() => {}}

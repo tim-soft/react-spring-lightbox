@@ -26,7 +26,6 @@ const VideoLightboxPage = () => {
     return (
         <PageContainer>
             <VideoLightbox
-                description="This example demonstrates the Lightbox component with mixed content: images and YouTube videos. Click the &ldquo;Play Video&rdquo; button to start playing a video, or use the navigation arrows to move between items."
                 galleryTitle="Video Lightbox Example"
                 images={images}
             />
