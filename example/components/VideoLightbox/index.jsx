@@ -39,8 +39,6 @@ const VideoLightbox = ({ description, galleryTitle, images }) => {
         <Container>
             <Lightbox
                 currentIndex={currentImageIndex}
-                description={description}
-                galleryTitle={galleryTitle}
                 images={images}
                 isOpen
                 onNext={gotoNext}
@@ -48,6 +46,7 @@ const VideoLightbox = ({ description, galleryTitle, images }) => {
                 renderHeader={() => (
                     <LightboxHeader
                         currentIndex={currentImageIndex}
+                        description={description}
                         galleryTitle={galleryTitle}
                         images={images}
                         onClose={() => {}}
