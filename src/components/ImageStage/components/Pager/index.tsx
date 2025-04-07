@@ -21,6 +21,8 @@ type IPager = {
     onClose?: () => void;
     /** Function that can be called to disable dragging in the pager */
     onNext: () => void;
+    /** Callback for YouTube player events */
+    onPlayerEvent?: (event: { data: any; player: any; type: string }) => void;
     /** True if this image/video is currently shown in pager, otherwise false */
     onPrev: () => void;
     /** A React component that renders inside the image/video stage, useful for making overlays */
@@ -44,6 +46,7 @@ const Pager = ({
     inline,
     onClose,
     onNext,
+    onPlayerEvent,
     onPrev,
     renderImageOverlay,
     showVideo = false,
@@ -253,6 +256,7 @@ const Pager = ({
                                     <VideoEmbed
                                         inline={inline}
                                         onNext={onNext}
+                                        onPlayerEvent={onPlayerEvent}
                                         onPrev={onPrev}
                                         onVideoInteraction={(isInteracting) =>
                                             setDisableDrag(isInteracting)

@@ -6,6 +6,8 @@ import LightboxArrowButton from '../GalleryLightbox/components/LightboxArrowButt
 import LightboxHeader from '../GalleryLightbox/components/LightboxHeader';
 
 const VideoLightbox = ({ galleryTitle, images }) => {
+    console.log('VideoLightbox mounted');
+
     const [currentImageIndex, setCurrentIndex] = React.useState(0);
     const [showVideo, setShowVideo] = React.useState(false);
     const [videoId, setVideoId] = React.useState('');
@@ -14,6 +16,7 @@ const VideoLightbox = ({ galleryTitle, images }) => {
     const canNext = currentImageIndex + 1 < images.length;
 
     React.useEffect(() => {
+        console.log('Video state changed:', { showVideo, videoId });
         if (images[currentImageIndex].type === 'video') {
             setShowVideo(true);
             setVideoId(images[currentImageIndex].videoId);
@@ -22,6 +25,21 @@ const VideoLightbox = ({ galleryTitle, images }) => {
             setVideoId('');
         }
     }, [currentImageIndex, images]);
+
+    const handlePlayerEvent = (event) => {
+        if (event.type === 'play') {
+            console.log('Video started playing');
+        }
+
+        if (event.type === 'pause' || event.type === 'end') {
+            const currentTime = event.player.getCurrentTime();
+            console.log(
+                'Video ended. Total play time:',
+                currentTime,
+                'seconds',
+            );
+        }
+    };
 
     const gotoNext = () => {
         if (canNext) {
@@ -42,6 +60,7 @@ const VideoLightbox = ({ galleryTitle, images }) => {
                 images={images}
                 isOpen
                 onNext={gotoNext}
+                onPlayerEvent={handlePlayerEvent}
                 onPrev={gotoPrevious}
                 renderHeader={() => (
                     <LightboxHeader

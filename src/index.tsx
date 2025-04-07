@@ -19,6 +19,8 @@ type ILightboxProps = {
     onClose?: () => void;
     /** Function that changes currentIndex to next image in images */
     onNext: () => void;
+    /** Callback for YouTube player events */
+    onPlayerEvent?: (event: { data: any; player: any; type: string }) => void;
     /** Function that changes currentIndex to previous image in images */
     onPrev: () => void;
     /** React-Spring useTransition config for page open/close animation */
@@ -65,6 +67,7 @@ const Lightbox = ({
     isOpen,
     onClose,
     onNext,
+    onPlayerEvent,
     onPrev,
     pageTransitionConfig = null,
     renderFooter = () => null,
@@ -134,6 +137,7 @@ const Lightbox = ({
             inline={inline}
             onClose={onClose}
             onNext={onNext}
+            onPlayerEvent={onPlayerEvent}
             onPrev={onPrev}
             renderImageOverlay={renderImageOverlay}
             renderNextButton={renderNextButton}

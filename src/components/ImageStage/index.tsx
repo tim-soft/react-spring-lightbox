@@ -18,6 +18,8 @@ type IImageStageProps = {
     onClose?: () => void;
     /** Function that can be called to disable dragging in the pager */
     onNext: () => void;
+    /** Callback for YouTube player events */
+    onPlayerEvent?: (event: { data: any; player: any; type: string }) => void;
     /** True if this image is currently shown in pager, otherwise false */
     onPrev: () => void;
     /** A React component that renders inside the image stage, useful for making overlays over the image */
@@ -44,6 +46,7 @@ const ImageStage = ({
     inline,
     onClose,
     onNext,
+    onPlayerEvent,
     onPrev,
     renderImageOverlay,
     renderNextButton,
@@ -78,6 +81,7 @@ const ImageStage = ({
                     inline={inline}
                     onClose={onClose}
                     onNext={onNextImage}
+                    onPlayerEvent={onPlayerEvent}
                     onPrev={onPrevImage}
                     renderImageOverlay={renderImageOverlay}
                     showVideo={showVideo}
