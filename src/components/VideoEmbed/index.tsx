@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useGesture } from 'react-use-gesture';
+import YouTube, { YouTubeEvent } from 'react-youtube';
 
 type VideoEmbedProps = {
     /** Optional CSS class name */
@@ -9,6 +10,20 @@ type VideoEmbedProps = {
     inline?: boolean;
     /** Function to navigate to next item */
     onNext?: () => void;
+    /** Callback for YouTube player events */
+    onPlayerEvent?: (event: {
+        data: any;
+        player: YouTubeEvent['target'];
+        type:
+            | 'ready'
+            | 'play'
+            | 'pause'
+            | 'end'
+            | 'error'
+            | 'stateChange'
+            | 'playbackRateChange'
+            | 'playbackQualityChange';
+    }) => void;
     /** Function to navigate to previous item */
     onPrev?: () => void;
     /** Callback when video interaction starts/ends */
@@ -28,6 +43,7 @@ const VideoEmbed = ({
     className = '',
     inline = false,
     onNext,
+    onPlayerEvent,
     onPrev,
     onVideoInteraction,
     style = {},
@@ -116,6 +132,16 @@ const VideoEmbed = ({
         },
     );
 
+    const opts = {
+        height: '480',
+        playerVars: {
+            autoplay: 0,
+            modestbranding: 1,
+            rel: 0,
+        },
+        width: '853',
+    };
+
     return (
         <VideoWrapper
             ref={wrapperRef}
@@ -123,13 +149,67 @@ const VideoEmbed = ({
             className={`video-wrapper${className ? ` ${className}` : ''}`}
             style={style}
         >
-            <iframe
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                height="480"
-                src={`https://www.youtube.com/embed/${videoId}`}
+            <YouTube
+                className="youtube-player"
+                onEnd={(event: YouTubeEvent) =>
+                    onPlayerEvent?.({
+                        data: event,
+                        player: event.target,
+                        type: 'end',
+                    })
+                }
+                onError={(event: YouTubeEvent) =>
+                    onPlayerEvent?.({
+                        data: event,
+                        player: event.target,
+                        type: 'error',
+                    })
+                }
+                onPause={(event: YouTubeEvent) =>
+                    onPlayerEvent?.({
+                        data: event,
+                        player: event.target,
+                        type: 'pause',
+                    })
+                }
+                onPlay={(event: YouTubeEvent) =>
+                    onPlayerEvent?.({
+                        data: event,
+                        player: event.target,
+                        type: 'play',
+                    })
+                }
+                onPlaybackQualityChange={(event: YouTubeEvent) =>
+                    onPlayerEvent?.({
+                        data: event,
+                        player: event.target,
+                        type: 'playbackQualityChange',
+                    })
+                }
+                onPlaybackRateChange={(event: YouTubeEvent) =>
+                    onPlayerEvent?.({
+                        data: event,
+                        player: event.target,
+                        type: 'playbackRateChange',
+                    })
+                }
+                onReady={(event: YouTubeEvent) =>
+                    onPlayerEvent?.({
+                        data: event,
+                        player: event.target,
+                        type: 'ready',
+                    })
+                }
+                onStateChange={(event: YouTubeEvent) =>
+                    onPlayerEvent?.({
+                        data: event,
+                        player: event.target,
+                        type: 'stateChange',
+                    })
+                }
+                opts={opts}
                 title={title}
-                width="853"
+                videoId={videoId}
             />
         </VideoWrapper>
     );
@@ -144,7 +224,9 @@ const VideoWrapper = styled.div`
     justify-content: center;
     align-items: center;
 
-    iframe {
+    .youtube-player {
         border: 0;
+        width: 853px;
+        height: 480px;
     }
 `;
