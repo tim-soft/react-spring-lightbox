@@ -11,6 +11,10 @@ const VideoLightbox = ({ galleryTitle, images }) => {
     const [currentImageIndex, setCurrentIndex] = React.useState(0);
     const [showVideo, setShowVideo] = React.useState(false);
     const [videoId, setVideoId] = React.useState('');
+    const [isPlaying, setIsPlaying] = React.useState(false);
+    const [videoDuration, setVideoDuration] = React.useState(0);
+    const [lastKnownTime, setLastKnownTime] = React.useState(0);
+    const [player, setPlayer] = React.useState(null);
 
     const canPrev = currentImageIndex > 0;
     const canNext = currentImageIndex + 1 < images.length;
@@ -27,29 +31,63 @@ const VideoLightbox = ({ galleryTitle, images }) => {
     }, [currentImageIndex, images]);
 
     const handlePlayerEvent = (event) => {
+        if (event.type === 'ready') {
+            setPlayer(event.player);
+            setVideoDuration(event.player.getDuration());
+        }
+
         if (event.type === 'play') {
+            setIsPlaying(true);
             console.log('Video started playing');
         }
 
         if (event.type === 'pause' || event.type === 'end') {
+            setIsPlaying(false);
             const currentTime = event.player.getCurrentTime();
+            setLastKnownTime(currentTime);
+            const completed = currentTime >= videoDuration;
             console.log(
-                'Video ended. Total play time:',
+                'Video ended. Duration watched:',
                 currentTime,
                 'seconds',
+                completed ? '(completed)' : '(incomplete)',
+            );
+        }
+
+        // Track time updates
+        if (event.type === 'timeupdate') {
+            setLastKnownTime(event.player.getCurrentTime());
+        }
+    };
+
+    const logVideoDuration = () => {
+        if (showVideo && isPlaying && player) {
+            const currentTime = lastKnownTime;
+            const completed = currentTime >= videoDuration;
+            console.log(
+                'Video interrupted. Duration watched:',
+                currentTime,
+                'seconds',
+                completed ? '(completed)' : '(incomplete)',
             );
         }
     };
 
     const gotoNext = () => {
         if (canNext) {
-            setCurrentIndex(currentImageIndex + 1);
+            logVideoDuration();
+            setTimeout(() => {
+                setCurrentIndex(currentImageIndex + 1);
+            }, 100);
         }
     };
 
     const gotoPrevious = () => {
         if (canPrev) {
-            setCurrentIndex(currentImageIndex - 1);
+            logVideoDuration();
+            setTimeout(() => {
+                setCurrentIndex(currentImageIndex - 1);
+            }, 100);
         }
     };
 
