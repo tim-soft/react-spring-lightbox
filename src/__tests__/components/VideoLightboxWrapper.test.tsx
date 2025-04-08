@@ -3,38 +3,76 @@ import { render, fireEvent, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import VideoLightboxWrapper from './VideoLightboxWrapper';
 
+// Mock YouTube player instance
+const mockYouTubePlayer = {
+    getCurrentTime: jest.fn().mockReturnValue(30),
+    getDuration: jest.fn().mockReturnValue(180),
+    pauseVideo: jest.fn(),
+    playVideo: jest.fn(),
+};
+
 // Mock the VideoLightbox component
 jest.mock('../../../example/components/VideoLightbox', () => {
-    return function MockVideoLightbox({ galleryTitle, images }: any) {
+    return function MockVideoLightbox({
+        galleryTitle,
+        images,
+        onPlayerEvent,
+    }: {
+        galleryTitle?: string;
+        images: Array<{
+            alt: string;
+            src: string;
+            type: 'video' | 'image';
+            videoId?: string;
+        }>;
+        onPlayerEvent?: (event: {
+            data: any;
+            player: any;
+            type: string;
+        }) => void;
+    }) {
         const [currentIndex, setCurrentIndex] = React.useState(0);
+
+        React.useEffect(() => {
+            if (images[currentIndex].type === 'video' && onPlayerEvent) {
+                // Simulate ready event
+                onPlayerEvent({
+                    data: null,
+                    player: mockYouTubePlayer,
+                    type: 'ready',
+                });
+            }
+        }, [currentIndex]);
 
         const handleNext = () => {
             if (currentIndex < images.length - 1) {
+                if (images[currentIndex].type === 'video' && onPlayerEvent) {
+                    // Simulate pause event when navigating away
+                    onPlayerEvent({
+                        data: null,
+                        player: mockYouTubePlayer,
+                        type: 'pause',
+                    });
+                }
                 setCurrentIndex(currentIndex + 1);
-            }
-        };
-
-        const handlePrev = () => {
-            if (currentIndex > 0) {
-                setCurrentIndex(currentIndex - 1);
             }
         };
 
         return (
             <div data-testid="mock-video-lightbox">
                 <div data-testid="gallery-title">{galleryTitle}</div>
-                <div data-testid="images-count">{images.length}</div>
-                <button aria-label="next" onClick={handleNext}>
-                    Next
-                </button>
-                <button aria-label="previous" onClick={handlePrev}>
-                    Previous
-                </button>
-                {images[currentIndex].type === 'video' ? (
-                    <div data-testid="video-player">Video Content</div>
-                ) : (
-                    <div data-testid="image-content">Image Content</div>
-                )}
+                <div data-testid="current-content">
+                    {images[currentIndex].type === 'video' ? (
+                        <div data-testid="video-player">
+                            Video: {images[currentIndex].videoId}
+                        </div>
+                    ) : (
+                        <div data-testid="image-content">
+                            Image: {images[currentIndex].src}
+                        </div>
+                    )}
+                </div>
+                <button onClick={handleNext}>Next</button>
             </div>
         );
     };
@@ -43,68 +81,85 @@ jest.mock('../../../example/components/VideoLightbox', () => {
 describe('VideoLightboxWrapper', () => {
     const mockImages = [
         {
-            alt: 'Sample Video 1',
-            caption: 'First Video',
-            src: 'https://picsum.photos/800/600?random=2',
+            alt: 'Sample Video',
+            src: 'video-thumbnail.jpg',
             type: 'video' as const,
-            videoId: 'dQw4w9WgXcQ',
+            videoId: 'test123',
         },
         {
-            alt: 'Sample Image 1',
-            caption: 'First Image',
-            src: 'https://picsum.photos/800/600?random=1',
+            alt: 'Sample Image',
+            src: 'test-image.jpg',
+            type: 'image' as const,
         },
     ];
 
-    test('renders with both video and image content', () => {
+    const mockPlayerEvents = jest.fn();
+
+    test('handles video player events', () => {
         render(
             <VideoLightboxWrapper
-                galleryTitle="Test Gallery"
                 images={mockImages}
+                onPlayerEvent={mockPlayerEvents}
             />,
         );
 
-        // Check if the mock component is rendered
-        expect(screen.getByTestId('mock-video-lightbox')).toBeInTheDocument();
-        expect(screen.getByTestId('gallery-title')).toHaveTextContent(
-            'Test Gallery',
+        // Should receive ready event when mounting with video
+        expect(mockPlayerEvents).toHaveBeenCalledWith(
+            expect.objectContaining({
+                player: expect.any(Object),
+                type: 'ready',
+            }),
         );
-        expect(screen.getByTestId('images-count')).toHaveTextContent('2');
+
+        // Test navigation from video to image
+        fireEvent.click(screen.getByText('Next'));
+
+        // Should receive pause event when navigating away from video
+        expect(mockPlayerEvents).toHaveBeenCalledWith(
+            expect.objectContaining({
+                player: expect.any(Object),
+                type: 'pause',
+            }),
+        );
     });
 
     test('handles navigation between items', () => {
         render(
             <VideoLightboxWrapper
-                galleryTitle="Test Gallery"
                 images={mockImages}
+                onPlayerEvent={mockPlayerEvents}
             />,
         );
 
-        // Find and click next button
-        const nextButton = screen.getByRole('button', { name: /next/i });
-        fireEvent.click(nextButton);
+        // Initial state should show video
+        expect(screen.getByTestId('video-player')).toBeInTheDocument();
+        expect(screen.getByText('Video: test123')).toBeInTheDocument();
 
-        // Find and click previous button
-        const prevButton = screen.getByRole('button', { name: /previous/i });
-        fireEvent.click(prevButton);
+        // Navigate to image
+        fireEvent.click(screen.getByText('Next'));
+        expect(screen.getByTestId('image-content')).toBeInTheDocument();
+        expect(screen.getByText('Image: test-image.jpg')).toBeInTheDocument();
+
+        // Try to navigate past last item (should stay on last item)
+        fireEvent.click(screen.getByText('Next'));
+        expect(screen.getByTestId('image-content')).toBeInTheDocument();
     });
 
     test('switches between video and image content', () => {
         render(
             <VideoLightboxWrapper
-                galleryTitle="Test Gallery"
                 images={mockImages}
+                onPlayerEvent={mockPlayerEvents}
             />,
         );
 
-        // Initially should show video content
+        // Verify initial video content
         expect(screen.getByTestId('video-player')).toBeInTheDocument();
+        expect(screen.queryByTestId('image-content')).not.toBeInTheDocument();
 
-        // Navigate to next item (image)
-        const nextButton = screen.getByRole('button', { name: /next/i });
-        fireEvent.click(nextButton);
-
-        // Should now show image content
+        // Switch to image content
+        fireEvent.click(screen.getByText('Next'));
         expect(screen.getByTestId('image-content')).toBeInTheDocument();
+        expect(screen.queryByTestId('video-player')).not.toBeInTheDocument();
     });
 });

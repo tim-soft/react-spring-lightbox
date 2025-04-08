@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { YouTubeEvent } from 'react-youtube';
 import VideoLightbox from '../../../example/components/VideoLightbox';
 
 interface BaseImage {
@@ -13,14 +14,25 @@ interface VideoImage extends BaseImage {
 }
 
 interface ImageImage extends BaseImage {
-    type?: 'image'; // optional since it's the default
+    type?: 'image';
 }
-
-type Image = VideoImage | ImageImage;
 
 interface VideoLightboxProps {
     galleryTitle?: string;
-    images: Image[];
+    images: (VideoImage | ImageImage)[];
+    onPlayerEvent?: (event: {
+        data: any;
+        player: YouTubeEvent['target'];
+        type:
+            | 'ready'
+            | 'play'
+            | 'pause'
+            | 'end'
+            | 'error'
+            | 'stateChange'
+            | 'playbackRateChange'
+            | 'playbackQualityChange';
+    }) => void;
 }
 
 const VideoLightboxWrapper: React.FC<VideoLightboxProps> = (props) => {
