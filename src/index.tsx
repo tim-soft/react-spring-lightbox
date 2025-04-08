@@ -19,6 +19,8 @@ type ILightboxProps = {
     onClose?: () => void;
     /** Function that changes currentIndex to next image in images */
     onNext: () => void;
+    /** Callback for YouTube player events */
+    onPlayerEvent?: (event: { data: any; player: any; type: string }) => void;
     /** Function that changes currentIndex to previous image in images */
     onPrev: () => void;
     /** React-Spring useTransition config for page open/close animation */
@@ -33,10 +35,14 @@ type ILightboxProps = {
     renderNextButton?: ({ canNext }: { canNext: boolean }) => React.ReactNode;
     /** A React component that is used for previous button in image pager */
     renderPrevButton?: ({ canPrev }: { canPrev: boolean }) => React.ReactNode;
+    /** Whether to show video instead of images */
+    showVideo?: boolean;
     /** Overrides the default behavior of double clicking causing an image zoom to a single click */
     singleClickToZoom?: boolean;
     /** Inline styles that are applied to the root lightbox component */
     style?: React.CSSProperties;
+    /** Optional video ID for YouTube video */
+    videoId?: string;
 };
 
 /**
@@ -61,6 +67,7 @@ const Lightbox = ({
     isOpen,
     onClose,
     onNext,
+    onPlayerEvent,
     onPrev,
     pageTransitionConfig = null,
     renderFooter = () => null,
@@ -68,8 +75,10 @@ const Lightbox = ({
     renderImageOverlay = () => null,
     renderNextButton = () => null,
     renderPrevButton = () => null,
+    showVideo = false,
     singleClickToZoom = false,
     style = {},
+    videoId,
 }: ILightboxProps) => {
     // Handle event listeners for keyboard
     useEffect(() => {
@@ -128,11 +137,14 @@ const Lightbox = ({
             inline={inline}
             onClose={onClose}
             onNext={onNext}
+            onPlayerEvent={onPlayerEvent}
             onPrev={onPrev}
             renderImageOverlay={renderImageOverlay}
             renderNextButton={renderNextButton}
             renderPrevButton={renderPrevButton}
+            showVideo={showVideo}
             singleClickToZoom={singleClickToZoom}
+            videoId={videoId}
         />
     );
 

@@ -26,6 +26,7 @@ React-spring-lightbox is a flexible image gallery lightbox with native-feeling t
 -   :mag_right: &nbsp;Double/Single-tap or double/single-click to zoom in/out
 -   :ok_hand: &nbsp;&nbsp;&nbsp;Pinch to zoom
 -   :point_left: &nbsp;Panning on zoomed-in images
+-   :movie_camera: &nbsp;YouTube video support with event tracking
 -   :checkered_flag: &nbsp;Highly performant spring based animations via [react-spring](https://github.com/react-spring/react-spring)
 -   No external CSS
 -   Implement your own UI
@@ -134,6 +135,90 @@ export default CoolLightbox;
 | className            | Classes are applied to the root lightbox component                                                                 |
 | style                | Inline styles are applied to the root lightbox component                                                           |
 | pageTransitionConfig | React-Spring useTransition config for page open/close animation                                                    |
+| showVideo            | Whether to show video instead of images                                                                            |
+| videoId              | YouTube video ID for embedding video content                                                                       |
+| onPlayerEvent        | Callback for YouTube player events (play, pause, end, etc.)                                                        |
+
+## Video Support
+
+The Lightbox supports YouTube video embeds alongside images. Key features include:
+
+-   Support for embedding YouTube videos within the lightbox
+-   Event handling for video playback and interactions
+-   Seamless integration with existing image gallery functionality
+
+### VideoEmbed Component
+
+The `VideoEmbed` component is an internal component used by the Lightbox to handle YouTube video playback:
+
+| Prop               | Description                                                                          |
+| ------------------ | ------------------------------------------------------------------------------------ |
+| videoId            | YouTube video ID for embedding video content                                         |
+| onPlayerEvent      | Callback for YouTube player events (play, pause, end, etc.)                          |
+| className          | Optional CSS class name                                                              |
+| inline             | Affects width calculation method, depending on whether the Lightbox is inline or not |
+| onNext             | Function to navigate to next item                                                    |
+| onPrev             | Function to navigate to previous item                                                |
+| onVideoInteraction | Callback when video interaction starts/ends                                          |
+| style              | Optional inline styles                                                               |
+| title              | Optional title for the iframe (default: "YouTube video player")                      |
+
+```typescript
+import { VideoEmbed } from 'react-spring-lightbox';
+
+// Usage
+<VideoEmbed
+    videoId="youtube-video-id"
+    className="custom-video-class"
+    inline={false}
+    onNext={() => console.log('Next')}
+    onPrev={() => console.log('Previous')}
+    onPlayerEvent={(event) => {
+        console.log('Player event:', event);
+        // event.type: 'ready' | 'play' | 'pause' | 'end' | 'error' | 'stateChange' | 'playbackRateChange' | 'playbackQualityChange'
+        // event.data: any
+        // event.player: YouTube player instance
+    }}
+    onVideoInteraction={(isInteracting) => {
+        console.log('Video interaction:', isInteracting);
+    }}
+    style={{ maxWidth: '100%' }}
+    title="Custom video title"
+/>
+```
+
+The component uses the YouTube IFrame Player API via `react-youtube` and provides:
+
+-   Automatic player initialization and cleanup
+-   Event tracking for video interactions
+-   Responsive sizing within the lightbox
+-   Support for all YouTube player events
+
+The component handles the following events:
+
+-   `ready`: When the player is ready to receive commands
+-   `play`: When the video starts playing
+-   `pause`: When the video is paused
+-   `end`: When the video reaches the end
+-   `error`: When an error occurs in the player
+-   `stateChange`: When the player's state changes
+-   `playbackRateChange`: When the playback rate changes
+-   `playbackQualityChange`: When the playback quality changes
+
+### Lightbox Video Example
+
+Here's an example of how to use the Lightbox with video support:
+
+```javascript
+<Lightbox
+    showVideo={true}
+    videoId="youtube-video-id"
+    onPlayerEvent={(event) => {
+        // Handle video events
+    }}
+    // ... other Lightbox props
+/>
+```
 
 ## Local Development
 

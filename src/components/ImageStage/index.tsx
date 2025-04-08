@@ -1,4 +1,4 @@
-import ImagePager from './components/ImagePager';
+import Pager from './components/Pager';
 import React from 'react';
 import styled from 'styled-components';
 import useRefSize from './utils/useRefSize';
@@ -18,6 +18,8 @@ type IImageStageProps = {
     onClose?: () => void;
     /** Function that can be called to disable dragging in the pager */
     onNext: () => void;
+    /** Callback for YouTube player events */
+    onPlayerEvent?: (event: { data: any; player: any; type: string }) => void;
     /** True if this image is currently shown in pager, otherwise false */
     onPrev: () => void;
     /** A React component that renders inside the image stage, useful for making overlays over the image */
@@ -26,12 +28,16 @@ type IImageStageProps = {
     renderNextButton: ({ canNext }: { canNext: boolean }) => React.ReactNode;
     /** A React component that is used for previous button in image pager */
     renderPrevButton: ({ canPrev }: { canPrev: boolean }) => React.ReactNode;
+    /** Whether to show video instead of images */
+    showVideo?: boolean;
     /** Overrides the default behavior of double clicking causing an image zoom to a single click */
     singleClickToZoom: boolean;
+    /** Optional video ID for YouTube video */
+    videoId?: string;
 };
 
 /**
- * Containing element for ImagePager and prev/next button controls
+ * Containing element for Pager and prev/next button controls
  */
 const ImageStage = ({
     className = '',
@@ -40,11 +46,14 @@ const ImageStage = ({
     inline,
     onClose,
     onNext,
+    onPlayerEvent,
     onPrev,
     renderImageOverlay,
     renderNextButton,
     renderPrevButton,
+    showVideo = false,
     singleClickToZoom,
+    videoId,
 }: IImageStageProps) => {
     // Extra sanity check that the next/prev image exists before moving to it
     const canPrev = currentIndex > 0;
@@ -64,7 +73,7 @@ const ImageStage = ({
         >
             {renderPrevButton({ canPrev })}
             {containerWidth ? (
-                <ImagePager
+                <Pager
                     currentIndex={currentIndex}
                     images={images}
                     imageStageHeight={containerHeight}
@@ -72,9 +81,12 @@ const ImageStage = ({
                     inline={inline}
                     onClose={onClose}
                     onNext={onNextImage}
+                    onPlayerEvent={onPlayerEvent}
                     onPrev={onPrevImage}
                     renderImageOverlay={renderImageOverlay}
+                    showVideo={showVideo}
                     singleClickToZoom={singleClickToZoom}
+                    videoId={videoId}
                 />
             ) : inline ? (
                 <SSRImagePager currentIndex={currentIndex} images={images} />
