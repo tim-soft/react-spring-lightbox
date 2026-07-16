@@ -6,7 +6,6 @@ import {
 } from '../../utils';
 import { useGesture } from 'react-use-gesture';
 import React, { useEffect, useRef, useState } from 'react';
-import styled, { AnyStyledComponent } from 'styled-components';
 import type { ImagesListItem } from '../../../../types/ImagesList';
 
 const defaultImageTransform = {
@@ -285,8 +284,7 @@ const Image = ({
     });
 
     return (
-        <AnimatedImage
-            $inline={inline}
+        <animated.img
             className="lightbox-image"
             draggable="false"
             onClick={(e: React.MouseEvent<HTMLImageElement>) => {
@@ -300,12 +298,17 @@ const Image = ({
             }}
             ref={imageRef}
             style={{
-                ...imgStyleProp,
+                height: 'auto',
                 maxHeight: pagerHeight,
+                maxWidth: '100%',
+                touchAction: !inline ? 'none' : 'pan-y',
+                ...imgStyleProp,
                 transform: to(
                     [scale, translateX, translateY],
                     (s, x, y) => `translate(${x}px, ${y}px) scale(${s})`,
                 ),
+                userSelect: 'none',
+                width: 'auto',
                 ...(isCurrentImage && { willChange: 'transform' }),
             }}
             // Include any valid img html attributes provided in the <Lightbox /> images prop
@@ -317,14 +320,3 @@ const Image = ({
 Image.displayName = 'Image';
 
 export default Image;
-
-const AnimatedImage = styled(animated.img as AnyStyledComponent)`
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    user-select: none;
-    touch-action: ${({ $inline }) => (!$inline ? 'none' : 'pan-y')};
-    ::selection {
-        background: none;
-    }
-`;

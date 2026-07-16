@@ -1,5 +1,4 @@
 import type { ImagesList } from '../../../../types/ImagesList';
-import styled, { css } from 'styled-components';
 import * as React from 'react';
 
 type ISSRImagePagerProps = {
@@ -9,36 +8,28 @@ type ISSRImagePagerProps = {
 
 const SSRImagePager = ({ currentIndex, images }: ISSRImagePagerProps) => {
     return (
-        <ImagePagerContainer>
+        <div style={{ height: 'inherit', width: '100%' }}>
             {images.map(({ alt, src }, i) => {
+                const isCurrentImage = i === currentIndex;
                 return (
-                    <Image
-                        $isCurrentImage={i === currentIndex}
+                    <img
                         alt={alt}
                         key={`${alt}-${src}-${i}`}
                         src={src}
+                        style={{
+                            ...(!isCurrentImage && {
+                                display: 'none',
+                                visibility: 'hidden',
+                            }),
+                            height: '100%',
+                            objectFit: 'contain',
+                            width: '100%',
+                        }}
                     />
                 );
             })}
-        </ImagePagerContainer>
+        </div>
     );
 };
 
 export default SSRImagePager;
-
-const ImagePagerContainer = styled.div`
-    width: 100%;
-    height: inherit;
-`;
-
-const Image = styled.img<{ $isCurrentImage: boolean }>`
-    ${({ $isCurrentImage }) =>
-        !$isCurrentImage &&
-        css`
-            visibility: hidden;
-            display: none;
-        `}
-    height:100%;
-    width: 100%;
-    object-fit: contain;
-`;

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTransition, animated, config } from '@react-spring/web';
-import styled, { AnyStyledComponent } from 'styled-components';
 
 type IPageContainerProps = {
     /** All child components of Lightbox */
@@ -42,15 +41,26 @@ const PageContainer = ({
             {transitions(
                 (animatedStyles, item) =>
                     item && (
-                        <AnimatedPageContainer
+                        <animated.div
                             className={`lightbox-container${
                                 className ? ` ${className}` : ''
                             }`}
                             data-testid="lightbox-container"
-                            style={{ ...animatedStyles, ...style }}
+                            style={{
+                                bottom: 0,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                left: 0,
+                                position: 'fixed',
+                                right: 0,
+                                top: 0,
+                                zIndex: 400,
+                                ...animatedStyles,
+                                ...style,
+                            }}
                         >
                             {children}
-                        </AnimatedPageContainer>
+                        </animated.div>
                     ),
             )}
         </>
@@ -58,14 +68,3 @@ const PageContainer = ({
 };
 
 export default PageContainer;
-
-const AnimatedPageContainer = styled(animated.div as AnyStyledComponent)`
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    z-index: 400;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-`;
