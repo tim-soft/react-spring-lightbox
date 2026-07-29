@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file.
 
 -   Add `swipe up` to close lightbox
 
+## [1.9.0] - 2026-07-29
+
+-   Drop `styled-components` dependency
+
 ## [1.8.0] - 2023-10-06
 
 -   Add inline mode SSR support
