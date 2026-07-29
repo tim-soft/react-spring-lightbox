@@ -44,8 +44,8 @@ const StyledAnimatedDiv = styled(animated.div)`
 
 const Button = styled(ButtonControl)`
     position: absolute;
-    top: 0;
-    bottom: 0;
+    top: 50%;
+    transform: translateY(-50%);
     left: ${({ position }) => (position === 'left' ? 0 : 'unset')};
     right: ${({ position }) => (position === 'right' ? 0 : 'unset')};
 `;

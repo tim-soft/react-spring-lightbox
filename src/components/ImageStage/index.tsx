@@ -1,6 +1,5 @@
 import ImagePager from './components/ImagePager';
 import React from 'react';
-import styled from 'styled-components';
 import useRefSize from './utils/useRefSize';
 import type { ImagesList } from '../../types/ImagesList';
 import SSRImagePager from './components/SSRImagePager/SSRImagePager';
@@ -57,10 +56,18 @@ const ImageStage = ({
         useRefSize();
 
     return (
-        <ImageStageContainer
+        <div
             className={className}
             data-testid="lightbox-image-stage"
             ref={containerRef}
+            style={{
+                alignItems: 'center',
+                display: 'flex',
+                height: '100%',
+                justifyContent: 'center',
+                position: 'relative',
+                width: '100%',
+            }}
         >
             {renderPrevButton({ canPrev })}
             {containerWidth ? (
@@ -80,17 +87,8 @@ const ImageStage = ({
                 <SSRImagePager currentIndex={currentIndex} images={images} />
             ) : null}
             {renderNextButton({ canNext })}
-        </ImageStageContainer>
+        </div>
     );
 };
 
 export default ImageStage;
-
-const ImageStageContainer = styled.div`
-    position: relative;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;

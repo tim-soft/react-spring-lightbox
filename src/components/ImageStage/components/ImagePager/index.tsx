@@ -2,7 +2,6 @@ import { animated, useSprings } from '@react-spring/web';
 import { useGesture } from 'react-use-gesture';
 import Image from '../Image';
 import React, { useEffect, useRef, useState } from 'react';
-import styled, { AnyStyledComponent } from 'styled-components';
 import type { ImagesList } from '../../../../types/ImagesList';
 
 type IImagePager = {
@@ -201,10 +200,9 @@ const ImagePager = ({
     );
 
     return (
-        <ImagePagerContainer>
+        <div style={{ height: '100%', width: '100%' }}>
             {pagerSprings.map(({ display, x }, i) => (
-                <AnimatedImagePager
-                    $inline={inline}
+                <animated.span
                     {...bind()}
                     className="lightbox-image-pager"
                     key={i}
@@ -219,19 +217,50 @@ const ImagePager = ({
                     }}
                     role="presentation"
                     style={{
+                        alignItems: 'center',
+                        bottom: 0,
                         display,
+                        flexDirection: 'column',
+                        height: '100%',
+                        justifyContent: 'center',
+                        left: 0,
+                        position: 'absolute',
+                        right: 0,
+                        top: 0,
+                        touchAction: !inline ? 'none' : 'pan-y',
                         transform: x.to(
                             (xInterp: number) => `translateX(${xInterp}px)`,
                         ),
+                        width: '100%',
+                        willChange: 'transform',
                     }}
                 >
-                    <PagerContentWrapper>
-                        <PagerInnerContentWrapper>
-                            <ImageContainer
-                                $inline={inline}
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            width: '100%',
+                        }}
+                    >
+                        <div
+                            style={{
+                                alignItems: 'center',
+                                display: 'flex',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <div
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     e.nativeEvent.stopImmediatePropagation();
+                                }}
+                                style={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    position: 'relative',
+                                    touchAction: !inline ? 'none' : 'pan-y',
+                                    userSelect: 'none',
+                                    width: '100%',
                                 }}
                             >
                                 <Image
@@ -244,59 +273,15 @@ const ImagePager = ({
                                     singleClickToZoom={singleClickToZoom}
                                 />
                                 {renderImageOverlay()}
-                            </ImageContainer>
-                        </PagerInnerContentWrapper>
-                    </PagerContentWrapper>
-                </AnimatedImagePager>
+                            </div>
+                        </div>
+                    </div>
+                </animated.span>
             ))}
-        </ImagePagerContainer>
+        </div>
     );
 };
 
 ImagePager.displayName = 'ImagePager';
 
 export default ImagePager;
-
-const ImagePagerContainer = styled.div`
-    height: 100%;
-    width: 100%;
-`;
-
-const PagerInnerContentWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
-
-const PagerContentWrapper = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: center;
-`;
-
-const AnimatedImagePager = styled(animated.span as AnyStyledComponent)<{
-    $inline: boolean;
-}>`
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
-    height: 100%;
-    width: 100%;
-    will-change: transform;
-    touch-action: ${({ $inline }) => (!$inline ? 'none' : 'pan-y')};
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-`;
-
-const ImageContainer = styled.div<{ $inline: boolean }>`
-    position: relative;
-    touch-action: ${({ $inline }) => (!$inline ? 'none' : 'pan-y')};
-    user-select: none;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-`;
