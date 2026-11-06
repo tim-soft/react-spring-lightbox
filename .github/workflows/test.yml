@@ -14,6 +14,21 @@ concurrency:
     cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+    lint:
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - uses: actions/checkout@v7
+            - uses: actions/setup-node@v7
+              with:
+                  node-version: 24
+                  cache: yarn
+            - run: yarn install --frozen-lockfile
+            - run: yarn lint:eslint
+            - run: yarn lint:prettier
+            # Vitest doesn't type-check, so tsc checks the tests along with the source
+            - run: yarn lint:ts
+
     test:
         runs-on: ubuntu-latest
         timeout-minutes: 10
@@ -24,8 +39,6 @@ jobs:
                   node-version: 24
                   cache: yarn
             - run: yarn install --frozen-lockfile
-            # Vitest doesn't type-check, so check the tests and source with tsc first
-            - run: yarn lint:ts
             - run: yarn test
 
     e2e:
