@@ -4,6 +4,7 @@
     "compilerOptions": {
         "rootDir": "..",
         "target": "ES2022",
+        "lib": ["dom", "dom.iterable", "esnext"],
         "noEmit": true
     },
     "include": ["**/*.ts", "harness/**/*.tsx", "../playwright.config.ts"],
