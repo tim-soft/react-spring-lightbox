@@ -9,11 +9,19 @@ import type { ImagesListType } from '../../src/index';
 const params = new URLSearchParams(window.location.search);
 const flag = (name: string) => params.has(name);
 
-const images: ImagesListType = [1, 2, 3, 4, 5].map((n) => ({
-    alt: `Image ${n}`,
-    src: `/images/${n}.svg`,
-    ...(flag('lazy') ? { loading: 'lazy' as const } : {}),
-}));
+const images: ImagesListType = flag('variety')
+    ? [
+          { alt: 'Tiny image', src: '/images/tiny.svg' },
+          { alt: 'Panorama', src: '/images/panorama.svg' },
+          { alt: 'Portrait', src: '/images/2.svg' },
+          { alt: 'Broken image', src: '/images/missing.svg' },
+          { alt: 'Image 1', src: '/images/1.svg' },
+      ]
+    : [1, 2, 3, 4, 5].map((n) => ({
+          alt: `Image ${n}`,
+          src: `/images/${n}.svg`,
+          ...(flag('lazy') ? { loading: 'lazy' as const } : {}),
+      }));
 
 /** How often the lightbox called each callback, for tests to read */
 const calls = { onClose: 0, onNext: 0, onPrev: 0 };
@@ -140,7 +148,19 @@ const App = () => {
                 </button>
             ))}
             <p style={{ height: 2000 }}>A long page behind the lightbox</p>
-            {lightbox}
+            <button onClick={() => open(0)} type="button">
+                View the first image from the bottom of the page
+            </button>
+            {/* A transform traps position: fixed elements inside it */}
+            <div
+                style={
+                    flag('insideTransform')
+                        ? { transform: 'translateZ(0)' }
+                        : undefined
+                }
+            >
+                {lightbox}
+            </div>
         </main>
     );
 };

@@ -222,6 +222,38 @@ test.describe('with taps', () => {
         expect(await scaleOf(page)).toBeCloseTo(2, 2);
         await expectKeptInPlace(image, OFF_CENTER, point);
     });
+
+    test('turning the phone keeps the zoom, and turning it back restores the view', async ({
+        page,
+    }) => {
+        await openHarness(page, 'index=2');
+        const image = page.getByAltText('Image 3');
+        const point = await pointIn(image, OFF_CENTER);
+        await page.touchscreen.tap(...point);
+        await page.waitForTimeout(80);
+        await page.touchscreen.tap(...point);
+        await settle(page);
+        const zoomedIn = await image.boundingBox();
+        const portrait = page.viewportSize();
+        if (!zoomedIn || !portrait) throw new Error('Image 3 is not visible');
+
+        await page.setViewportSize({
+            height: portrait.width,
+            width: portrait.height,
+        });
+        await settle(page);
+        expect(await scaleOf(page)).toBeCloseTo(2, 2);
+
+        await page.setViewportSize(portrait);
+        await settle(page);
+        const turnedBack = await image.boundingBox();
+        for (const side of ['x', 'y', 'width', 'height'] as const) {
+            expect(
+                Math.abs((turnedBack?.[side] ?? 0) - zoomedIn[side]),
+            ).toBeLessThan(1);
+        }
+        expect(await calls(page)).toEqual({ onClose: 0, onNext: 0, onPrev: 0 });
+    });
 });
 
 test.describe('with two fingers', () => {

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
-import { openHarness, settle } from './support';
+import { openHarness, settle, shownImage } from './support';
 
 /** Opens Image 1 from the gallery and returns which images the browser fetched */
 const openAndCollectImageRequests = async (page: Page, query: string) => {
@@ -95,4 +95,71 @@ test('the image overlay sits over the image', async ({ page }) => {
         image.x + image.width + 1,
     );
     expect(share.y).toBeGreaterThanOrEqual(image.y - 1);
+});
+
+test('covers the window even when rendered inside an element with a transform', async ({
+    page,
+}) => {
+    await openHarness(page, 'insideTransform');
+
+    const viewport = page.viewportSize();
+    expect(await page.getByTestId('lightbox-container').boundingBox()).toEqual({
+        x: 0,
+        y: 0,
+        ...viewport,
+    });
+});
+
+test.describe('images of any shape and size', () => {
+    const boxOf = async (page: Page, alt: string) => {
+        const box = await page.getByAltText(alt).boundingBox();
+        if (!box) throw new Error(`${alt} is not visible`);
+        return box;
+    };
+
+    test('shows a small image at its own size, centered, instead of stretching it', async ({
+        page,
+    }) => {
+        await openHarness(page, 'variety&index=0');
+
+        const { height, width } = await boxOf(page, 'Tiny image');
+
+        expect([width, height]).toEqual([200, 150]);
+        expect(await shownImage(page)).toBe('Tiny image');
+    });
+
+    test('fits a panorama to the width of the window, keeping its shape', async ({
+        page,
+    }) => {
+        await openHarness(page, 'variety&index=1');
+
+        const { height, width } = await boxOf(page, 'Panorama');
+
+        expect(width).toBeCloseTo(page.viewportSize()?.width ?? 0, 0);
+        expect(width / height).toBeCloseTo(3000 / 600, 1);
+    });
+
+    test('keeps the shape of a portrait image', async ({ page }) => {
+        await openHarness(page, 'variety&index=2');
+
+        const { height, width } = await boxOf(page, 'Portrait');
+
+        expect(width / height).toBeCloseTo(1000 / 1400, 2);
+    });
+
+    test('shows the alt text of a broken image, and pages past it', async ({
+        page,
+    }) => {
+        await openHarness(page, 'variety&index=2');
+        const next = page.getByRole('button', { name: 'Next' });
+
+        await next.click();
+        await settle(page);
+        expect(await shownImage(page)).toBe('Broken image');
+        expect((await boxOf(page, 'Broken image')).width).toBeGreaterThan(0);
+
+        await next.click();
+        await settle(page);
+        expect(await shownImage(page)).toBe('Image 1');
+    });
 });

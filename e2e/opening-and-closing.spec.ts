@@ -2,12 +2,14 @@ import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
 import {
     calls,
+    chromiumInput,
     openHarness,
     pointIn,
     sampleFrames,
     settle,
     shownImage,
 } from './support';
+import type { Point } from './support';
 
 const container = (page: Page) => page.getByTestId('lightbox-container');
 const scrollY = (page: Page) => page.evaluate(() => window.scrollY);
@@ -123,6 +125,16 @@ test.describe('with a mouse and keyboard', () => {
         await expect.poll(() => scrollY(page)).toBeGreaterThan(0);
     });
 
+    test('Space does not scroll the page behind', async ({ page }) => {
+        test.fail(true, 'Space is missing from the keys the lightbox blocks');
+        await openHarness(page);
+
+        await page.keyboard.press('Space');
+        await page.waitForTimeout(300);
+
+        expect(await scrollY(page)).toBe(0);
+    });
+
     test('a text field in the footer keeps its Home and End keys (#65)', async ({
         page,
     }) => {
@@ -171,4 +183,43 @@ test.describe('on a touchscreen', () => {
 
         await expect(container(page)).toBeVisible();
     });
+
+    test('a swipe up the footer does not scroll the page behind', async ({
+        browserName,
+        page,
+    }) => {
+        test.skip(
+            browserName !== 'chromium',
+            'Touch input through the DevTools protocol',
+        );
+        test.fail(true, 'Only the image stage sets touch-action: none');
+        await openHarness(page);
+        const { touch } = await chromiumInput(page);
+        const [x, y] = await pointIn(page.getByRole('contentinfo'));
+
+        await touch.swipe(
+            [0, 1, 2, 3, 4].map((step): Point => [x, y - step * 60]),
+            30,
+        );
+        await page.waitForTimeout(600);
+
+        expect(await scrollY(page)).toBe(0);
+    });
+});
+
+test('closing returns to the same place on a long page', async ({ page }) => {
+    await openHarness(page, 'closed');
+    const viewFirst = page.getByRole('button', {
+        name: 'View the first image from the bottom of the page',
+    });
+    await viewFirst.scrollIntoViewIfNeeded();
+    const before = await scrollY(page);
+
+    await viewFirst.click();
+    await settle(page);
+    await page.getByRole('button', { name: 'Close' }).click();
+    await expect(container(page)).toHaveCount(0);
+
+    expect(before).toBeGreaterThan(1000);
+    expect(await scrollY(page)).toBe(before);
 });

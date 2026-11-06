@@ -3,6 +3,7 @@ import type { Page } from '@playwright/test';
 import {
     calls,
     chromiumInput,
+    imageTransform,
     openHarness,
     pointIn,
     sampleFrames,
@@ -111,6 +112,24 @@ test.describe('dragging with a mouse', () => {
 
         expect((await calls(page)).onNext).toBe(0);
     });
+
+    test('two drags in quick succession move two images, the second mid-slide', async ({
+        page,
+    }) => {
+        await openHarness(page, 'index=1');
+
+        for (let drag = 0; drag < 2; drag += 1) {
+            await page.mouse.move(900, 300);
+            await page.mouse.down();
+            await page.mouse.move(400, 300);
+            await page.mouse.up();
+            await page.waitForTimeout(30);
+        }
+        await settle(page);
+
+        expect(await shownImage(page)).toBe('Image 4');
+        expect((await calls(page)).onNext).toBe(2);
+    });
 });
 
 test.describe('swiping on a touchscreen', () => {
@@ -213,6 +232,25 @@ test.describe('swiping on a touchscreen', () => {
         await settle(page);
 
         expect(await shownImage(page)).toBe('Image 3');
+    });
+
+    test('two quick flicks in a row move two images, the second mid-slide', async ({
+        page,
+    }) => {
+        await openHarness(page, 'index=1');
+        const { touch } = await chromiumInput(page);
+
+        for (let flick = 0; flick < 2; flick += 1) {
+            await touch.swipe([
+                [300, 300],
+                [240, 300],
+            ]);
+            await page.waitForTimeout(30);
+        }
+        await settle(page);
+
+        expect(await shownImage(page)).toBe('Image 4');
+        expect((await calls(page)).onNext).toBe(2);
     });
 });
 
@@ -337,6 +375,33 @@ test.describe('arrow buttons', () => {
         );
 
         expect(topmost).toBe('Next');
+    });
+
+    test('a double click or tap while the next image slides in leaves the gallery at rest on it', async ({
+        isMobile,
+        page,
+    }) => {
+        await openHarness(page, 'index=1');
+        const next = page.getByRole('button', { name: 'Next' });
+        const { height = 0, width = 0 } = page.viewportSize() ?? {};
+        const middle: Point = [width / 2, height / 2];
+
+        if (isMobile) {
+            await next.tap();
+            await page.waitForTimeout(40);
+            await page.touchscreen.tap(...middle);
+            await page.waitForTimeout(80);
+            await page.touchscreen.tap(...middle);
+        } else {
+            await next.click();
+            await page.waitForTimeout(40);
+            await page.mouse.dblclick(...middle);
+        }
+        await settle(page);
+
+        expect(await calls(page)).toEqual({ onClose: 0, onNext: 1, onPrev: 0 });
+        expect(await shownImage(page)).toBe('Image 3');
+        expect((await imageTransform(page, 'Image 2')).scale).toBe(1);
     });
 });
 
