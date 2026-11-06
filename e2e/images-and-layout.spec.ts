@@ -1,6 +1,5 @@
-import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
-import { openHarness, settle, shownImage } from './support';
+import { expect, openHarness, settle, shownImage, test } from './support';
 
 /** Opens Image 1 from the gallery and returns which images the browser fetched */
 const openAndCollectImageRequests = async (page: Page, query: string) => {

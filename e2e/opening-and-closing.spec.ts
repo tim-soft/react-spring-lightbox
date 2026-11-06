@@ -1,13 +1,14 @@
-import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
 import {
     calls,
     chromiumInput,
+    expect,
     openHarness,
     pointIn,
     sampleFrames,
     settle,
     shownImage,
+    test,
 } from './support';
 import type { Point } from './support';
 

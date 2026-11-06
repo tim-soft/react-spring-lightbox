@@ -1,6 +1,12 @@
-import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
-import { chromiumInput, imageTransform, openHarness, settle } from './support';
+import {
+    chromiumInput,
+    expect,
+    imageTransform,
+    openHarness,
+    settle,
+    test,
+} from './support';
 import type { Point } from './support';
 
 // The same zoom math as src/__tests__/zoom-transforms.test.tsx, checked in

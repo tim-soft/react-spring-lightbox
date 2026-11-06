@@ -1,13 +1,14 @@
-import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
 import {
     calls,
     chromiumInput,
+    expect,
     imageTransform,
     openHarness,
     pointIn,
     settle,
     shownImage,
+    test,
 } from './support';
 
 // Input the gallery should not react to: saving an image, and touches that

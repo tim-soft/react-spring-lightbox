@@ -1,0 +1,20 @@
+# The test and e2e jobs in workflows/test.yml each upload a report,
+# flagged unit and e2e.
+coverage:
+    status:
+        # The test job already fails when unit coverage drops, so these checks
+        # only report
+        project:
+            default:
+                informational: true
+        patch:
+            default:
+                informational: true
+
+comment:
+    layout: 'condensed_header, flags, condensed_files, condensed_footer'
+
+flag_management:
+    default_rules:
+        # A commit whose e2e job didn't upload shows its parent's e2e coverage
+        carryforward: true

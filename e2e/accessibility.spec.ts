@@ -1,6 +1,5 @@
-import { expect, test } from '@playwright/test';
 import type { Page } from '@playwright/test';
-import { openHarness, sampleFrames, settle } from './support';
+import { expect, openHarness, sampleFrames, settle, test } from './support';
 
 // What keyboard, screen reader and reduced-motion users need from a modal.
 // The expected failures follow the WAI-ARIA dialog pattern.

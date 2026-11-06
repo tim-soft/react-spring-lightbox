@@ -3,6 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
     forbidOnly: Boolean(process.env.CI),
     fullyParallel: true,
+    globalSetup: './e2e/coverage.ts',
     projects: [
         { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
         { name: 'firefox', use: { ...devices['Desktop Firefox'] } },

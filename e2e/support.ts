@@ -1,5 +1,32 @@
-import { expect } from '@playwright/test';
+import { expect, test as base } from '@playwright/test';
 import type { Locator, Page } from '@playwright/test';
+import { CoverageReport } from 'monocart-coverage-reports';
+import { coverageOptions, measuringCoverage } from './coverage';
+
+/** Playwright's test, which also records coverage in Chromium when E2E_COVERAGE is set */
+export const test = base.extend<{ measureCoverage: void }>({
+    measureCoverage: [
+        async ({ browserName, page }, use) => {
+            const measure = measuringCoverage && browserName === 'chromium';
+            if (measure) {
+                await page.coverage.startJSCoverage({
+                    resetOnNavigation: false,
+                });
+            }
+            await use();
+            if (measure) {
+                const coverage = await page.coverage.stopJSCoverage();
+                // Skipped tests never load the page
+                if (coverage.length) {
+                    await new CoverageReport(coverageOptions).add(coverage);
+                }
+            }
+        },
+        { auto: true },
+    ],
+});
+
+export { expect };
 
 export type Point = [x: number, y: number];
 
