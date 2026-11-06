@@ -260,31 +260,34 @@ export const emulateDesktopSafari = () => {
     });
 };
 
+/** One WebKit gesture event, as desktop Safari sends for a trackpad pinch */
+export const safariGesture = (
+    target: Element,
+    type: 'gesturechange' | 'gestureend' | 'gesturestart',
+    [clientX, clientY]: Point,
+    scale: number,
+) =>
+    fireEvent(
+        target,
+        Object.assign(new Event(type, { bubbles: true, cancelable: true }), {
+            clientX,
+            clientY,
+            rotation: 0,
+            scale,
+        }),
+    );
+
 /** A trackpad pinch on desktop Safari, through each scale in `scales` */
 export const safariPinch = async (
     target: Element,
-    { at: [clientX, clientY], scales }: { at: Point; scales: number[] },
+    { at, scales }: { at: Point; scales: number[] },
 ) => {
-    const gesture = (type: string, scale: number) =>
-        fireEvent(
-            target,
-            Object.assign(
-                new Event(type, { bubbles: true, cancelable: true }),
-                {
-                    clientX,
-                    clientY,
-                    rotation: 0,
-                    scale,
-                },
-            ),
-        );
-
-    gesture('gesturestart', 1);
+    safariGesture(target, 'gesturestart', at, 1);
     for (const scale of scales) {
         await advance(FRAME);
-        gesture('gesturechange', scale);
+        safariGesture(target, 'gesturechange', at, scale);
     }
-    gesture('gestureend', scales[scales.length - 1]);
+    safariGesture(target, 'gestureend', at, scales[scales.length - 1]);
 };
 
 /** Presses and releases `key`. Returns false when the lightbox blocked the key's default action, such as scrolling. */
