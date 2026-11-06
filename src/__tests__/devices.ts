@@ -8,8 +8,6 @@ import type { Point } from './helpers';
 
 type PointerType = 'mouse' | 'pen' | 'touch';
 
-let browserSendsPointerEvents = true;
-
 const firePointer = (
     type: 'pointerDown' | 'pointerMove' | 'pointerUp',
     target: Element,
@@ -122,7 +120,7 @@ type Finger = { id: number; point: Point };
 export const touch = (
     target: Element,
     points: Point[],
-    { pointerEvents = browserSendsPointerEvents } = {},
+    { pointerEvents = true } = {},
 ) => {
     const pointer = (...args: Parameters<typeof firePointer>) =>
         pointerEvents && firePointer(...args);
@@ -201,7 +199,7 @@ export const touchscreen = {
         target: Element,
         from: [Point, Point],
         to: [Point, Point],
-        { pointerEvents = browserSendsPointerEvents, steps = 3 } = {},
+        { pointerEvents = true, steps = 3 } = {},
     ) {
         const fingers = touch(target, from, { pointerEvents });
         for (let step = 1; step <= steps; step += 1) {
@@ -234,7 +232,7 @@ export const touchscreen = {
 };
 
 /** Hides a window event handler property, the way browsers without that event lack it */
-const removeForTest = (handler: 'onpointerdown' | 'ontouchstart') => {
+const removeForTest = (handler: 'ontouchstart') => {
     let owner: object = window;
     while (!Object.prototype.hasOwnProperty.call(owner, handler)) {
         owner = Object.getPrototypeOf(owner);
@@ -259,18 +257,6 @@ export const emulateDesktopSafari = () => {
     vi.stubGlobal('GestureEvent', class GestureEvent extends UIEvent {});
     onTestFinished(() => {
         vi.unstubAllGlobals();
-    });
-};
-
-/**
- * A mobile browser without pointer events, like iOS Safari before 13: the
- * gesture library drags with touch events instead. Call before rendering.
- */
-export const emulateTouchOnlyBrowser = () => {
-    removeForTest('onpointerdown');
-    browserSendsPointerEvents = false;
-    onTestFinished(() => {
-        browserSendsPointerEvents = true;
     });
 };
 

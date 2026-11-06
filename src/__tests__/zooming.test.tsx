@@ -4,7 +4,6 @@ import { beforeEach, describe, expect, test } from 'vitest';
 import Lightbox from '../index';
 import {
     emulateDesktopSafari,
-    emulateTouchOnlyBrowser,
     mouse,
     pressKey,
     safariPinch,
@@ -202,43 +201,11 @@ describe('with a touchscreen', () => {
 
         expect(image(3)).toHaveStyle({ transform: AT_REST });
     });
-
-    // The pinch's first frame leaves the image at 1x, so onRest unlocks the
-    // pager. The pager then starts dragging with the first finger, and onPinch
-    // ignores the rest of the pinch while the pager drags.
-    test.fails(
-        'spreading two fingers zooms in, on browsers that send pointer events with touches (current mobile browsers)',
-        async () => {
-            render(<Lightbox {...lightboxProps()} />);
-            await settle();
-
-            await touchscreen.pinch(image(1), FINGERS_CLOSE, FINGERS_WIDE);
-            await settle();
-
-            expect(imageTransform(image(1)).scale).toBeGreaterThan(1);
-        },
-    );
-
-    test.fails(
-        'spreading two fingers zooms all the way in, on browsers that only send touch events (iOS 12 and older)',
-        async () => {
-            emulateTouchOnlyBrowser();
-            render(<Lightbox {...lightboxProps()} />);
-            await settle();
-
-            await touchscreen.pinch(image(1), FINGERS_CLOSE, [
-                [12, 384],
-                [1012, 384],
-            ]);
-            await settle();
-
-            expect(imageTransform(image(1)).scale).toBe(3);
-        },
-    );
 });
 
-// The pager takes over pinches today (see the expected failures above), so
-// these keep the fingers' events away from it to cover the image's handling
+// A pinch races touch input against animation frames, and jsdom can't order
+// them the way browsers do. These keep the fingers' events away from the pager
+// to cover the image's own handling. e2e/zooming.spec.ts pinches in Chromium.
 describe('pinch handling on the image', () => {
     const fingersOn = (target: Element, points: Point[]) =>
         touch(target, points, { pointerEvents: false });
