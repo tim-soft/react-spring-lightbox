@@ -1,4 +1,5 @@
 import React from 'react';
+import { describe, expect, test, vi } from 'vitest';
 import { render, fireEvent, screen } from '@testing-library/react';
 import Lightbox from './components/SimpleLightbox';
 
@@ -76,7 +77,7 @@ describe('Lightbox', () => {
 
     describe('keyboard shortcuts', () => {
         test('calls onNext() callback on ArrowRight keypress', () => {
-            const onNext = jest.fn();
+            const onNext = vi.fn();
             render(<Lightbox onNext={onNext} />);
 
             fireEvent.keyDown(document, { code: 39, key: 'ArrowRight' });
@@ -86,7 +87,7 @@ describe('Lightbox', () => {
         });
 
         test('calls onPrev() callback on ArrowLeft keypress', () => {
-            const onPrev = jest.fn();
+            const onPrev = vi.fn();
             render(<Lightbox currentIndex={2} onPrev={onPrev} />);
 
             fireEvent.keyDown(document, { code: 37, key: 'ArrowLeft' });
@@ -96,7 +97,7 @@ describe('Lightbox', () => {
         });
 
         test('calls onClose() callback on Esc keypress', () => {
-            const onClose = jest.fn();
+            const onClose = vi.fn();
             render(<Lightbox onClose={onClose} />);
 
             fireEvent.keyDown(document, { code: 27, key: 'Escape' });
