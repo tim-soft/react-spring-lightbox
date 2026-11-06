@@ -1,0 +1,11 @@
+/* eslint-disable sort-keys */
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "..",
+        "target": "ES2022",
+        "noEmit": true
+    },
+    "include": ["**/*.ts", "harness/**/*.tsx", "../playwright.config.ts"],
+    "exclude": []
+}
