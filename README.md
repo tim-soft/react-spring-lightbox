@@ -4,7 +4,7 @@
 [![NPM](https://img.shields.io/npm/l/react-spring-lightbox.svg?color=brightgreen&style=popout-square)](https://github.com/tim-soft/react-spring-lightbox/blob/master/LICENSE)
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/react-spring-lightbox.svg?style=popout-square)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=popout-square)
-[![Travis (.org)](https://img.shields.io/travis/tim-soft/react-spring-lightbox?style=flat-square)](https://travis-ci.org/tim-soft/react-spring-lightbox)
+[![Tests](https://img.shields.io/github/actions/workflow/status/tim-soft/react-spring-lightbox/test.yml?branch=master&style=flat-square&label=tests)](https://github.com/tim-soft/react-spring-lightbox/actions/workflows/test.yml)
 
 React-spring-lightbox is a flexible image gallery lightbox with native-feeling touch gestures and buttery smooth animations.
 
