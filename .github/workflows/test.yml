@@ -27,3 +27,22 @@ jobs:
             # Vitest doesn't type-check, so check the tests and source with tsc first
             - run: yarn lint:ts
             - run: yarn test
+
+    e2e:
+        runs-on: ubuntu-latest
+        timeout-minutes: 20
+        steps:
+            - uses: actions/checkout@v7
+            - uses: actions/setup-node@v7
+              with:
+                  node-version: 24
+                  cache: yarn
+            - run: yarn install --frozen-lockfile
+            - run: npx playwright install --with-deps chromium firefox webkit
+            - run: yarn test:e2e
+            - uses: actions/upload-artifact@v7
+              if: ${{ !cancelled() }}
+              with:
+                  name: playwright-report
+                  path: playwright-report/
+                  retention-days: 14
