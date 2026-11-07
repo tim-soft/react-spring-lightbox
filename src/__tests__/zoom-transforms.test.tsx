@@ -39,8 +39,12 @@ const zoomAround = (from: Transform, scale: number, [pointX, pointY]: Point): Tr
  */
 const pinchStep = (from: Transform, amount: number, origin: Point): Transform => {
     const scale = from.scale + amount;
-    if (scale < 1) return AT_REST;
-    if (scale > 3) return { ...from, scale: 3 };
+    if (scale < 1) {
+        return AT_REST;
+    }
+    if (scale > 3) {
+        return { ...from, scale: 3 };
+    }
     return zoomAround(from, scale, origin);
 };
 

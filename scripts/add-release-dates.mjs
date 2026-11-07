@@ -21,9 +21,13 @@ export const addReleaseDates = (markdown, date) => {
     lines.forEach((line, index) => {
         output.push(line);
         const version = VERSION_HEADING.exec(line)?.[1];
-        if (!version) return;
+        if (!version) {
+            return;
+        }
         const next = lines.slice(index + 1).find((later) => later.trim());
-        if (next && RELEASE_DATE.test(next)) return;
+        if (next && RELEASE_DATE.test(next)) {
+            return;
+        }
         output.push('', `_Released ${date}_`);
         dated.push(version);
     });

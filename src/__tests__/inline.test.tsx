@@ -19,6 +19,7 @@ describe('before the stage is measured', () => {
 
     test('server-renders every image, showing only the current one', () => {
         const html = renderToString(<Lightbox {...inlineProps(3)} />);
+        // oxlint-disable-next-line react/no-danger -- mounts the server-rendered markup to inspect it
         render(<div dangerouslySetInnerHTML={{ __html: html }} />);
 
         expect(screen.getAllByRole('img', { hidden: true })).toHaveLength(5);

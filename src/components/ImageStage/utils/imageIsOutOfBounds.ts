@@ -14,7 +14,7 @@ const imageIsOutOfBounds = (imageRef: React.RefObject<HTMLImageElement | null>):
         left: topLeftX,
         right: bottomRightX,
         top: topLeftY,
-    } = imageRef.current?.getBoundingClientRect();
+    } = imageRef.current.getBoundingClientRect();
     const { innerHeight: windowHeight, innerWidth: windowWidth } = window;
 
     if (
@@ -22,8 +22,9 @@ const imageIsOutOfBounds = (imageRef: React.RefObject<HTMLImageElement | null>):
         topLeftY > windowHeight * (1 / 2) ||
         bottomRightX < windowWidth * (1 / 2) ||
         bottomRightY < windowHeight * (1 / 2)
-    )
+    ) {
         return true;
+    }
 
     return false;
 };

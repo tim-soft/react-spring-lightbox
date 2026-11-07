@@ -113,22 +113,21 @@ const Image = ({
                 if (scale.get() > 1 && imageIsOutOfBounds(imageRef)) {
                     cancel();
                     return;
-                } else {
-                    if (first) {
-                        return {
-                            initialTranslateX: translateX.get(),
-                            initialTranslateY: translateY.get(),
-                        };
-                    }
-
-                    // Translate image from dragging
-                    springApi.start({
-                        translateX: memo.initialTranslateX + xMovement,
-                        translateY: memo.initialTranslateY + yMovement,
-                    });
-
-                    return memo;
                 }
+                if (first) {
+                    return {
+                        initialTranslateX: translateX.get(),
+                        initialTranslateY: translateY.get(),
+                    };
+                }
+
+                // Translate image from dragging
+                springApi.start({
+                    translateX: memo.initialTranslateX + xMovement,
+                    translateY: memo.initialTranslateY + yMovement,
+                });
+
+                return memo;
             },
             onDragEnd: ({ memo }) => {
                 if (memo !== undefined) {

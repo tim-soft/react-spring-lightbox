@@ -94,7 +94,9 @@ export const imageTransform = (page: Page, alt: string) =>
 /** A point inside an element, as fractions of its width and height */
 export const pointIn = async (locator: Locator, [fractionX, fractionY]: Point = [0.5, 0.5]): Promise<Point> => {
     const box = await locator.boundingBox();
-    if (!box) throw new Error('element is not visible');
+    if (!box) {
+        throw new Error('element is not visible');
+    }
     return [box.x + box.width * fractionX, box.y + box.height * fractionY];
 };
 
@@ -108,7 +110,9 @@ export const sampleFrames = (locator: Locator, sampled: Sampled, frames = 12) =>
                 const values: number[] = [];
                 const read = () => {
                     const style = getComputedStyle(element);
-                    if (what === 'opacity') return Number(style.opacity);
+                    if (what === 'opacity') {
+                        return Number(style.opacity);
+                    }
                     if (what === 'scale') {
                         return new DOMMatrix(style.transform).a;
                     }
@@ -117,8 +121,11 @@ export const sampleFrames = (locator: Locator, sampled: Sampled, frames = 12) =>
                 };
                 const sample = () => {
                     values.push(read());
-                    if (values.length < count) requestAnimationFrame(sample);
-                    else resolve(values);
+                    if (values.length < count) {
+                        requestAnimationFrame(sample);
+                    } else {
+                        resolve(values);
+                    }
                 };
                 requestAnimationFrame(sample);
             }),

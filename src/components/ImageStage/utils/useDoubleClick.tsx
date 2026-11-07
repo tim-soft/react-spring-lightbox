@@ -34,8 +34,11 @@ const useDoubleClick = ({
                 clickCount += 1;
 
                 timer = setTimeout(() => {
-                    if (clickCount === 1) onSingleClick(e);
-                    else if (clickCount === 2) onDoubleClick(e);
+                    if (clickCount === 1) {
+                        onSingleClick(e);
+                    } else if (clickCount === 2) {
+                        onDoubleClick(e);
+                    }
 
                     clickCount = 0;
                 }, latency);

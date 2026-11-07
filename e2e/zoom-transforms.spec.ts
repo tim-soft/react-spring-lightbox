@@ -27,8 +27,12 @@ const zoomAround = (center: Point, from: Transform, scale: number, [pointX, poin
 /** Adds `amount` to the scale around `origin`, stopping at 3x and springing back below 1x */
 const pinchStep = (center: Point, from: Transform, amount: number, origin: Point): Transform => {
     const scale = from.scale + amount;
-    if (scale < 1) return AT_REST;
-    if (scale > 3) return { ...from, scale: 3 };
+    if (scale < 1) {
+        return AT_REST;
+    }
+    if (scale > 3) {
+        return { ...from, scale: 3 };
+    }
     return zoomAround(center, from, scale, origin);
 };
 
@@ -42,7 +46,9 @@ const expectTransform = async (page: Page, expected: Transform) => {
 /** The center of Image 3 at rest, which the zoom math measures from */
 const restingCenter = async (page: Page): Promise<Point> => {
     const box = await page.getByAltText('Image 3').boundingBox();
-    if (!box) throw new Error('Image 3 is not visible');
+    if (!box) {
+        throw new Error('Image 3 is not visible');
+    }
     return [box.x + box.width / 2, box.y + box.height / 2];
 };
 

@@ -14,7 +14,7 @@ const openWithKeyboard = async (page: Page) => {
 };
 
 const focusIsInLightbox = (page: Page) =>
-    page.evaluate(() => !!document.activeElement?.closest('[data-testid="lightbox-container"]'));
+    page.evaluate(() => Boolean(document.activeElement?.closest('[data-testid="lightbox-container"]')));
 
 test.describe('with a keyboard', () => {
     test.skip(({ isMobile }) => isMobile, 'Keyboard input');

@@ -49,7 +49,9 @@ class CreatePortal extends React.Component<ICreatePortal> {
 
     render() {
         // Return null during SSR
-        if (this.portalContainer === undefined) return null;
+        if (this.portalContainer === undefined) {
+            return null;
+        }
 
         const { children } = this.props;
 

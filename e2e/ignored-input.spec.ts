@@ -117,7 +117,9 @@ test.describe('touches through the DevTools protocol', () => {
     test('pinching the backdrop zooms neither the image nor the page', async ({ page }) => {
         await openHarness(page, 'index=2');
         const box = await page.getByAltText('Image 3').boundingBox();
-        if (!box) throw new Error('Image 3 is not visible');
+        if (!box) {
+            throw new Error('Image 3 is not visible');
+        }
         const x = box.x + box.width / 2;
         const aboveImage = box.y - 40;
         const { touch } = await chromiumInput(page);

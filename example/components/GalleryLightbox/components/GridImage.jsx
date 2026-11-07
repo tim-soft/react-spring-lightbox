@@ -19,6 +19,7 @@ const GridImage = ({ index, key, left, onClick, photo, top }) => {
                     open(event);
                 }
             }}
+            // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- the tile holds block content, which a <button> can't contain
             role="button"
             style={{ height, left, top, width }}
             tabIndex={0}

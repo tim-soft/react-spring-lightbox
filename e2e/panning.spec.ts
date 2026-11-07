@@ -17,7 +17,9 @@ const slowMouseDrag = async (page: Page, [x, y]: Point, [dx, dy]: Point) => {
 
 const boxOf = async (page: Page) => {
     const box = await page.getByAltText('Image 3').boundingBox();
-    if (!box) throw new Error('Image 3 is not visible');
+    if (!box) {
+        throw new Error('Image 3 is not visible');
+    }
     return box;
 };
 

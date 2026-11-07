@@ -35,7 +35,7 @@ const getTranslateOffsetsFromScale = ({
         left: imageTopLeftX,
         top: imageTopLeftY,
         width: imageWidth,
-    } = imageRef.current?.getBoundingClientRect();
+    } = imageRef.current.getBoundingClientRect();
 
     // Get the (x,y) touch position relative to image origin at the current scale
     const imageCoordX = (touchOriginX - imageTopLeftX - imageWidth / 2) / scale;

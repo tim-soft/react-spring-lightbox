@@ -55,6 +55,7 @@ const ImagePager = ({
         const currPagerHeight = inline ? imageStageHeight : imageStageHeight - 50;
 
         if (currPagerHeight !== pagerHeight) {
+            // oxlint-disable-next-line react/set-state-in-effect -- the server render and the first paint keep '100%'
             setPagerHeight(currPagerHeight);
         }
     }, [inline, pagerHeight, imageStageHeight]);
@@ -234,6 +235,7 @@ const ImagePager = ({
                                 justifyContent: 'center',
                             }}
                         >
+                            {/* oxlint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- keeps clicks on the image from reaching the page's close handler */}
                             <div
                                 onClick={(e) => {
                                     e.stopPropagation();

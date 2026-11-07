@@ -18,7 +18,9 @@ export const coverageOptions: CoverageReportOptions = {
     // Vite's source maps name only the file, so find it beside the served module
     sourcePath: (fileName, { distFile }) => {
         const [, servedPath] = distFile?.split('/@fs/') ?? [];
-        if (!servedPath) return fileName;
+        if (!servedPath) {
+            return fileName;
+        }
         const file = path.join(path.dirname(`/${servedPath}`), fileName);
         return path.relative(process.cwd(), file);
     },
@@ -26,7 +28,9 @@ export const coverageOptions: CoverageReportOptions = {
 
 /** Playwright's global setup: clears coverage from earlier runs, then reports this run's once it ends */
 export default () => {
-    if (!measuringCoverage) return undefined;
+    if (!measuringCoverage) {
+        return undefined;
+    }
     new CoverageReport(coverageOptions).cleanCache();
     return async () => {
         await new CoverageReport(coverageOptions).generate();

@@ -81,7 +81,9 @@ const Lightbox = ({
         const preventBackgroundScroll = (e: KeyboardEvent) => {
             const keysToIgnore = ['ArrowUp', 'ArrowDown', 'End', 'Home', 'PageUp', 'PageDown'];
 
-            if (isOpen && keysToIgnore.includes(e.key)) e.preventDefault();
+            if (isOpen && keysToIgnore.includes(e.key)) {
+                e.preventDefault();
+            }
         };
 
         /**

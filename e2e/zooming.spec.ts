@@ -221,7 +221,9 @@ test.describe('with taps', () => {
         await settle(page);
         const zoomedIn = await image.boundingBox();
         const portrait = page.viewportSize();
-        if (!zoomedIn || !portrait) throw new Error('Image 3 is not visible');
+        if (!zoomedIn || !portrait) {
+            throw new Error('Image 3 is not visible');
+        }
 
         await page.setViewportSize({
             height: portrait.width,

@@ -7,7 +7,9 @@ const openAndCollectImageRequests = async (page: Page, query: string) => {
     const requested = new Set<string>();
     page.on('request', (request) => {
         const match = /\/images\/(\d)\.svg$/.exec(request.url());
-        if (match) requested.add(`Image ${match[1]}`);
+        if (match) {
+            requested.add(`Image ${match[1]}`);
+        }
     });
     await openHarness(page, `closed&${query}`);
 
@@ -44,7 +46,9 @@ test('renders the header above the image and the footer below it', async ({ page
     const footer = await page.getByRole('contentinfo').boundingBox();
 
     expect(header && image && footer).toBeTruthy();
-    if (!header || !image || !footer) return;
+    if (!header || !image || !footer) {
+        return;
+    }
     expect(header.y + header.height).toBeLessThanOrEqual(image.y + 1);
     expect(footer.y).toBeGreaterThanOrEqual(image.y + image.height - 1);
 });
@@ -56,7 +60,9 @@ test('fits each image within the stage, leaving room for controls', async ({ pag
     const box = await page.getByAltText('Image 2').boundingBox();
 
     expect(viewport && box).toBeTruthy();
-    if (!viewport || !box) return;
+    if (!viewport || !box) {
+        return;
+    }
     expect(box.width).toBeLessThanOrEqual(viewport.width);
     expect(box.height).toBeLessThan(viewport.height - 50);
 });
@@ -68,7 +74,9 @@ test('the image overlay sits over the image', async ({ page }) => {
     const share = await page.getByRole('button', { name: 'Share' }).first().boundingBox();
 
     expect(image && share).toBeTruthy();
-    if (!image || !share) return;
+    if (!image || !share) {
+        return;
+    }
     expect(share.x).toBeGreaterThanOrEqual(image.x - 1);
     expect(share.x + share.width).toBeLessThanOrEqual(image.x + image.width + 1);
     expect(share.y).toBeGreaterThanOrEqual(image.y - 1);
@@ -88,7 +96,9 @@ test('covers the window even when rendered inside an element with a transform', 
 test.describe('images of any shape and size', () => {
     const boxOf = async (page: Page, alt: string) => {
         const box = await page.getByAltText(alt).boundingBox();
-        if (!box) throw new Error(`${alt} is not visible`);
+        if (!box) {
+            throw new Error(`${alt} is not visible`);
+        }
         return box;
     };
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 type RefSize = {
     height: number;
@@ -17,12 +17,10 @@ type IUseRefSize = [refSize: RefSize, elementRef: (node: Node) => void];
  * @returns {elementRef} A callback ref to be used on the container being measured
  */
 const useRefSize = (): IUseRefSize => {
-    const ref = useRef<HTMLDivElement>(null);
-
     const [node, setNode] = useState<Node>(null);
     const [refSize, setRefSize] = useState<RefSize>({
-        height: ref.current?.clientHeight || 0,
-        width: ref.current?.clientWidth || 0,
+        height: 0,
+        width: 0,
     });
 
     const elementRef = useCallback((node: Node) => {
