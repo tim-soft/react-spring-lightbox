@@ -1,5 +1,4 @@
 import { fireEvent } from '@testing-library/react';
-import { onTestFinished, vi } from 'vitest';
 
 import type { Point } from './helpers';
 
@@ -210,33 +209,7 @@ export const touchscreen = {
     },
 };
 
-/** Hides a window event handler property, the way browsers without that event lack it */
-const removeForTest = (handler: 'ontouchstart') => {
-    let owner: object = window;
-    while (!Object.prototype.hasOwnProperty.call(owner, handler)) {
-        owner = Object.getPrototypeOf(owner);
-    }
-    const descriptor = Object.getOwnPropertyDescriptor(owner, handler) as PropertyDescriptor;
-    delete (owner as Record<string, unknown>)[handler];
-
-    onTestFinished(() => {
-        Object.defineProperty(owner, handler, descriptor);
-    });
-};
-
-/**
- * Desktop Safari: pointer events but no touch events, and trackpad pinches
- * arrive as WebKit gesture events. Call before rendering.
- */
-export const emulateDesktopSafari = () => {
-    removeForTest('ontouchstart');
-    vi.stubGlobal('GestureEvent', class GestureEvent extends UIEvent {});
-    onTestFinished(() => {
-        vi.unstubAllGlobals();
-    });
-};
-
-/** One WebKit gesture event, as desktop Safari sends for a trackpad pinch */
+/** One WebKit gesture event, as desktop Safari sends for a trackpad pinch. See desktop-safari.test.tsx. */
 export const safariGesture = (
     target: Element,
     type: 'gesturechange' | 'gestureend' | 'gesturestart',

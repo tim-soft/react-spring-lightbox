@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, test } from 'vitest';
 import type { Point } from './helpers';
 
 import Lightbox from '../index';
-import { emulateDesktopSafari, mouse, pressMouse, safariGesture, touch, trackpad, wheel } from './devices';
+import { mouse, pressMouse, touch, trackpad, wheel } from './devices';
 import { CENTER, FRAME, advance, image, imageTransform, lightboxProps, mockLayout, settle } from './helpers';
 
 // These tests pin, step by step, how each gesture changes the image's scale
@@ -54,9 +54,6 @@ const wheelAmount = (deltaY: number) => (-deltaY * 7) / 1000;
 /** Fingers add 1/250 of how far their distance has changed since the pinch began */
 const fingerAmount = (fingers: [Point, Point], startDistance: number) =>
     (Math.hypot(fingers[1][0] - fingers[0][0], fingers[1][1] - fingers[0][1]) - startDistance) / 250;
-
-/** Safari adds 260/250 of how far its gesture scale has moved from 1 */
-const safariAmount = (gestureScale: number) => ((gestureScale - 1) * 260) / 250;
 
 const midpoint = ([[ax, ay], [bx, by]]: [Point, Point]): Point => [(ax + bx) / 2, (ay + by) / 2];
 
@@ -226,29 +223,6 @@ describe('two fingers on the image', () => {
         await settle();
 
         expectTransform(AT_REST);
-    });
-});
-
-describe('trackpad pinch in desktop Safari', () => {
-    test('each gesture change zooms around the cursor by 260/250 of its scale above 1', async () => {
-        emulateDesktopSafari();
-        render(<Lightbox {...lightboxProps()} />);
-        safariGesture(image(1), 'gesturestart', OFF_CENTER, 1);
-        await settle();
-
-        let expected = AT_REST;
-        for (const gestureScale of [1.1, 1.3, 1.2]) {
-            safariGesture(image(1), 'gesturechange', OFF_CENTER, gestureScale);
-            await settle();
-            expected = pinchStep(expected, safariAmount(gestureScale), OFF_CENTER);
-            expectTransform(expected);
-        }
-
-        // Ending the gesture repeats the last step once more, as lifting
-        // fingers does (#17)
-        safariGesture(image(1), 'gestureend', OFF_CENTER, 1.2);
-        await settle();
-        expectTransform(pinchStep(expected, safariAmount(1.2), OFF_CENTER));
     });
 });
 

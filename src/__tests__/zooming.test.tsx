@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, test } from 'vitest';
 import type { Point } from './helpers';
 
 import Lightbox from '../index';
-import { emulateDesktopSafari, mouse, pressKey, safariPinch, touch, touchscreen, trackpad, wheel } from './devices';
+import { mouse, pressKey, touch, touchscreen, trackpad, wheel } from './devices';
 import {
     BACKDROP,
     CENTER,
@@ -346,28 +346,6 @@ describe('with ctrl + wheel (a trackpad pinch in Chrome, Edge and Firefox)', () 
         await advance(FRAME);
 
         expect(props.onNext).not.toHaveBeenCalled();
-    });
-});
-
-describe('with a trackpad pinch in desktop Safari', () => {
-    test('zooms in toward the cursor', async () => {
-        emulateDesktopSafari();
-        render(<Lightbox {...lightboxProps()} />);
-
-        await safariPinch(image(1), { at: [712, 484], scales: [1.2, 1.5] });
-        await settle();
-
-        keepsInPlace(image(1), [200, 100]);
-    });
-
-    test('springs back to full size when zoomed out past 1x', async () => {
-        emulateDesktopSafari();
-        render(<Lightbox {...lightboxProps()} />);
-
-        await safariPinch(image(1), { at: CENTER, scales: [0.8, 0.5] });
-        await settle();
-
-        expect(image(1)).toHaveStyle({ transform: AT_REST });
     });
 });
 
