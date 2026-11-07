@@ -1,6 +1,6 @@
 import { animated, to, useSpring } from '@react-spring/web';
+import { useGesture } from '@use-gesture/react';
 import React, { useEffect, useRef, useState } from 'react';
-import { useGesture } from 'react-use-gesture';
 
 import type { ImagesListItem } from '../../../../types/ImagesList';
 
@@ -80,7 +80,7 @@ const Image = ({
     /**
      * Update Image scale and translate offsets during pinch/pan gestures
      *
-     * @see https://github.com/react-spring/react-use-gesture#usegesture-hook-supporting-multiple-gestures-at-once
+     * @see https://use-gesture.netlify.app/docs/hooks/#usegesture
      */
     useGesture(
         {
@@ -136,12 +136,14 @@ const Image = ({
                 }
             },
             onPinch: ({
-                cancel,
                 ctrlKey,
+                da: [distance],
                 event,
+                initial: [initialDistance],
                 last,
-                movement: [xMovement],
+                memo: wheelMovement = 0,
                 origin: [touchOriginX, touchOriginY],
+                type,
             }) => {
                 if (pagerIsDragging) {
                     return;
@@ -150,6 +152,18 @@ const Image = ({
                 // Prevent ImagePager from registering isDragging
                 setDisableDrag(true);
 
+                // The zoom speed below was tuned with react-use-gesture 9, which measured a pinch
+                // in pixels. @use-gesture measures a ratio, so this converts back. Two fingers move
+                // by the change in distance between them. A ctrl + wheel moves 7px per pixel
+                // scrolled, where a line is 40px and a page 800px. A Safari gesture moves 260px per
+                // 1x of its scale, which @use-gesture reports in `da`.
+                let xMovement = distance - initialDistance;
+                if ('deltaY' in event) {
+                    xMovement = wheelMovement - event.deltaY * [1, 40, 800][event.deltaMode] * 7;
+                } else if (type.startsWith('gesture')) {
+                    xMovement = (distance - 1) * 260;
+                }
+
                 // Disable click to zoom during pinch
                 if (xMovement && !isPanningImage) {
                     setIsPanningImage(true);
@@ -157,7 +171,6 @@ const Image = ({
 
                 // Don't calculate new translate offsets on final frame
                 if (last) {
-                    cancel();
                     return;
                 }
 
@@ -202,10 +215,14 @@ const Image = ({
                         translateY: newTranslateY,
                     });
                 }
+
+                // The next wheel event of a ctrl + wheel pinch adds to this as `memo`
+                return xMovement;
             },
             onPinchEnd: () => {
                 if (!pagerIsDragging) {
-                    if (scale.get() > 1) {
+                    // Fingers can lift before the zoom animates, so check the scale it's headed to
+                    if (scale.goal > 1) {
                         setDisableDrag(true);
                     } else {
                         springApi.start(defaultImageTransform);
@@ -217,17 +234,21 @@ const Image = ({
         },
         /**
          * useGesture config
-         * @see https://github.com/react-spring/react-use-gesture#usegesture-config
+         * @see https://use-gesture.netlify.app/docs/options/
          */
         {
-            domTarget: imageRef as React.RefObject<EventTarget>,
             drag: {
                 filterTaps: true,
+                pointer: { keys: false },
             },
             enabled: !inline,
             eventOptions: {
                 passive: false,
             },
+            // Pinch with touch events, as react-use-gesture 9 did. With pointer events, a
+            // finger and a pen or mouse on the image would pinch too.
+            pinch: { pointer: { touch: true } },
+            target: imageRef,
         }
     );
 

@@ -51,7 +51,7 @@ type ILightboxProps = {
  * @see https://github.com/tim-soft/react-spring-lightbox
  *
  * Built with:
- * @see https://github.com/react-spring/react-use-gesture
+ * @see https://github.com/pmndrs/use-gesture
  * @see https://github.com/react-spring/react-spring
  */
 const Lightbox = ({

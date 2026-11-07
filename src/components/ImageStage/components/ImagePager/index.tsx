@@ -1,6 +1,6 @@
 import { animated, useSprings } from '@react-spring/web';
+import { useGesture } from '@use-gesture/react';
 import React, { useEffect, useRef, useState } from 'react';
-import { useGesture } from 'react-use-gesture';
 
 import type { ImagesList } from '../../../../types/ImagesList';
 
@@ -94,20 +94,21 @@ const ImagePager = ({
     /**
      * Update each Image's visibility and translateX offset during dragging
      *
-     * @see https://github.com/react-spring/react-use-gesture
+     * @see https://use-gesture.netlify.app/docs/hooks/#usegesture
      */
     const bind = useGesture(
         {
             onDrag: ({
                 active,
                 cancel,
-                direction: [xDir],
-                distance,
+                delta: [xDelta, yDelta],
                 down,
-                movement: [xMovement],
+                elapsedTime,
+                first,
+                movement: [xMovement, yMovement],
                 tap,
+                timeDelta,
                 touches,
-                velocity,
             }) => {
                 // Disable drag if Image has been zoomed in to allow for panning
                 if (disableDrag || xMovement === 0 || tap) {
@@ -116,6 +117,15 @@ const ImagePager = ({
                 if (!isDragging) {
                     setIsDragging(true);
                 }
+
+                // The thresholds below were tuned with react-use-gesture 9, which measured the drag
+                // in a straight line, and the last move's direction as a unit vector and its speed
+                // in px/ms. @use-gesture gives no speed for the first move, so it's timed from the press.
+                const moveLength = Math.hypot(xDelta, yDelta);
+                const xDir = moveLength === 0 ? 0 : xDelta / moveLength;
+                const distance = Math.hypot(xMovement, yMovement);
+                const moveDuration = first ? elapsedTime : timeDelta;
+                const velocity = moveDuration > 0 ? moveLength / moveDuration : 0;
 
                 const isHorizontalDrag = Math.abs(xDir) > 0.7;
                 const draggedFarEnough = down && isHorizontalDrag && distance > imageStageWidth / 3.5;
@@ -152,7 +162,11 @@ const ImagePager = ({
                 // Add small timeout buffer to prevent event handlers from firing in child Images
                 setTimeout(() => setIsDragging(false), 100);
             },
-            onWheel: ({ ctrlKey, direction: [xDir, yDir], velocity }) => {
+            onWheel: ({ ctrlKey, delta: [xDelta, yDelta], last, velocity: [xVelocity, yVelocity] }) => {
+                // react-use-gesture 9 reported one speed for both axes, and 0 for the
+                // last wheel event, where @use-gesture repeats the one before it
+                const velocity = last ? 0 : Math.hypot(xVelocity, yVelocity);
+
                 // Disable drag if Image has been zoomed in to allow for panning
                 if (ctrlKey || disableDrag || velocity === 0) {
                     return;
@@ -166,7 +180,7 @@ const ImagePager = ({
 
                 // Handle next/prev image from valid drag
                 if (draggedFastEnough) {
-                    const goToIndex = xDir + yDir > 0 ? -1 : 1;
+                    const goToIndex = xDelta + yDelta > 0 ? -1 : 1;
 
                     if (goToIndex > 0) {
                         onNext();
@@ -184,6 +198,7 @@ const ImagePager = ({
         {
             drag: {
                 filterTaps: true,
+                pointer: { keys: false },
             },
             wheel: {
                 enabled: !inline,

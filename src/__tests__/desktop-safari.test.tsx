@@ -5,7 +5,7 @@ import { beforeEach, expect, test, vi } from 'vitest';
 import type { Point } from './helpers';
 
 import Lightbox from '../index';
-import { safariGesture, safariPinch } from './devices';
+import { safariGesture, safariPinch, wheel } from './devices';
 import { CENTER, image, imageTransform, lightboxProps, mockLayout, settle } from './helpers';
 
 // Desktop Safari has pointer events but no touch events, and sends a trackpad
@@ -48,10 +48,10 @@ test('each gesture change zooms around the cursor by 260/250 of its scale above 
         expectZoomedAtOffCenter(scale);
     }
 
-    // Ending the gesture repeats the last step once more, as lifting fingers does (#17)
+    // Ending the gesture keeps the zoom (#17)
     safariGesture(image(1), 'gestureend', OFF_CENTER, 1.2);
     await settle();
-    expectZoomedAtOffCenter(scale + ((1.2 - 1) * 260) / 250);
+    expectZoomedAtOffCenter(scale);
 });
 
 test('a trackpad pinch springs back to full size when zoomed out past 1x', async () => {
@@ -61,4 +61,13 @@ test('a trackpad pinch springs back to full size when zoomed out past 1x', async
     await settle();
 
     expect(image(1)).toHaveStyle({ transform: 'translate(0px, 0px) scale(1)' });
+});
+
+test('ctrl + wheel zooms in toward the cursor, as in other browsers', async () => {
+    render(<Lightbox {...lightboxProps()} />);
+
+    wheel(image(1), { at: OFF_CENTER, ctrlKey: true, deltaY: -50 });
+    await settle();
+
+    expectZoomedAtOffCenter(1 + (50 * 7) / 1000);
 });

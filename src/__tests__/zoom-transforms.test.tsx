@@ -185,11 +185,10 @@ describe('two fingers on the image', () => {
         ];
         const { expected, fingers } = await pinchWith(moves);
 
-        // Lifting the fingers repeats the last step once more (#17)
+        // Lifting the fingers keeps the zoom (#17)
         fingers.lift();
         await settle();
-        const last = moves[moves.length - 1];
-        expectTransform(pinchStep(expected, fingerAmount(last, START_DISTANCE), midpoint(last)));
+        expectTransform(expected);
     });
 
     test('stops at 3x without moving the image', async () => {

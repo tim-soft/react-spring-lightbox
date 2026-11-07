@@ -281,7 +281,7 @@ describe('pinch handling on the image', () => {
         expect(shownImage()).toBe('Image 4');
     });
 
-    test.fails('lifting the fingers keeps the zoom the pinch ended on (#17)', async () => {
+    test('lifting the fingers keeps the zoom the pinch ended on (#17)', async () => {
         render(<Lightbox {...lightboxProps()} />);
         const fingers = fingersOn(image(1), FINGERS_CLOSE);
         await fingers.moveTo(FINGERS_APART);

@@ -57,7 +57,6 @@ test.describe('saving an image with a right click', () => {
         await page.mouse.up({ button: 'right' });
         await settle(page);
 
-        test.fail(true, 'react-use-gesture 9 drags with any mouse button');
         await expectUntouched(page);
     });
 });
