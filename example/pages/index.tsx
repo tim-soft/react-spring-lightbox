@@ -144,7 +144,9 @@ const getRandomImages = (numImages: number) => {
 };
 
 const HomePage = () => {
-    const [inlineImages, setInlineImages] = React.useState(getRandomImages(15));
+    // Random images only after a click, since the page is prerendered and a
+    // random first render would differ between the server and the browser
+    const [inlineImages, setInlineImages] = React.useState(images);
 
     return (
         <div className="h-full w-full bg-[#272727] px-0 py-[50px] text-white select-none">
@@ -163,7 +165,7 @@ const HomePage = () => {
                     <div className={otherInlineContent}>
                         🎉🎉Inline content🎉🎉
                     </div>
-                    <InlineLightbox images={images} />
+                    <InlineLightbox images={inlineImages} />
                     <div className={otherInlineContent}>
                         🎉🎉Inline content🎉🎉
                     </div>
