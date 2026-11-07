@@ -6,12 +6,22 @@ import PropTypes from 'prop-types';
  */
 const GridImage = ({ index, key, left, onClick, photo, top }) => {
     const { alt, caption, height, src, width } = photo;
+    const open = (event) => onClick(event, { index });
     return (
         <div
-            className="absolute box-content block cursor-pointer border-2 border-transparent hover:border-highlight"
+            className="absolute box-content block cursor-pointer border-2 border-transparent outline-none hover:border-highlight focus-visible:border-highlight"
             key={`${key}-${index}`}
-            onClick={(e) => onClick(e, { index })}
+            onClick={open}
+            onKeyDown={(event) => {
+                // Enter and Space press a button, and Space would otherwise scroll the page
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    open(event);
+                }
+            }}
+            role="button"
             style={{ height, left, top, width }}
+            tabIndex={0}
         >
             <div className="relative h-full overflow-hidden">
                 <img
