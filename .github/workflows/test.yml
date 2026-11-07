@@ -44,6 +44,8 @@ jobs:
             - run: npm run lint:oxfmt
             # Vitest doesn't type-check, so tsc checks the tests along with the source
             - run: npm run lint:ts
+            # publint and Are the Types Wrong check that the exports map and both builds' types resolve
+            - run: npm run lint:package
 
     test:
         runs-on: ubuntu-latest
