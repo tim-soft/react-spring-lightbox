@@ -99,7 +99,9 @@
         "vitest": "^5.1.0"
     },
     "files": [
-        "dist"
+        "CHANGELOG.md",
+        "dist",
+        "MIGRATION.md"
     ],
     "dependencies": {
         "@react-spring/web": "^10.1.2",

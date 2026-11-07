@@ -8,7 +8,7 @@ This file tells coding agents how to work in this repository. `react-spring-ligh
 - `src/__tests__/` holds the Vitest unit tests. `e2e/` holds the Playwright tests and the page they drive.
 - `example/` is a Next.js demo app that links the library from the parent folder. `example/README.md` explains how to run it.
 - `scripts/` holds the oxlint plugin that sorts destructured keys and the script that dates new `CHANGELOG.md` entries.
-- `rolldown.config.mjs` builds `dist/index.mjs` and `dist/index.cjs`, each with bundled types. The npm package holds only `dist/`, `package.json`, `README.md`, and `LICENSE`.
+- `rolldown.config.mjs` builds `dist/index.mjs` and `dist/index.cjs`, each with bundled types. The npm package holds `dist/`, `CHANGELOG.md`, `package.json`, `README.md`, and `LICENSE`, and `MIGRATION.md` once it exists.
 
 ## Commands
 
@@ -36,6 +36,7 @@ Use npm, not Yarn. `package.json` requires Node.js `^22.18.0 || ^24.11.0 || >=26
 - The repository develops on React 19, and the peer range is `react >=16.8`. After you change rendering, state, or effects, test React 18 as TESTING.md describes.
 - Never run `husky` with arguments. Husky 9 treats its first argument as the hooks directory and writes it to `core.hooksPath`, in git config that every worktree of the clone shares.
 - Don't change the `version` field or add entries to `CHANGELOG.md` by hand. The Version Packages pull request writes both from the changesets.
+- Keep `CLAUDE.md` and `TESTING.md` out of `files` in `package.json`. They're for contributors, and an agent that reads files under `node_modules` might pick up this repository's instructions.
 
 ## Changesets
 
@@ -65,7 +66,7 @@ Upgrade notes:
 
 ### Write for someone debugging an upgrade
 
-People and coding agents read `CHANGELOG.md` and the GitHub release notes when an upgrade breaks their app. Write each changeset so that a reader who has only an error message can find the entry, learn the cause, and fix it without reading this repository's code.
+People and coding agents read `CHANGELOG.md` and the GitHub release notes when an upgrade breaks their app. The package ships `CHANGELOG.md`, so readers can also open it in `node_modules/react-spring-lightbox/`. Write each changeset so that a reader who has only an error message can find the entry, learn the cause, and fix it without reading this repository's code.
 
 - Start with one sentence that says what changed for someone who uses the package.
 - Name exact versions, version ranges, file paths, exports, props, and `package.json` fields, with the old value and the new one.
@@ -87,7 +88,7 @@ Each note says how to tell whether it applies, such as the error text or a comma
 
 ### Write a migration guide for larger upgrades
 
-If a release needs more steps than a few upgrade notes can hold, as a major version usually does, also write a guide in `MIGRATION.md`. Give each version its own section, newest first, with numbered steps and code before and after. Link to the section from the changeset with its full `https://github.com/tim-soft/react-spring-lightbox/blob/master/MIGRATION.md` URL, so that the link also works in the GitHub release notes.
+If a release needs more steps than a few upgrade notes can hold, as a major version usually does, also write a guide in `MIGRATION.md`. `files` in `package.json` already lists `MIGRATION.md`, so the guide ships with the package. Give each version its own section, newest first, with numbered steps and code before and after. Link to the section from the changeset with its full `https://github.com/tim-soft/react-spring-lightbox/blob/master/MIGRATION.md` URL, so that the link also works in the GitHub release notes.
 
 ### Preview the release notes before you push
 
