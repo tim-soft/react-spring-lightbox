@@ -25,7 +25,9 @@ const firePointer = (
         pointerType,
     });
 
-const fireClick = (target: Element, [clientX, clientY]: Point) => fireEvent.click(target, { clientX, clientY });
+// A browser's click counts the clicks in `detail`, which a keyboard click leaves at 0
+const fireClick = (target: Element, [clientX, clientY]: Point) =>
+    fireEvent.click(target, { clientX, clientY, detail: 1 });
 
 /** Holds a mouse button or pen down on `target` until `release` */
 export const pressPointer = (target: Element, start: Point, pointer: { id: number; pointerType: PointerType }) => {
@@ -111,6 +113,7 @@ export const touch = (target: Element, points: Point[], { pointerEvents = true }
         clientX,
         clientY,
         identifier: id,
+        target,
     });
     const touchLists = (changed: Finger[]) => {
         const touches = fingers.map(toTouch);
