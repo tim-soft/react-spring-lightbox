@@ -167,6 +167,22 @@ npm run dev
 
 Changes to the library code should hot reload in the demo app
 
+## Releasing
+
+Every pull request needs a changeset, a short note in `.changeset/` that says what changed for people who use the library and whether that's a patch, minor or major change. The `changeset` check fails without one.
+
+```bash
+npm run ch
+```
+
+For a change that doesn't need a release, such as one to tests or CI, add an empty changeset instead.
+
+```bash
+npx changeset add --empty
+```
+
+Once changesets reach master, a Version Packages pull request collects them. It bumps the version and adds a dated entry to [CHANGELOG.md](./CHANGELOG.md). Merging it publishes the new version to npm, tags it, and creates its GitHub release.
+
 ## License
 
 MIT © [Tim Ellenberger](https://github.com/tim-soft)

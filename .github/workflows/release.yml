@@ -1,0 +1,37 @@
+name: Release
+
+on:
+    push:
+        branches: [master]
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+    contents: write
+    # Lets npm use trusted publishing once it's set up for the package on npmjs.com
+    id-token: write
+    pull-requests: write
+
+jobs:
+    release:
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+        steps:
+            - uses: actions/checkout@v7
+              with:
+                  fetch-depth: 0
+            - uses: actions/setup-node@v7
+              with:
+                  node-version: 24
+                  cache: npm
+                  registry-url: https://registry.npmjs.org
+            - run: npm ci
+            # While master has changesets, this opens or updates the Version Packages PR,
+            # which bumps the version and dates the new CHANGELOG.md entry. Merging that
+            # PR publishes to npm, then pushes the version's tag and GitHub release.
+            - uses: changesets/action@ae32849d5ba541f9ae29e40e22a623bc13562f51 # v2.1.2
+              with:
+                  publish-script: npm run ch:publish
+                  version-script: npm run ch:version
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

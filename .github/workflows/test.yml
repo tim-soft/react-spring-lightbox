@@ -14,6 +14,22 @@ concurrency:
     cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+    changeset:
+        # Every PR needs a changeset, except the Version Packages PR, which uses them up
+        if: ${{ github.event_name == 'pull_request' && github.head_ref != 'changeset-release/master' }}
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - uses: actions/checkout@v7
+              with:
+                  fetch-depth: 0
+            - uses: actions/setup-node@v7
+              with:
+                  node-version: 24
+                  cache: npm
+            - run: npm ci --ignore-scripts
+            - run: npx changeset status --since=origin/master
+
     lint:
         runs-on: ubuntu-latest
         timeout-minutes: 10

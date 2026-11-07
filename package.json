@@ -40,7 +40,10 @@
         "build": "rollup --config && npm run build:types",
         "build:types": "tsc --project tsconfig.buildtypes.json --emitDeclarationOnly",
         "start": "rollup --config --watch",
-        "prepare": "npm run build"
+        "prepare": "npm run build",
+        "ch": "changeset",
+        "ch:version": "changeset version && node scripts/add-release-dates.mjs",
+        "ch:publish": "changeset publish"
     },
     "husky": {
         "hooks": {
@@ -70,6 +73,7 @@
         "@babel/preset-env": "^7.22.20",
         "@babel/preset-react": "^7.22.15",
         "@babel/preset-typescript": "^7.23.0",
+        "@changesets/cli": "^3.0.3",
         "@playwright/test": "^1.65.0",
         "@rollup/plugin-babel": "^6.0.4",
         "@rollup/plugin-commonjs": "^25.0.5",
