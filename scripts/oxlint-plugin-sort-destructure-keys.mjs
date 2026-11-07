@@ -128,7 +128,9 @@ const sortedDestructuringKeysRule = {
                             if (restNode) {
                                 body += sep + sourceCode.getText(restNode).trim();
                             }
-                            return fixer.replaceTextRange([innerStart, innerEnd], body);
+                            const leading = inner.slice(0, inner.length - inner.trimStart().length);
+                            const trailing = inner.slice(inner.trimEnd().length);
+                            return fixer.replaceTextRange([innerStart, innerEnd], leading + body + trailing);
                         }
 
                         const firstPropStart = entries[0].prop.range[0];
@@ -145,7 +147,8 @@ const sortedDestructuringKeysRule = {
                         if (restNode) {
                             lines.push(`${propIndent}${sourceCode.getText(restNode).trim()}`);
                         }
-                        const newInner = `\n${lines.join(',\n')}\n${closingIndent}`;
+                        const trailingComma = !restNode && inner.trimEnd().endsWith(',') ? ',' : '';
+                        const newInner = `\n${lines.join(',\n')}${trailingComma}\n${closingIndent}`;
                         return fixer.replaceTextRange([innerStart, innerEnd], newInner);
                     },
                     messageId: 'unsorted',

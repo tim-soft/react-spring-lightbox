@@ -118,7 +118,7 @@ const button =
 const otherInlineContent = 'box-content flex w-[400px] items-center justify-center bg-[blueviolet] p-2.5';
 
 const getRandomImages = (numImages: number) => {
-    const getRandomInt = (min, max) => {
+    const getRandomInt = (min: number, max: number) => {
         const low = Math.ceil(min);
         const high = Math.floor(max);
         return Math.floor(Math.random() * (high - low) + low); //The maximum is exclusive and the minimum is inclusive
