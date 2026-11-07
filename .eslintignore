@@ -31,3 +31,4 @@ example/npm-debug.log*
 example/yarn-debug.log*
 example/yarn-error.log*
 example/next-env.d.ts
+*.css

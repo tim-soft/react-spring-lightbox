@@ -1,28 +1,31 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import { IoIosClose } from 'react-icons/io';
-import Color from 'color';
 import ButtonControl from './LightboxButtonControl';
 
 const LightboxHeader = ({ currentIndex, galleryTitle, images, onClose }) => (
-    <TopHeaderBar>
-        <LeftSideDescriptionContainer>
-            <GalleryHeading>{galleryTitle}</GalleryHeading>
-            <GallerySubheading>
+    <header className="z-10 flex cursor-auto justify-between bg-page/50 py-2.5 pr-0.5 pl-5 text-nav *:h-[inherit]">
+        <div className="flex flex-col justify-center border-l-[3px] border-highlight py-2 pr-0 pl-2.5">
+            <h2 className="mt-0 mb-[5px] text-[1.5em] font-normal">
+                {galleryTitle}
+            </h2>
+            <h4 className="m-0 font-normal text-highlight">
                 {images[currentIndex].caption}
-            </GallerySubheading>
-        </LeftSideDescriptionContainer>
+            </h4>
+        </div>
 
-        <RightSideContainer>
-            <PageIndicator>
+        <div className="flex w-[117px] items-center justify-between">
+            <span className="min-w-[60px] text-center whitespace-nowrap">
                 {currentIndex + 1} / {images.length}
-            </PageIndicator>
-            <CloseButton onClick={onClose} type="button">
+            </span>
+            <ButtonControl
+                className="flex h-full items-center justify-center border-l-[3px] border-nav text-inherit"
+                onClick={onClose}
+            >
                 <IoIosClose size={60} />
-            </CloseButton>
-        </RightSideContainer>
-    </TopHeaderBar>
+            </ButtonControl>
+        </div>
+    </header>
 );
 
 LightboxHeader.propTypes = {
@@ -41,62 +44,3 @@ LightboxHeader.propTypes = {
 };
 
 export default LightboxHeader;
-
-const GalleryHeading = styled.h2`
-    margin: 0 0 5px 0;
-    font-weight: normal;
-`;
-
-const GallerySubheading = styled.h4`
-    margin: 0;
-    font-weight: normal;
-    color: ${({ theme }) => theme.pageContentLinkHoverColor};
-`;
-
-const PageIndicator = styled.span`
-    white-space: nowrap;
-    min-width: 60px;
-    text-align: center;
-`;
-
-const RightSideContainer = styled.div`
-    width: 117px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-`;
-
-const CloseButton = styled(ButtonControl)`
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-left-style: solid;
-    border-left-width: 3px;
-    border-left-color: ${({ theme }) => theme.headerNavFontColor};
-    color: inherit;
-`;
-
-const LeftSideDescriptionContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border-left-width: 3px;
-    border-left-color: ${({ theme }) => theme.pageContentLinkHoverColor};
-    border-left-style: solid;
-    padding: 8px 0 8px 10px;
-`;
-
-const TopHeaderBar = styled.header`
-    z-index: 10;
-    cursor: auto;
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 2px 10px 20px;
-    color: ${({ theme }) => theme.headerNavFontColor};
-    background-color: ${({ theme }) =>
-        Color(theme.pageBackgroundColor).alpha(0.5).hsl().string()};
-    > * {
-        height: inherit;
-    }
-`;

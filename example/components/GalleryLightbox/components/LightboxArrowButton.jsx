@@ -1,7 +1,6 @@
 /* eslint-disable no-shadow */
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { animated, useTransition } from '@react-spring/web';
 import ButtonControl from './LightboxButtonControl';
@@ -16,36 +15,35 @@ const ArrowButton = ({ className, disabled, onClick, position }) => {
     return transitions(
         (props, item) =>
             item && (
-                <StyledAnimatedDiv className={className} style={props}>
-                    <Button onClick={onClick} position={position} type="button">
-                        {position === 'left' && <IoIosArrowBack />}
-                        {position === 'right' && <IoIosArrowForward />}
-                    </Button>
-                </StyledAnimatedDiv>
+                <animated.div className={className} style={props}>
+                    <ButtonControl
+                        className={`absolute top-1/2 -translate-y-1/2 text-content ${
+                            position === 'left' ? 'left-0' : 'right-0'
+                        }`}
+                        onClick={onClick}
+                    >
+                        {position === 'left' && (
+                            <IoIosArrowBack className="inline align-baseline" />
+                        )}
+                        {position === 'right' && (
+                            <IoIosArrowForward className="inline align-baseline" />
+                        )}
+                    </ButtonControl>
+                </animated.div>
             ),
     );
 };
 
 ArrowButton.propTypes = {
+    className: PropTypes.string,
     disabled: PropTypes.bool,
     onClick: PropTypes.func.isRequired,
     position: PropTypes.oneOf(['left', 'right']).isRequired,
 };
 
 ArrowButton.defaultProps = {
+    className: 'z-[999]',
     disabled: false,
 };
 
 export default ArrowButton;
-
-const StyledAnimatedDiv = styled(animated.div)`
-    z-index: 999;
-`;
-
-const Button = styled(ButtonControl)`
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: ${({ position }) => (position === 'left' ? 0 : 'unset')};
-    right: ${({ position }) => (position === 'right' ? 0 : 'unset')};
-`;

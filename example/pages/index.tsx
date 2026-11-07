@@ -1,5 +1,4 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import GalleryLightbox from '../components/GalleryLightbox';
 import InlineLightbox from '../components/InlineLightbox';
 
@@ -111,6 +110,13 @@ const images = [
     },
 ];
 
+// Browser defaults the old styles relied on, which Tailwind's preflight resets
+const heading = 'my-[0.83em] text-center text-[1.5em] font-bold';
+const button =
+    'mx-auto my-5 cursor-pointer rounded-[10px] border-2 border-black bg-[teal] px-2.5 py-4 text-white [border-style:outset] hover:bg-[darkblue] active:bg-[darkseagreen]';
+const otherInlineContent =
+    'box-content flex w-[400px] items-center justify-center bg-[blueviolet] p-2.5';
+
 const getRandomImages = (numImages: number) => {
     const imageArray = [...new Array(numImages)];
 
@@ -141,35 +147,37 @@ const HomePage = () => {
     const [inlineImages, setInlineImages] = React.useState(getRandomImages(15));
 
     return (
-        <Container>
-            <GalleryLightboxExample>
-                <StyledH2>Gallery Lightbox</StyledH2>
+        <div className="h-full w-full bg-[#272727] px-0 py-[50px] text-white select-none">
+            <div className="h-full w-full">
+                <h2 className={heading}>Gallery Lightbox</h2>
                 <GalleryLightbox
                     galleryTitle="Dark Mode: OS Level Control In Your CSS"
                     imageMasonryDirection="column"
                     images={images}
                 />
-            </GalleryLightboxExample>
-            <hr />
-            <InlineLightboxExampleContainer>
-                <StyledH2>Inline Lightbox</StyledH2>
-                <InlineLightboxExample>
-                    <OtherInlineContent>
+            </div>
+            <hr className="my-2 border border-[gray] [border-style:inset]" />
+            <div className="flex h-full w-full flex-col">
+                <h2 className={heading}>Inline Lightbox</h2>
+                <div className="flex w-full justify-center">
+                    <div className={otherInlineContent}>
                         🎉🎉Inline content🎉🎉
-                    </OtherInlineContent>
+                    </div>
                     <InlineLightbox images={images} />
-                    <OtherInlineContent>
+                    <div className={otherInlineContent}>
                         🎉🎉Inline content🎉🎉
-                    </OtherInlineContent>
-                </InlineLightboxExample>
-                <Button
+                    </div>
+                </div>
+                <button
+                    className={button}
                     onClick={() =>
                         setInlineImages(getRandomImages(inlineImages.length))
                     }
                 >
                     Generate new images
-                </Button>
-                <Button
+                </button>
+                <button
+                    className={button}
                     onClick={() => {
                         if (inlineImages.length === 1) {
                             setInlineImages(getRandomImages(15));
@@ -179,64 +187,10 @@ const HomePage = () => {
                     }}
                 >
                     Switch Image Array
-                </Button>
-            </InlineLightboxExampleContainer>
-        </Container>
+                </button>
+            </div>
+        </div>
     );
 };
 
 export default HomePage;
-
-const Container = styled.div`
-    height: 100%;
-    width: 100%;
-    user-select: none;
-    background: #272727;
-    color: #fff;
-    padding: 50px 0;
-`;
-
-const Button = styled.button`
-    border-radius: 10px;
-    background: teal;
-    color: #fff;
-    padding: 16px 10px;
-    margin: 20px auto;
-    cursor: pointer;
-    :hover {
-        background: darkblue;
-    }
-    :active {
-        background: darkseagreen;
-    }
-`;
-
-const GalleryLightboxExample = styled.div`
-    height: 100%;
-    width: 100%;
-`;
-
-const InlineLightboxExampleContainer = styled.div`
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-`;
-const InlineLightboxExample = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: center;
-`;
-
-const OtherInlineContent = styled.div`
-    width: 400px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    background: blueviolet;
-`;
-
-const StyledH2 = styled.h2`
-    text-align: center;
-`;

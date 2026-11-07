@@ -2,10 +2,7 @@ import { fileURLToPath } from 'node:url';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    compiler: {
-        styledComponents: true,
-    },
-    transpilePackages: ['styled-components', 'react-spring-lightbox'],
+    transpilePackages: ['react-spring-lightbox'],
     // react-spring-lightbox and the React it shares are symlinked from the
     // parent folder, so Turbopack needs it as the root
     turbopack: {
