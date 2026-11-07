@@ -1,15 +1,18 @@
 # react-spring-lightbox demo app
 
-This directory contains a Next.js app useful for testing and developing `react-spring-lightbox`
+This directory contains a Next.js app useful for testing and developing `react-spring-lightbox`. Its `file:` dependencies are symlinks to the library in the parent folder and to the library's own React, so the app shows the library as you change it.
 
-Install dependencies
+From the repository root, install the library's dependencies and rebuild it on every change
 
 ```bash
-yarn install
+npm install
+npm start
 ```
 
-Run locally with hot module reloading
+In another terminal, install and run the app with hot module reloading
 
 ```bash
-yarn dev
+cd example
+npm install
+npm run dev
 ```
