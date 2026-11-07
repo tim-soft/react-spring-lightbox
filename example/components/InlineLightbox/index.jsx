@@ -1,6 +1,7 @@
-import * as React from 'react';
 import PropTypes from 'prop-types';
+import * as React from 'react';
 import Lightbox from 'react-spring-lightbox';
+
 import LightboxArrowButton from '../GalleryLightbox/components/LightboxArrowButton';
 
 const InlineLightbox = ({ images }) => {
@@ -74,6 +75,6 @@ InlineLightbox.propTypes = {
             height: PropTypes.number,
             src: PropTypes.string.isRequired,
             width: PropTypes.number,
-        }),
+        })
     ).isRequired,
 };

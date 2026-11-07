@@ -1,6 +1,7 @@
-import path from 'node:path';
-import { CoverageReport } from 'monocart-coverage-reports';
 import type { CoverageReportOptions } from 'monocart-coverage-reports';
+
+import { CoverageReport } from 'monocart-coverage-reports';
+import path from 'node:path';
 
 // With E2E_COVERAGE set, the e2e tests record which lines of the library's
 // source Chromium runs, and write coverage/e2e/lcov.info for Codecov
@@ -9,8 +10,7 @@ export const measuringCoverage = Boolean(process.env.E2E_COVERAGE);
 
 export const coverageOptions: CoverageReportOptions = {
     // Vite serves the library's modules from their paths on disk, under /@fs/
-    entryFilter: (entry) =>
-        entry.url.includes('/src/') && !entry.url.includes('/node_modules/'),
+    entryFilter: (entry) => entry.url.includes('/src/') && !entry.url.includes('/node_modules/'),
     name: 'E2E coverage',
     outputDir: 'coverage/e2e',
     reports: ['lcovonly', 'console-summary'],

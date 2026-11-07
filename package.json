@@ -27,12 +27,12 @@
         "npm": ">=7"
     },
     "scripts": {
-        "fix": "npm run fix:eslint && npm run fix:prettier",
-        "fix:eslint": "eslint --fix \"**/*.*\"",
-        "fix:prettier": "prettier --write \"**/*.*\"",
-        "lint": "npm run lint:eslint && npm run lint:prettier && npm run lint:ts",
-        "lint:eslint": "eslint \"**/*.*\"",
-        "lint:prettier": "prettier --check \"**/*.*\"",
+        "fix": "npm run fix:oxlint && npm run fix:oxfmt",
+        "fix:oxfmt": "oxfmt --write",
+        "fix:oxlint": "oxlint --fix",
+        "lint": "npm run lint:oxlint && npm run lint:oxfmt && npm run lint:ts",
+        "lint:oxfmt": "oxfmt --check",
+        "lint:oxlint": "oxlint",
         "lint:ts": "npx tsc --noEmit -p . && npx tsc --noEmit -p e2e",
         "test": "vitest run --coverage",
         "test:watch": "vitest",
@@ -51,15 +51,11 @@
         }
     },
     "lint-staged": {
-        "*.{json,md}": [
-            "prettier --write",
-            "git add --force"
+        "*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}": [
+            "oxlint --fix --no-error-on-unmatched-pattern",
+            "oxfmt --write --no-error-on-unmatched-pattern"
         ],
-        "*.{js, jsx}": [
-            "prettier --write",
-            "eslint --no-ignore --fix",
-            "git add --force"
-        ]
+        "*.{json,jsonc,md,yml,yaml,css,html}": "oxfmt --write --no-error-on-unmatched-pattern"
     },
     "peerDependencies": {
         "react": ">=16.8",
@@ -85,25 +81,14 @@
         "@types/node": "^24",
         "@types/react": "^19.3.0",
         "@types/react-dom": "^19.3.0",
-        "@typescript-eslint/eslint-plugin": "^6.7.4",
-        "@typescript-eslint/parser": "^6.7.4",
         "@vitest/coverage-v8": "^5.1.0",
-        "babel-eslint": "10.1.0",
         "cross-env": "^7.0.3",
-        "eslint": "^8.50.0",
-        "eslint-config-prettier": "^9.0.0",
-        "eslint-import-resolver-typescript": "^3.6.1",
-        "eslint-plugin-import": "^2.28.1",
-        "eslint-plugin-jsx-a11y": "^6.7.1",
-        "eslint-plugin-prettier": "^5.0.0",
-        "eslint-plugin-react": "^7.33.2",
-        "eslint-plugin-react-hooks": "^4.6.0",
-        "eslint-plugin-sort-destructure-keys": "^1.5.0",
         "husky": "^4.3.8",
         "jsdom": "^31.0.0",
         "lint-staged": "^10.5.4",
         "monocart-coverage-reports": "^3.2.0",
-        "prettier": "^3.0.3",
+        "oxfmt": "0.77.0",
+        "oxlint": "1.92.0",
         "react": "^19.3.1",
         "react-dom": "^19.3.1",
         "react-is": "^19.3.1",

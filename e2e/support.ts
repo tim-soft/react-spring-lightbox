@@ -1,6 +1,8 @@
-import { expect, test as base } from '@playwright/test';
 import type { Locator, Page } from '@playwright/test';
+
+import { expect, test as base } from '@playwright/test';
 import { CoverageReport } from 'monocart-coverage-reports';
+
 import { coverageOptions, measuringCoverage } from './coverage';
 
 /** Playwright's test, which also records coverage in Chromium when E2E_COVERAGE is set */
@@ -36,10 +38,7 @@ type Calls = Record<'onClose' | 'onNext' | 'onPrev', number>;
 export const openHarness = async (page: Page, query = '') => {
     await page.goto(`/?${query}`);
     if (!query.includes('closed') && !query.includes('inline')) {
-        await expect(page.getByTestId('lightbox-container')).toHaveCSS(
-            'opacity',
-            '1',
-        );
+        await expect(page.getByTestId('lightbox-container')).toHaveCSS('opacity', '1');
     }
     await settle(page);
 };
@@ -55,32 +54,24 @@ export const settle = async (page: Page) => {
         .poll(
             async () => {
                 const now = await page.evaluate(() =>
-                    [
-                        ...document.querySelectorAll(
-                            'img, .lightbox-container, .lightbox-image-pager',
-                        ),
-                    ]
+                    [...document.querySelectorAll('img, .lightbox-container, .lightbox-image-pager')]
                         .map((element) => {
-                            const { opacity, transform } =
-                                getComputedStyle(element);
+                            const { opacity, transform } = getComputedStyle(element);
                             return `${transform} ${opacity}`;
                         })
-                        .join('|'),
+                        .join('|')
                 );
                 const still = now === last;
                 last = now;
                 return still;
             },
-            { intervals: [150], timeout: 5000 },
+            { intervals: [150], timeout: 5000 }
         )
         .toBe(true);
 };
 
 /** How often the lightbox called onClose, onNext and onPrev */
-export const calls = (page: Page) =>
-    page.evaluate(
-        () => (window as unknown as { lightboxCalls: Calls }).lightboxCalls,
-    );
+export const calls = (page: Page) => page.evaluate(() => (window as unknown as { lightboxCalls: Calls }).lightboxCalls);
 
 /** The alt text of the image centered in the viewport */
 export const shownImage = (page: Page) =>
@@ -101,10 +92,7 @@ export const imageTransform = (page: Page, alt: string) =>
     });
 
 /** A point inside an element, as fractions of its width and height */
-export const pointIn = async (
-    locator: Locator,
-    [fractionX, fractionY]: Point = [0.5, 0.5],
-): Promise<Point> => {
+export const pointIn = async (locator: Locator, [fractionX, fractionY]: Point = [0.5, 0.5]): Promise<Point> => {
     const box = await locator.boundingBox();
     if (!box) throw new Error('element is not visible');
     return [box.x + box.width * fractionX, box.y + box.height * fractionY];
@@ -134,7 +122,7 @@ export const sampleFrames = (locator: Locator, sampled: Sampled, frames = 12) =>
                 };
                 requestAnimationFrame(sample);
             }),
-        [sampled, frames] as const,
+        [sampled, frames] as const
     );
 
 /**
@@ -146,8 +134,7 @@ export const chromiumInput = async (page: Page) => {
     const cdp = await page.context().newCDPSession(page);
     let time = Date.now() / 1000;
     const after = (ms: number) => (time += ms / 1000);
-    const touchPoints = (points: Point[]) =>
-        points.map(([x, y], id) => ({ id, x, y }));
+    const touchPoints = (points: Point[]) => points.map(([x, y], id) => ({ id, x, y }));
 
     const touch = {
         /** Puts the fingers down one at a time */
@@ -184,10 +171,7 @@ export const chromiumInput = async (page: Page) => {
                     a[0] + ((b[0] - a[0]) * step) / steps,
                     a[1] + ((b[1] - a[1]) * step) / steps,
                 ];
-                await touch.move([
-                    between(from[0], to[0]),
-                    between(from[1], to[1]),
-                ]);
+                await touch.move([between(from[0], to[0]), between(from[1], to[1])]);
             }
             await touch.lift();
         },
@@ -204,11 +188,7 @@ export const chromiumInput = async (page: Page) => {
     const mouse = {
         /** Presses at the first point, moves through the rest `msPerMove` apart, then releases */
         async drag([start, ...moves]: Point[], msPerMove = 16) {
-            const send = (
-                type: 'mouseMoved' | 'mousePressed' | 'mouseReleased',
-                [x, y]: Point,
-                ms: number,
-            ) =>
+            const send = (type: 'mouseMoved' | 'mousePressed' | 'mouseReleased', [x, y]: Point, ms: number) =>
                 cdp.send('Input.dispatchMouseEvent', {
                     button: 'left',
                     buttons: type === 'mouseReleased' ? 0 : 1,
@@ -228,10 +208,7 @@ export const chromiumInput = async (page: Page) => {
     };
 
     /** One wheel event, as a mouse wheel or trackpad sends it */
-    const wheel = (
-        [x, y]: Point,
-        { ctrl = false, deltaX = 0, deltaY = 0, ms = 16 } = {},
-    ) =>
+    const wheel = ([x, y]: Point, { ctrl = false, deltaX = 0, deltaY = 0, ms = 16 } = {}) =>
         cdp.send('Input.dispatchMouseEvent', {
             deltaX,
             deltaY,

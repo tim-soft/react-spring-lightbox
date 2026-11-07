@@ -1,16 +1,11 @@
-/* eslint-disable no-shadow */
-import * as React from 'react';
-import PropTypes from 'prop-types';
-import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { animated, useTransition } from '@react-spring/web';
+import PropTypes from 'prop-types';
+import * as React from 'react';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+
 import ButtonControl from './LightboxButtonControl';
 
-const ArrowButton = ({
-    className = 'z-[999]',
-    disabled = false,
-    onClick,
-    position,
-}) => {
+const ArrowButton = ({ className = 'z-[999]', disabled = false, onClick, position }) => {
     const transitions = useTransition(!disabled, {
         enter: { opacity: 1 },
         from: { opacity: 0 },
@@ -20,22 +15,21 @@ const ArrowButton = ({
     return transitions(
         (props, item) =>
             item && (
-                <animated.div className={className} style={props}>
+                <animated.div
+                    className={className}
+                    style={props}
+                >
                     <ButtonControl
                         className={`absolute top-1/2 -translate-y-1/2 text-content ${
                             position === 'left' ? 'left-0' : 'right-0'
                         }`}
                         onClick={onClick}
                     >
-                        {position === 'left' && (
-                            <IoIosArrowBack className="inline align-baseline" />
-                        )}
-                        {position === 'right' && (
-                            <IoIosArrowForward className="inline align-baseline" />
-                        )}
+                        {position === 'left' && <IoIosArrowBack className="inline align-baseline" />}
+                        {position === 'right' && <IoIosArrowForward className="inline align-baseline" />}
                     </ButtonControl>
                 </animated.div>
-            ),
+            )
     );
 };
 

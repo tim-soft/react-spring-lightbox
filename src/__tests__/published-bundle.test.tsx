@@ -1,19 +1,12 @@
-import React from 'react';
-import { createRequire } from 'node:module';
 import { render } from '@testing-library/react';
+import { createRequire } from 'node:module';
+import React from 'react';
 import { beforeAll, beforeEach, expect, test } from 'vitest';
+
 import type Lightbox from '../index';
+
 import { mouse, pressKey, touchscreen } from './devices';
-import {
-    CENTER,
-    image,
-    imageTransform,
-    lightboxProps,
-    mockLayout,
-    pageOf,
-    settle,
-    shownImage,
-} from './helpers';
+import { CENTER, image, imageTransform, lightboxProps, mockLayout, pageOf, settle, shownImage } from './helpers';
 
 // People install dist/, not src/. These run a few flows against the built
 // bundle, which `yarn build` (and `prepare`, on install) produces.
@@ -26,15 +19,12 @@ beforeAll(() => {
     try {
         bundlePath = require.resolve('../../dist/index.cjs.js');
     } catch {
-        throw new Error(
-            'dist/index.cjs.js is missing. Run `yarn build` first.',
-        );
+        throw new Error('dist/index.cjs.js is missing. Run `yarn build` first.');
     }
     // The bundle loads react-spring's CommonJS build, a separate copy from
     // the one setup.ts configures, so let fake timers drive its frames too
     require('@react-spring/web').Globals.assign({
-        requestAnimationFrame: (callback: FrameRequestCallback) =>
-            requestAnimationFrame(callback),
+        requestAnimationFrame: (callback: FrameRequestCallback) => requestAnimationFrame(callback),
     });
     PublishedLightbox = require(bundlePath);
 });

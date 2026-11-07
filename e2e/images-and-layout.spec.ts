@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test';
+
 import { expect, openHarness, settle, shownImage, test } from './support';
 
 /** Opens Image 1 from the gallery and returns which images the browser fetched */
@@ -19,28 +20,14 @@ const openAndCollectImageRequests = async (page: Page, query: string) => {
 test.describe('image downloads', () => {
     test.skip(({ isMobile }) => isMobile, 'Desktop browsers cover this');
 
-    test('opening downloads every image, even those far from the current one (#26)', async ({
-        page,
-    }) => {
+    test('opening downloads every image, even those far from the current one (#26)', async ({ page }) => {
         const requested = await openAndCollectImageRequests(page, '');
 
-        expect([...requested].sort()).toEqual([
-            'Image 1',
-            'Image 2',
-            'Image 3',
-            'Image 4',
-            'Image 5',
-        ]);
+        expect([...requested].sort()).toEqual(['Image 1', 'Image 2', 'Image 3', 'Image 4', 'Image 5']);
     });
 
-    test('with loading: "lazy", images far from the current one wait', async ({
-        browserName,
-        page,
-    }) => {
-        test.skip(
-            browserName === 'webkit',
-            'WebKit downloads lazy images even inside display: none pages',
-        );
+    test('with loading: "lazy", images far from the current one wait', async ({ browserName, page }) => {
+        test.skip(browserName === 'webkit', 'WebKit downloads lazy images even inside display: none pages');
         const requested = await openAndCollectImageRequests(page, 'lazy');
 
         expect(requested.has('Image 1')).toBe(true);
@@ -49,9 +36,7 @@ test.describe('image downloads', () => {
     });
 });
 
-test('renders the header above the image and the footer below it', async ({
-    page,
-}) => {
+test('renders the header above the image and the footer below it', async ({ page }) => {
     await openHarness(page);
 
     const header = await page.getByRole('banner').boundingBox();
@@ -64,9 +49,7 @@ test('renders the header above the image and the footer below it', async ({
     expect(footer.y).toBeGreaterThanOrEqual(image.y + image.height - 1);
 });
 
-test('fits each image within the stage, leaving room for controls', async ({
-    page,
-}) => {
+test('fits each image within the stage, leaving room for controls', async ({ page }) => {
     await openHarness(page, 'index=1');
 
     const viewport = page.viewportSize();
@@ -82,23 +65,16 @@ test('the image overlay sits over the image', async ({ page }) => {
     await openHarness(page, 'overlay');
 
     const image = await page.getByAltText('Image 1').boundingBox();
-    const share = await page
-        .getByRole('button', { name: 'Share' })
-        .first()
-        .boundingBox();
+    const share = await page.getByRole('button', { name: 'Share' }).first().boundingBox();
 
     expect(image && share).toBeTruthy();
     if (!image || !share) return;
     expect(share.x).toBeGreaterThanOrEqual(image.x - 1);
-    expect(share.x + share.width).toBeLessThanOrEqual(
-        image.x + image.width + 1,
-    );
+    expect(share.x + share.width).toBeLessThanOrEqual(image.x + image.width + 1);
     expect(share.y).toBeGreaterThanOrEqual(image.y - 1);
 });
 
-test('covers the window even when rendered inside an element with a transform', async ({
-    page,
-}) => {
+test('covers the window even when rendered inside an element with a transform', async ({ page }) => {
     await openHarness(page, 'insideTransform');
 
     const viewport = page.viewportSize();
@@ -116,9 +92,7 @@ test.describe('images of any shape and size', () => {
         return box;
     };
 
-    test('shows a small image at its own size, centered, instead of stretching it', async ({
-        page,
-    }) => {
+    test('shows a small image at its own size, centered, instead of stretching it', async ({ page }) => {
         await openHarness(page, 'variety&index=0');
 
         const { height, width } = await boxOf(page, 'Tiny image');
@@ -127,9 +101,7 @@ test.describe('images of any shape and size', () => {
         expect(await shownImage(page)).toBe('Tiny image');
     });
 
-    test('fits a panorama to the width of the window, keeping its shape', async ({
-        page,
-    }) => {
+    test('fits a panorama to the width of the window, keeping its shape', async ({ page }) => {
         await openHarness(page, 'variety&index=1');
 
         const { height, width } = await boxOf(page, 'Panorama');
@@ -146,9 +118,7 @@ test.describe('images of any shape and size', () => {
         expect(width / height).toBeCloseTo(1000 / 1400, 2);
     });
 
-    test('shows the alt text of a broken image, and pages past it', async ({
-        page,
-    }) => {
+    test('shows the alt text of a broken image, and pages past it', async ({ page }) => {
         await openHarness(page, 'variety&index=2');
         const next = page.getByRole('button', { name: 'Next' });
 

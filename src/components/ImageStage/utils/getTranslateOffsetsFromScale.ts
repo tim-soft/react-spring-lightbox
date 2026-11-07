@@ -39,8 +39,7 @@ const getTranslateOffsetsFromScale = ({
 
     // Get the (x,y) touch position relative to image origin at the current scale
     const imageCoordX = (touchOriginX - imageTopLeftX - imageWidth / 2) / scale;
-    const imageCoordY =
-        (touchOriginY - imageTopLeftY - imageHeight / 2) / scale;
+    const imageCoordY = (touchOriginY - imageTopLeftY - imageHeight / 2) / scale;
 
     // Calculate translateX/Y offset at the next scale to zoom to touch position
     const newTranslateX = -imageCoordX * pinchDelta + translateX;

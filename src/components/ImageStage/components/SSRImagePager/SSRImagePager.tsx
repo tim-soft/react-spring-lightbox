@@ -1,5 +1,6 @@
-import type { ImagesList } from '../../../../types/ImagesList';
 import * as React from 'react';
+
+import type { ImagesList } from '../../../../types/ImagesList';
 
 type ISSRImagePagerProps = {
     currentIndex: number;

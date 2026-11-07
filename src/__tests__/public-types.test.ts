@@ -1,5 +1,7 @@
 import type { ComponentProps, ReactNode } from 'react';
+
 import { expectTypeOf, test } from 'vitest';
+
 import type Lightbox from '../index';
 import type { ImagesListType } from '../index';
 
@@ -48,9 +50,7 @@ test('currentIndex, images, isOpen, onNext and onPrev are required', () => {
 test('every other prop is optional', () => {
     expectTypeOf<Props['onClose']>().toEqualTypeOf<(() => void) | undefined>();
     expectTypeOf<Props['inline']>().toEqualTypeOf<boolean | undefined>();
-    expectTypeOf<Props['singleClickToZoom']>().toEqualTypeOf<
-        boolean | undefined
-    >();
+    expectTypeOf<Props['singleClickToZoom']>().toEqualTypeOf<boolean | undefined>();
     expectTypeOf<Props['className']>().toEqualTypeOf<string | undefined>();
 });
 

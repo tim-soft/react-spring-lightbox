@@ -1,7 +1,9 @@
 import { fireEvent } from '@testing-library/react';
 import { onTestFinished, vi } from 'vitest';
-import { FRAME, advance } from './helpers';
+
 import type { Point } from './helpers';
+
+import { FRAME, advance } from './helpers';
 
 // Each device sends the DOM events a browser sends for it, in the same order.
 // Every event goes to the element the gesture started on, as pointer capture does.
@@ -12,7 +14,7 @@ const firePointer = (
     type: 'pointerDown' | 'pointerMove' | 'pointerUp',
     target: Element,
     [clientX, clientY]: Point,
-    { id, pointerType }: { id: number; pointerType: PointerType },
+    { id, pointerType }: { id: number; pointerType: PointerType }
 ) =>
     fireEvent[type](target, {
         buttons: type === 'pointerUp' ? 0 : 1,
@@ -23,15 +25,10 @@ const firePointer = (
         pointerType,
     });
 
-const fireClick = (target: Element, [clientX, clientY]: Point) =>
-    fireEvent.click(target, { clientX, clientY });
+const fireClick = (target: Element, [clientX, clientY]: Point) => fireEvent.click(target, { clientX, clientY });
 
 /** Holds a mouse button or pen down on `target` until `release` */
-export const pressPointer = (
-    target: Element,
-    start: Point,
-    pointer: { id: number; pointerType: PointerType },
-) => {
+export const pressPointer = (target: Element, start: Point, pointer: { id: number; pointerType: PointerType }) => {
     let position = start;
 
     firePointer('pointerDown', target, start, pointer);
@@ -81,29 +78,19 @@ export const wheel = (
         ctrlKey = false,
         deltaX = 0,
         deltaY = 0,
-    }: { at?: Point; ctrlKey?: boolean; deltaX?: number; deltaY?: number },
+    }: { at?: Point; ctrlKey?: boolean; deltaX?: number; deltaY?: number }
 ) => fireEvent.wheel(target, { clientX, clientY, ctrlKey, deltaX, deltaY });
 
 export const trackpad = {
     /** A pinch in Chrome, Edge and Firefox, which send it as ctrl + wheel. Negative deltaY zooms in. */
-    async pinch(
-        target: Element,
-        {
-            at,
-            deltaY,
-            ticks = 1,
-        }: { at?: Point; deltaY: number; ticks?: number },
-    ) {
+    async pinch(target: Element, { at, deltaY, ticks = 1 }: { at?: Point; deltaY: number; ticks?: number }) {
         for (let tick = 0; tick < ticks; tick += 1) {
             wheel(target, { at, ctrlKey: true, deltaY: deltaY / ticks });
             await advance(FRAME);
         }
     },
     /** A two-finger scroll: one wheel event per frame */
-    async scroll(
-        target: Element,
-        { deltaX = 0, deltaY = 0, ticks = 5 }: Record<string, number>,
-    ) {
+    async scroll(target: Element, { deltaX = 0, deltaY = 0, ticks = 5 }: Record<string, number>) {
         for (let tick = 0; tick < ticks; tick += 1) {
             wheel(target, { deltaX: deltaX / ticks, deltaY: deltaY / ticks });
             await advance(FRAME);
@@ -117,13 +104,8 @@ type Finger = { id: number; point: Point };
  * Puts fingers on a touchscreen, one after another, until `lift`. Pass
  * `pointerEvents: false` to send only touch events.
  */
-export const touch = (
-    target: Element,
-    points: Point[],
-    { pointerEvents = true } = {},
-) => {
-    const pointer = (...args: Parameters<typeof firePointer>) =>
-        pointerEvents && firePointer(...args);
+export const touch = (target: Element, points: Point[], { pointerEvents = true } = {}) => {
+    const pointer = (...args: Parameters<typeof firePointer>) => pointerEvents && firePointer(...args);
     const fingers: Finger[] = [];
     const toTouch = ({ id, point: [clientX, clientY] }: Finger) => ({
         clientX,
@@ -195,31 +177,19 @@ export const touchscreen = {
         touchscreen.tap(target, point);
     },
     /** Two fingers moving from `from` to `to` over `steps` frames, then lifting */
-    async pinch(
-        target: Element,
-        from: [Point, Point],
-        to: [Point, Point],
-        { pointerEvents = true, steps = 3 } = {},
-    ) {
+    async pinch(target: Element, from: [Point, Point], to: [Point, Point], { pointerEvents = true, steps = 3 } = {}) {
         const fingers = touch(target, from, { pointerEvents });
         for (let step = 1; step <= steps; step += 1) {
             const between = (a: Point, b: Point): Point => [
                 a[0] + ((b[0] - a[0]) * step) / steps,
                 a[1] + ((b[1] - a[1]) * step) / steps,
             ];
-            await fingers.moveTo([
-                between(from[0], to[0]),
-                between(from[1], to[1]),
-            ]);
+            await fingers.moveTo([between(from[0], to[0]), between(from[1], to[1])]);
         }
         fingers.lift();
     },
     /** One finger from the first point through the rest, `msPerMove` apart */
-    async swipe(
-        target: Element,
-        [start, ...moves]: Point[],
-        msPerMove = FRAME,
-    ) {
+    async swipe(target: Element, [start, ...moves]: Point[], msPerMove = FRAME) {
         const finger = touch(target, [start]);
         for (const point of moves) {
             await finger.moveTo([point], msPerMove);
@@ -237,10 +207,7 @@ const removeForTest = (handler: 'ontouchstart') => {
     while (!Object.prototype.hasOwnProperty.call(owner, handler)) {
         owner = Object.getPrototypeOf(owner);
     }
-    const descriptor = Object.getOwnPropertyDescriptor(
-        owner,
-        handler,
-    ) as PropertyDescriptor;
+    const descriptor = Object.getOwnPropertyDescriptor(owner, handler) as PropertyDescriptor;
     delete (owner as Record<string, unknown>)[handler];
 
     onTestFinished(() => {
@@ -265,7 +232,7 @@ export const safariGesture = (
     target: Element,
     type: 'gesturechange' | 'gestureend' | 'gesturestart',
     [clientX, clientY]: Point,
-    scale: number,
+    scale: number
 ) =>
     fireEvent(
         target,
@@ -274,14 +241,11 @@ export const safariGesture = (
             clientY,
             rotation: 0,
             scale,
-        }),
+        })
     );
 
 /** A trackpad pinch on desktop Safari, through each scale in `scales` */
-export const safariPinch = async (
-    target: Element,
-    { at, scales }: { at: Point; scales: number[] },
-) => {
+export const safariPinch = async (target: Element, { at, scales }: { at: Point; scales: number[] }) => {
     safariGesture(target, 'gesturestart', at, 1);
     for (const scale of scales) {
         await advance(FRAME);
@@ -291,10 +255,7 @@ export const safariPinch = async (
 };
 
 /** Presses and releases `key`. Returns false when the lightbox blocked the key's default action, such as scrolling. */
-export const pressKey = (
-    key: string,
-    target: Element | Document = document,
-) => {
+export const pressKey = (key: string, target: Element | Document = document) => {
     const allowed = fireEvent.keyDown(target, { key });
     fireEvent.keyUp(target, { key });
     return allowed;

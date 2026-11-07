@@ -1,20 +1,13 @@
+import { render, screen, within } from '@testing-library/react';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
-import { render, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, test } from 'vitest';
+
 import Lightbox from '../index';
 import { mouse, pressKey, touch, touchscreen, trackpad } from './devices';
-import {
-    CENTER,
-    image,
-    lightboxProps,
-    mockLayout,
-    pageOf,
-    settle,
-} from './helpers';
+import { CENTER, image, lightboxProps, mockLayout, pageOf, settle } from './helpers';
 
-const inlineProps = (currentIndex = 0) =>
-    lightboxProps({ currentIndex, inline: true });
+const inlineProps = (currentIndex = 0) => lightboxProps({ currentIndex, inline: true });
 
 describe('before the stage is measured', () => {
     test('shows only the current image', () => {
@@ -42,13 +35,9 @@ describe('once measured', () => {
     test('renders in place, without a portal or backdrop', () => {
         const { container } = render(<Lightbox {...inlineProps()} />);
 
-        expect(
-            within(container).getByTestId('lightbox-image-stage'),
-        ).toContainElement(image(1));
+        expect(within(container).getByTestId('lightbox-image-stage')).toContainElement(image(1));
         expect(document.querySelector('.lightbox-portal')).toBeNull();
-        expect(
-            screen.queryByTestId('lightbox-container'),
-        ).not.toBeInTheDocument();
+        expect(screen.queryByTestId('lightbox-container')).not.toBeInTheDocument();
     });
 
     test.each([
@@ -95,7 +84,7 @@ describe('once measured', () => {
                         [462, 384],
                         [562, 384],
                     ],
-                    { pointerEvents: false },
+                    { pointerEvents: false }
                 ).moveTo([
                     [412, 384],
                     [612, 384],

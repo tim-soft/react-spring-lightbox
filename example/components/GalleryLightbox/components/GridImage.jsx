@@ -1,5 +1,5 @@
-import * as React from 'react';
 import PropTypes from 'prop-types';
+import * as React from 'react';
 
 /**
  * A single image element in a masonry style image grid
@@ -30,9 +30,7 @@ const GridImage = ({ index, key, left, onClick, photo, top }) => {
                     src={src}
                 />
                 <div className="absolute bottom-0 w-full bg-accent text-highlight">
-                    <h4 className="my-[1em] text-center font-bold">
-                        {caption}
-                    </h4>
+                    <h4 className="my-[1em] text-center font-bold">{caption}</h4>
                 </div>
             </div>
         </div>

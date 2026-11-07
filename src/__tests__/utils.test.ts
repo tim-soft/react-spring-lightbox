@@ -1,8 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import {
-    getTranslateOffsetsFromScale,
-    imageIsOutOfBounds,
-} from '../components/ImageStage/utils';
+
+import { getTranslateOffsetsFromScale, imageIsOutOfBounds } from '../components/ImageStage/utils';
 import { toDOMRect } from './helpers';
 
 const imageRefAt = (box: Parameters<typeof toDOMRect>[0]) => {
@@ -22,17 +20,11 @@ describe('getTranslateOffsetsFromScale', () => {
     const onScreen = (
         [offsetX, offsetY]: [number, number],
         scale: number,
-        [translateX, translateY]: [number, number],
-    ): [number, number] => [
-        center[0] + translateX + offsetX * scale,
-        center[1] + translateY + offsetY * scale,
-    ];
+        [translateX, translateY]: [number, number]
+    ): [number, number] => [center[0] + translateX + offsetX * scale, center[1] + translateY + offsetY * scale];
 
     /** The image's bounding box after applying `scale` and `translate` */
-    const imageRefWith = (
-        scale: number,
-        [translateX, translateY]: [number, number],
-    ) =>
+    const imageRefWith = (scale: number, [translateX, translateY]: [number, number]) =>
         imageRefAt({
             height: size.height * scale,
             left: center[0] + translateX - (size.width * scale) / 2,
@@ -48,7 +40,7 @@ describe('getTranslateOffsetsFromScale', () => {
                 pinchDelta: 1,
                 scale: 1,
                 touchOrigin: [400, 250],
-            }),
+            })
         ).toEqual([0, 0]);
     });
 
@@ -56,25 +48,22 @@ describe('getTranslateOffsetsFromScale', () => {
         { from: 1, to: 2, translate: [0, 0] },
         { from: 2, to: 2.5, translate: [-100, -50] },
         { from: 2, to: 1.5, translate: [40, -30] },
-    ])(
-        'keeps the touched point under the finger when zooming from $from to $to',
-        ({ from, to, translate }) => {
-            const touchedPoint: [number, number] = [100, 50];
-            const touchOrigin = onScreen(touchedPoint, from, translate);
+    ])('keeps the touched point under the finger when zooming from $from to $to', ({ from, to, translate }) => {
+        const touchedPoint: [number, number] = [100, 50];
+        const touchOrigin = onScreen(touchedPoint, from, translate);
 
-            const nextTranslate = getTranslateOffsetsFromScale({
-                currentTranslate: translate,
-                imageRef: imageRefWith(from, translate),
-                pinchDelta: to - from,
-                scale: from,
-                touchOrigin,
-            });
+        const nextTranslate = getTranslateOffsetsFromScale({
+            currentTranslate: translate,
+            imageRef: imageRefWith(from, translate),
+            pinchDelta: to - from,
+            scale: from,
+            touchOrigin,
+        });
 
-            const [x, y] = onScreen(touchedPoint, to, nextTranslate);
-            expect(x).toBeCloseTo(touchOrigin[0]);
-            expect(y).toBeCloseTo(touchOrigin[1]);
-        },
-    );
+        const [x, y] = onScreen(touchedPoint, to, nextTranslate);
+        expect(x).toBeCloseTo(touchOrigin[0]);
+        expect(y).toBeCloseTo(touchOrigin[1]);
+    });
 });
 
 describe('imageIsOutOfBounds', () => {
@@ -84,27 +73,14 @@ describe('imageIsOutOfBounds', () => {
     });
 
     test('is false while the image covers the center of the window', () => {
-        expect(
-            imageIsOutOfBounds(
-                imageRefAt({ height: 400, left: 212, top: 184, width: 600 }),
-            ),
-        ).toBe(false);
+        expect(imageIsOutOfBounds(imageRefAt({ height: 400, left: 212, top: 184, width: 600 }))).toBe(false);
     });
 
     test.each([
-        [
-            'left edge is right of',
-            { height: 400, left: 600, top: 184, width: 600 },
-        ],
+        ['left edge is right of', { height: 400, left: 600, top: 184, width: 600 }],
         ['top edge is below', { height: 400, left: 212, top: 400, width: 600 }],
-        [
-            'right edge is left of',
-            { height: 400, left: 0, top: 184, width: 500 },
-        ],
-        [
-            'bottom edge is above',
-            { height: 300, left: 212, top: 0, width: 600 },
-        ],
+        ['right edge is left of', { height: 400, left: 0, top: 184, width: 500 }],
+        ['bottom edge is above', { height: 300, left: 212, top: 0, width: 600 }],
     ])('is true when the image %s the center of the window', (_, box) => {
         expect(imageIsOutOfBounds(imageRefAt(box))).toBe(true);
     });

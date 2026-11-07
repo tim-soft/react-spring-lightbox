@@ -1,18 +1,10 @@
-import React from 'react';
 import { render } from '@testing-library/react';
+import React from 'react';
 import { beforeEach, expect, test } from 'vitest';
+
 import Lightbox from '../index';
 import { mouse, pressMouse, pressPointer, touch, touchscreen } from './devices';
-import {
-    CENTER,
-    FRAME,
-    advance,
-    image,
-    imageTransform,
-    lightboxProps,
-    mockLayout,
-    settle,
-} from './helpers';
+import { CENTER, FRAME, advance, image, imageTransform, lightboxProps, mockLayout, settle } from './helpers';
 
 const ZOOMED_AT_CENTER = 'translate(0px, 0px) scale(2)';
 const AT_REST = 'translate(0px, 0px) scale(1)';
@@ -74,7 +66,7 @@ test('keeps the pan after letting go, ignoring the click the browser fires then'
             [550, 450],
             [600, 500],
         ],
-        100,
+        100
     );
     await settle();
 
@@ -111,7 +103,7 @@ test('stops panning once a second finger touches down', async () => {
             [550, 450],
             [640, 440],
         ],
-        100,
+        100
     );
     await settle();
 
@@ -141,7 +133,7 @@ test('a pen or mouse drag does not pan while two fingers pinch', async () => {
             [462, 384],
             [562, 384],
         ],
-        { pointerEvents: false },
+        { pointerEvents: false }
     );
 
     await mouse.drag(image(1), [

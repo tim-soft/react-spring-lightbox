@@ -1,8 +1,9 @@
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import React, { StrictMode } from 'react';
 import { hydrateRoot } from 'react-dom/client';
 import { renderToString } from 'react-dom/server';
-import { act, fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+
 import Lightbox from '../index';
 import { pressKey, touchscreen, wheel } from './devices';
 import {
@@ -35,7 +36,7 @@ describe('in React StrictMode, as Next.js and Create React App run in developmen
         const { unmount } = render(
             <StrictMode>
                 <Lightbox {...props} />
-            </StrictMode>,
+            </StrictMode>
         );
         await settle();
 
@@ -74,15 +75,10 @@ describe('server rendering, then hydrating in the browser', () => {
 
     test('an inline carousel hydrates without warnings, then lays out its pager', async () => {
         const element = <Lightbox {...lightboxProps({ inline: true })} />;
-        const { container, errors, unmount } = await hydrate(
-            element,
-            renderToString(element),
-        );
+        const { container, errors, unmount } = await hydrate(element, renderToString(element));
 
         expect(errors).not.toHaveBeenCalled();
-        expect(
-            container.querySelectorAll('.lightbox-image-pager'),
-        ).toHaveLength(5);
+        expect(container.querySelectorAll('.lightbox-image-pager')).toHaveLength(5);
         unmount();
     });
 
@@ -114,9 +110,19 @@ describe('a parent that controls navigation', () => {
         const { rerender } = render(<Lightbox {...props} />);
         await settle();
 
-        rerender(<Lightbox {...props} isOpen={false} />);
+        rerender(
+            <Lightbox
+                {...props}
+                isOpen={false}
+            />
+        );
         await advance(FRAME * 4);
-        rerender(<Lightbox {...props} currentIndex={3} />);
+        rerender(
+            <Lightbox
+                {...props}
+                currentIndex={3}
+            />
+        );
         await settle();
 
         expect(screen.getAllByTestId('lightbox-container')).toHaveLength(1);
@@ -136,15 +142,12 @@ describe('a parent that controls navigation', () => {
                     alt: `Filtered ${index + 1}`,
                     src: src.replace('image', 'filtered'),
                 }))}
-            />,
+            />
         );
         await settle();
 
         expect(shownImage()).toBe('Filtered 2');
-        expect(screen.getByAltText('Filtered 2')).toHaveAttribute(
-            'src',
-            'filtered-2.jpg',
-        );
+        expect(screen.getByAltText('Filtered 2')).toHaveAttribute('src', 'filtered-2.jpg');
     });
 });
 
@@ -189,69 +192,63 @@ test('holding an arrow key pages once, when the key is released', () => {
 });
 
 describe('more than one lightbox on a page', () => {
-    test.fails(
-        'a key press pages at most one of two inline carousels (#65)',
-        () => {
-            const firstNext = vi.fn();
-            const secondNext = vi.fn();
-            const first = lightboxProps({ inline: true, onNext: firstNext });
-            const second = lightboxProps({ inline: true, onNext: secondNext });
-            render(
-                <>
-                    <Lightbox {...first} />
-                    <Lightbox {...second} />
-                </>,
-            );
+    test.fails('a key press pages at most one of two inline carousels (#65)', () => {
+        const firstNext = vi.fn();
+        const secondNext = vi.fn();
+        const first = lightboxProps({ inline: true, onNext: firstNext });
+        const second = lightboxProps({ inline: true, onNext: secondNext });
+        render(
+            <>
+                <Lightbox {...first} />
+                <Lightbox {...second} />
+            </>
+        );
 
-            pressKey('ArrowRight');
+        pressKey('ArrowRight');
 
-            expect(
-                firstNext.mock.calls.length + secondNext.mock.calls.length,
-            ).toBeLessThanOrEqual(1);
-        },
-    );
+        expect(firstNext.mock.calls.length + secondNext.mock.calls.length).toBeLessThanOrEqual(1);
+    });
 
-    test.fails(
-        'a key press pages only the open modal, not an inline carousel behind it (#65)',
-        () => {
-            const carousel = lightboxProps({ inline: true });
-            const modal = lightboxProps();
-            render(
-                <>
-                    <Lightbox {...carousel} />
-                    <Lightbox {...modal} />
-                </>,
-            );
+    test.fails('a key press pages only the open modal, not an inline carousel behind it (#65)', () => {
+        const carousel = lightboxProps({ inline: true });
+        const modal = lightboxProps();
+        render(
+            <>
+                <Lightbox {...carousel} />
+                <Lightbox {...modal} />
+            </>
+        );
 
-            pressKey('ArrowRight');
+        pressKey('ArrowRight');
 
-            expect(modal.onNext).toHaveBeenCalledTimes(1);
-            expect(carousel.onNext).not.toHaveBeenCalled();
-        },
-    );
+        expect(modal.onNext).toHaveBeenCalledTimes(1);
+        expect(carousel.onNext).not.toHaveBeenCalled();
+    });
 });
 
-test.fails(
-    'opens without animating when the user prefers reduced motion',
-    async () => {
-        vi.stubGlobal('matchMedia', (query: string) => ({
-            addEventListener: () => undefined,
-            addListener: () => undefined,
-            matches: query.includes('prefers-reduced-motion: reduce'),
-            media: query,
-            removeEventListener: () => undefined,
-            removeListener: () => undefined,
-        }));
-        const props = lightboxProps();
-        const { rerender } = render(<Lightbox {...props} isOpen={false} />);
+test.fails('opens without animating when the user prefers reduced motion', async () => {
+    vi.stubGlobal('matchMedia', (query: string) => ({
+        addEventListener: () => undefined,
+        addListener: () => undefined,
+        matches: query.includes('prefers-reduced-motion: reduce'),
+        media: query,
+        removeEventListener: () => undefined,
+        removeListener: () => undefined,
+    }));
+    const props = lightboxProps();
+    const { rerender } = render(
+        <Lightbox
+            {...props}
+            isOpen={false}
+        />
+    );
 
-        rerender(<Lightbox {...props} />);
-        await advance(FRAME);
+    rerender(<Lightbox {...props} />);
+    await advance(FRAME);
 
-        vi.unstubAllGlobals();
-        expect(containerAppearance().opacity).toBe(1);
-    },
-);
+    vi.unstubAllGlobals();
+    expect(containerAppearance().opacity).toBe(1);
+});
 
 describe('a gallery with one image', () => {
     const oneImage = (overrides = {}) => {
@@ -263,9 +260,7 @@ describe('a gallery with one image', () => {
         const renderNextButton = vi.fn(() => null);
         const renderPrevButton = vi.fn(() => null);
 
-        render(
-            <Lightbox {...oneImage({ renderNextButton, renderPrevButton })} />,
-        );
+        render(<Lightbox {...oneImage({ renderNextButton, renderPrevButton })} />);
 
         expect(renderNextButton).toHaveBeenLastCalledWith({ canNext: false });
         expect(renderPrevButton).toHaveBeenLastCalledWith({ canPrev: false });

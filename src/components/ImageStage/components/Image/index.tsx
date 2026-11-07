@@ -1,12 +1,10 @@
 import { animated, to, useSpring } from '@react-spring/web';
-import {
-    getTranslateOffsetsFromScale,
-    imageIsOutOfBounds,
-    useDoubleClick,
-} from '../../utils';
-import { useGesture } from 'react-use-gesture';
 import React, { useEffect, useRef, useState } from 'react';
+import { useGesture } from 'react-use-gesture';
+
 import type { ImagesListItem } from '../../../../types/ImagesList';
+
+import { getTranslateOffsetsFromScale, imageIsOutOfBounds, useDoubleClick } from '../../utils';
 
 const defaultImageTransform = {
     pinching: false,
@@ -175,24 +173,22 @@ const Image = ({
                  * if event is a touch event (React.TouchEvent<Element>, TouchEvent or WebKitGestureEvent) use touchOriginX/Y
                  * if event is a wheel event (React.WheelEvent<Element> or WheelEvent) use the mouse cursor's clientX/Y
                  */
-                let touchOrigin: [touchOriginX: number, touchOriginY: number] =
-                    [touchOriginX, touchOriginY];
+                let touchOrigin: [touchOriginX: number, touchOriginY: number] = [touchOriginX, touchOriginY];
                 if ('clientX' in event && 'clientY' in event && ctrlKey) {
                     touchOrigin = [event.clientX, event.clientY];
                 }
 
                 // Calculate the amount of x, y translate offset needed to
                 // zoom-in to point as image scale grows
-                const [newTranslateX, newTranslateY] =
-                    getTranslateOffsetsFromScale({
-                        currentTranslate: [translateX.get(), translateY.get()],
-                        imageRef,
-                        pinchDelta,
-                        scale: scale.get(),
-                        // Use the [x, y] coords of mouse if a trackpad or ctrl + wheel event
-                        // Otherwise use touch origin
-                        touchOrigin,
-                    });
+                const [newTranslateX, newTranslateY] = getTranslateOffsetsFromScale({
+                    currentTranslate: [translateX.get(), translateY.get()],
+                    imageRef,
+                    pinchDelta,
+                    scale: scale.get(),
+                    // Use the [x, y] coords of mouse if a trackpad or ctrl + wheel event
+                    // Otherwise use touch origin
+                    touchOrigin,
+                });
 
                 // Restrict the amount of zoom between half and 3x image size
                 if (pinchScale < 0.5) {
@@ -233,14 +229,12 @@ const Image = ({
             eventOptions: {
                 passive: false,
             },
-        },
+        }
     );
 
     // Handle click/tap on image
     useDoubleClick({
-        [singleClickToZoom ? 'onSingleClick' : 'onDoubleClick']: (
-            e: MouseEvent,
-        ) => {
+        [singleClickToZoom ? 'onSingleClick' : 'onDoubleClick']: (e: MouseEvent) => {
             if (pagerIsDragging || isPanningImage) {
                 e.stopPropagation();
                 return;
@@ -259,15 +253,13 @@ const Image = ({
 
             // Calculate the amount of x, y translate offset needed to
             // zoom-in to point as image scale grows
-            const [newTranslateX, newTranslateY] = getTranslateOffsetsFromScale(
-                {
-                    currentTranslate: [translateX.get(), translateY.get()],
-                    imageRef,
-                    pinchDelta,
-                    scale: scale.get(),
-                    touchOrigin: [touchOriginX, touchOriginY],
-                },
-            );
+            const [newTranslateX, newTranslateY] = getTranslateOffsetsFromScale({
+                currentTranslate: [translateX.get(), translateY.get()],
+                imageRef,
+                pinchDelta,
+                scale: scale.get(),
+                touchOrigin: [touchOriginX, touchOriginY],
+            });
 
             // Disable dragging in pager
             setDisableDrag(true);
@@ -303,10 +295,7 @@ const Image = ({
                 maxWidth: '100%',
                 touchAction: !inline ? 'none' : 'pan-y',
                 ...imgStyleProp,
-                transform: to(
-                    [scale, translateX, translateY],
-                    (s, x, y) => `translate(${x}px, ${y}px) scale(${s})`,
-                ),
+                transform: to([scale, translateX, translateY], (s, x, y) => `translate(${x}px, ${y}px) scale(${s})`),
                 userSelect: 'none',
                 width: 'auto',
                 ...(isCurrentImage && { willChange: 'transform' }),

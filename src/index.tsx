@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
-import { ImageStage, PageContainer, CreatePortal } from './components';
+
 import type { ImagesList } from './types/ImagesList';
+
+import { ImageStage, PageContainer, CreatePortal } from './components';
 
 export type ImagesListType = ImagesList;
 
@@ -77,14 +79,7 @@ const Lightbox = ({
          * when lightbox is open
          */
         const preventBackgroundScroll = (e: KeyboardEvent) => {
-            const keysToIgnore = [
-                'ArrowUp',
-                'ArrowDown',
-                'End',
-                'Home',
-                'PageUp',
-                'PageDown',
-            ];
+            const keysToIgnore = ['ArrowUp', 'ArrowDown', 'End', 'Home', 'PageUp', 'PageDown'];
 
             if (isOpen && keysToIgnore.includes(e.key)) e.preventDefault();
         };

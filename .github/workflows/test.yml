@@ -40,8 +40,8 @@ jobs:
                   node-version: 24
                   cache: npm
             - run: npm ci
-            - run: npm run lint:eslint
-            - run: npm run lint:prettier
+            - run: npm run lint:oxlint
+            - run: npm run lint:oxfmt
             # Vitest doesn't type-check, so tsc checks the tests along with the source
             - run: npm run lint:ts
 

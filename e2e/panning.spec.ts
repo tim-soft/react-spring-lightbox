@@ -1,15 +1,8 @@
 import type { Page } from '@playwright/test';
-import {
-    calls,
-    chromiumInput,
-    expect,
-    imageTransform,
-    openHarness,
-    pointIn,
-    settle,
-    test,
-} from './support';
+
 import type { Point } from './support';
+
+import { calls, chromiumInput, expect, imageTransform, openHarness, pointIn, settle, test } from './support';
 
 /** Moves the mouse from `from` by `delta` in four steps 100ms apart */
 const slowMouseDrag = async (page: Page, [x, y]: Point, [dx, dy]: Point) => {
@@ -31,9 +24,7 @@ const boxOf = async (page: Page) => {
 test.describe('with a mouse', () => {
     test.skip(({ isMobile }) => isMobile, 'Mouse input');
 
-    test('dragging a zoomed-in image pans it with the pointer, and the pan stays', async ({
-        page,
-    }) => {
+    test('dragging a zoomed-in image pans it with the pointer, and the pan stays', async ({ page }) => {
         await openHarness(page, 'index=2');
         const center = await pointIn(page.getByAltText('Image 3'));
         await page.mouse.dblclick(...center);
@@ -49,26 +40,18 @@ test.describe('with a mouse', () => {
         expect((await imageTransform(page, 'Image 3')).scale).toBeCloseTo(2, 2);
     });
 
-    test('dragging an image at full size up or down does not move it', async ({
-        page,
-    }) => {
+    test('dragging an image at full size up or down does not move it', async ({ page }) => {
         await openHarness(page, 'index=2');
         const before = await boxOf(page);
 
-        await slowMouseDrag(
-            page,
-            await pointIn(page.getByAltText('Image 3')),
-            [0, 150],
-        );
+        await slowMouseDrag(page, await pointIn(page.getByAltText('Image 3')), [0, 150]);
         await settle(page);
 
         expect(await boxOf(page)).toEqual(before);
         expect(await calls(page)).toEqual({ onClose: 0, onNext: 0, onPrev: 0 });
     });
 
-    test('panning a zoomed-in image out of view springs it back to full size', async ({
-        page,
-    }) => {
+    test('panning a zoomed-in image out of view springs it back to full size', async ({ page }) => {
         await openHarness(page, 'index=2');
         const center = await pointIn(page.getByAltText('Image 3'));
         await page.mouse.dblclick(...center);
@@ -84,12 +67,10 @@ test.describe('with a mouse', () => {
 test.describe('with a finger', () => {
     test.skip(
         ({ browserName, isMobile }) => !isMobile || browserName !== 'chromium',
-        'Touch input through the DevTools protocol',
+        'Touch input through the DevTools protocol'
     );
 
-    test('dragging a zoomed-in image pans it with the finger', async ({
-        page,
-    }) => {
+    test('dragging a zoomed-in image pans it with the finger', async ({ page }) => {
         await openHarness(page, 'index=2');
         const [x, y] = await pointIn(page.getByAltText('Image 3'));
         await page.touchscreen.tap(x, y);
@@ -106,7 +87,7 @@ test.describe('with a finger', () => {
                 [x + 40, y + 30],
                 [x + 60, y + 45],
             ],
-            100,
+            100
         );
         await settle(page);
         const after = await boxOf(page);

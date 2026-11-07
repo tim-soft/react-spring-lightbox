@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test';
+
 import { expect, openHarness, sampleFrames, settle, test } from './support';
 
 // What keyboard, screen reader and reduced-motion users need from a modal.
@@ -13,12 +14,7 @@ const openWithKeyboard = async (page: Page) => {
 };
 
 const focusIsInLightbox = (page: Page) =>
-    page.evaluate(
-        () =>
-            !!document.activeElement?.closest(
-                '[data-testid="lightbox-container"]',
-            ),
-    );
+    page.evaluate(() => !!document.activeElement?.closest('[data-testid="lightbox-container"]'));
 
 test.describe('with a keyboard', () => {
     test.skip(({ isMobile }) => isMobile, 'Keyboard input');
@@ -29,9 +25,7 @@ test.describe('with a keyboard', () => {
         await page.keyboard.press('Escape');
 
         await expect(page.getByTestId('lightbox-container')).toHaveCount(0);
-        await expect(
-            page.getByRole('button', { name: 'Open Image 3' }),
-        ).toBeFocused();
+        await expect(page.getByRole('button', { name: 'Open Image 3' })).toBeFocused();
     });
 
     test('focus moves into the lightbox when it opens', async ({ page }) => {
@@ -42,14 +36,8 @@ test.describe('with a keyboard', () => {
         expect(focusInside).toBe(true);
     });
 
-    test('Tab cycles through the lightbox, never reaching the page behind', async ({
-        browserName,
-        page,
-    }) => {
-        test.skip(
-            browserName === 'webkit',
-            'WebKit on macOS tabs only to text fields by default',
-        );
+    test('Tab cycles through the lightbox, never reaching the page behind', async ({ browserName, page }) => {
+        test.skip(browserName === 'webkit', 'WebKit on macOS tabs only to text fields by default');
         await openWithKeyboard(page);
         const stayedInside: boolean[] = [];
         for (let press = 0; press < 6; press += 1) {
@@ -70,18 +58,12 @@ test.describe('with a keyboard', () => {
     });
 });
 
-test('opens without animating when the user prefers reduced motion', async ({
-    page,
-}) => {
+test('opens without animating when the user prefers reduced motion', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await openHarness(page, 'closed');
 
     await page.getByRole('button', { name: 'Open Image 3' }).click();
-    const [firstFrame] = await sampleFrames(
-        page.getByTestId('lightbox-container'),
-        'opacity',
-        1,
-    );
+    const [firstFrame] = await sampleFrames(page.getByTestId('lightbox-container'), 'opacity', 1);
 
     test.fail(true, 'The springs ignore prefers-reduced-motion');
     expect(firstFrame).toBe(1);

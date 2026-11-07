@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
 import type { ComponentProps } from 'react';
+
 import { act, screen } from '@testing-library/react';
+import React, { useState } from 'react';
 import { vi } from 'vitest';
-import Lightbox from '../index';
+
 import type { ImagesListType } from '../index';
+
+import Lightbox from '../index';
 
 export type Point = [x: number, y: number];
 
@@ -46,10 +49,8 @@ export const Gallery = ({
     const [currentIndex, setCurrentIndex] = useState(initialIndex);
     const [isOpen, setIsOpen] = useState(true);
     const close = () => setIsOpen(false);
-    const gotoNext = () =>
-        currentIndex + 1 < images.length && setCurrentIndex(currentIndex + 1);
-    const gotoPrevious = () =>
-        currentIndex > 0 && setCurrentIndex(currentIndex - 1);
+    const gotoNext = () => currentIndex + 1 < images.length && setCurrentIndex(currentIndex + 1);
+    const gotoPrevious = () => currentIndex > 0 && setCurrentIndex(currentIndex - 1);
 
     return (
         <Lightbox
@@ -60,12 +61,19 @@ export const Gallery = ({
             onNext={gotoNext}
             onPrev={gotoPrevious}
             renderHeader={() => (
-                <button onClick={close} type="button">
+                <button
+                    onClick={close}
+                    type="button"
+                >
                     Close
                 </button>
             )}
             renderNextButton={({ canNext }) => (
-                <button disabled={!canNext} onClick={gotoNext} type="button">
+                <button
+                    disabled={!canNext}
+                    onClick={gotoNext}
+                    type="button"
+                >
                     Next
                 </button>
             )}
@@ -101,8 +109,7 @@ export const settle = () => advance(1000);
 export const image = (n: number) => screen.getByAltText(`Image ${n}`);
 
 /** The pager page (the backdrop around an image) holding image `n` */
-export const pageOf = (n: number) =>
-    image(n).closest('.lightbox-image-pager') as HTMLElement;
+export const pageOf = (n: number) => image(n).closest('.lightbox-image-pager') as HTMLElement;
 
 export const lightboxContainer = () => screen.getByTestId('lightbox-container');
 
@@ -110,30 +117,20 @@ const NUMBER = '(-?[\\d.]+(?:e[-+]?\\d+)?)';
 
 /** Pixel offset of an element's `translateX(...)` transform */
 export const translateX = (element: HTMLElement) =>
-    Number(
-        new RegExp(`translateX\\(${NUMBER}px\\)`).exec(
-            element.style.transform,
-        )?.[1],
-    );
+    Number(new RegExp(`translateX\\(${NUMBER}px\\)`).exec(element.style.transform)?.[1]);
 
 /** The alt text of the image the pager has centered */
 export const shownImage = () =>
     screen
         .queryAllByRole('img', { hidden: true })
-        .find(
-            (img) =>
-                translateX(
-                    img.closest('.lightbox-image-pager') as HTMLElement,
-                ) === 0,
-        )
+        .find((img) => translateX(img.closest('.lightbox-image-pager') as HTMLElement) === 0)
         ?.getAttribute('alt');
 
 /** Scale and translate offsets of an image's `translate(x, y) scale(s)` transform */
 export const imageTransform = (element: HTMLElement) => {
     const [, x = '0', y = '0', scale = '1'] =
-        new RegExp(
-            `translate\\(${NUMBER}px(?:, ${NUMBER}px)?\\) scale\\(${NUMBER}\\)`,
-        ).exec(element.style.transform) ?? [];
+        new RegExp(`translate\\(${NUMBER}px(?:, ${NUMBER}px)?\\) scale\\(${NUMBER}\\)`).exec(element.style.transform) ??
+        [];
 
     return { scale: Number(scale), x: Number(x), y: Number(y) };
 };
@@ -172,16 +169,9 @@ export const mockLayout = () => {
         stage: { height: 600, width: 800 },
     };
 
-    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(
-        () => layout.stage.width,
-    );
-    vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockImplementation(
-        () => layout.stage.height,
-    );
-    vi.spyOn(
-        HTMLImageElement.prototype,
-        'getBoundingClientRect',
-    ).mockImplementation(function (this: HTMLImageElement) {
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(() => layout.stage.width);
+    vi.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockImplementation(() => layout.stage.height);
+    vi.spyOn(HTMLImageElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLImageElement) {
         const { height, left, top, width } = layout.image;
         const { scale, x, y } = imageTransform(this);
 

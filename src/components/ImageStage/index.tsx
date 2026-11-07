@@ -1,8 +1,10 @@
-import ImagePager from './components/ImagePager';
 import React from 'react';
-import useRefSize from './utils/useRefSize';
+
 import type { ImagesList } from '../../types/ImagesList';
+
+import ImagePager from './components/ImagePager';
 import SSRImagePager from './components/SSRImagePager/SSRImagePager';
+import useRefSize from './utils/useRefSize';
 
 type IImageStageProps = {
     /** classnames are applied to the root ImageStage component */
@@ -52,8 +54,7 @@ const ImageStage = ({
     const onNextImage = canNext ? onNext : () => null;
     const onPrevImage = canPrev ? onPrev : () => null;
 
-    const [{ height: containerHeight, width: containerWidth }, containerRef] =
-        useRefSize();
+    const [{ height: containerHeight, width: containerWidth }, containerRef] = useRefSize();
 
     return (
         <div
@@ -84,7 +85,10 @@ const ImageStage = ({
                     singleClickToZoom={singleClickToZoom}
                 />
             ) : inline ? (
-                <SSRImagePager currentIndex={currentIndex} images={images} />
+                <SSRImagePager
+                    currentIndex={currentIndex}
+                    images={images}
+                />
             ) : null}
             {renderNextButton({ canNext })}
         </div>

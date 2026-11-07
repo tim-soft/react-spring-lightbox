@@ -34,14 +34,11 @@ export const addReleaseDates = (markdown, date) => {
 if (realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
     const changelog = new URL('../CHANGELOG.md', import.meta.url);
     const today = new Date().toISOString().slice(0, 10);
-    const { dated, markdown } = addReleaseDates(
-        readFileSync(changelog, 'utf8'),
-        today,
-    );
+    const { dated, markdown } = addReleaseDates(readFileSync(changelog, 'utf8'), today);
     writeFileSync(changelog, markdown);
     console.log(
         dated.length
             ? `add-release-dates: dated ${dated.join(', ')} ${today}`
-            : 'add-release-dates: every release already has a date',
+            : 'add-release-dates: every release already has a date'
     );
 }

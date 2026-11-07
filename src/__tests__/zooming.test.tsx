@@ -1,17 +1,11 @@
-import React from 'react';
 import { render } from '@testing-library/react';
+import React from 'react';
 import { beforeEach, describe, expect, test } from 'vitest';
+
+import type { Point } from './helpers';
+
 import Lightbox from '../index';
-import {
-    emulateDesktopSafari,
-    mouse,
-    pressKey,
-    safariPinch,
-    touch,
-    touchscreen,
-    trackpad,
-    wheel,
-} from './devices';
+import { emulateDesktopSafari, mouse, pressKey, safariPinch, touch, touchscreen, trackpad, wheel } from './devices';
 import {
     BACKDROP,
     CENTER,
@@ -26,7 +20,6 @@ import {
     settle,
     shownImage,
 } from './helpers';
-import type { Point } from './helpers';
 
 // (612, 434) sits (100, 50) from the image center, so keeping it in place
 // at 2x moves the image by (-100, -50)
@@ -69,7 +62,7 @@ describe('with a mouse', () => {
 
         expect(image(1).style.transform).toBe(
             // jsdom drops a 0px y from translate()
-            ZOOMED_AT_OFF_CENTER,
+            ZOOMED_AT_OFF_CENTER
         );
     });
 
@@ -128,7 +121,7 @@ describe('with a mouse', () => {
                 [600, 300],
                 [550, 300],
             ],
-            100,
+            100
         );
 
         await mouse.doubleClick(image(3), CENTER);
@@ -207,8 +200,7 @@ describe('with a touchscreen', () => {
 // them the way browsers do. These keep the fingers' events away from the pager
 // to cover the image's own handling. e2e/zooming.spec.ts pinches in Chromium.
 describe('pinch handling on the image', () => {
-    const fingersOn = (target: Element, points: Point[]) =>
-        touch(target, points, { pointerEvents: false });
+    const fingersOn = (target: Element, points: Point[]) => touch(target, points, { pointerEvents: false });
     const pinch = (target: Element, from: [Point, Point], to: [Point, Point]) =>
         touchscreen.pinch(target, from, to, { pointerEvents: false });
 
@@ -289,21 +281,18 @@ describe('pinch handling on the image', () => {
         expect(shownImage()).toBe('Image 4');
     });
 
-    test.fails(
-        'lifting the fingers keeps the zoom the pinch ended on (#17)',
-        async () => {
-            render(<Lightbox {...lightboxProps()} />);
-            const fingers = fingersOn(image(1), FINGERS_CLOSE);
-            await fingers.moveTo(FINGERS_APART);
-            await settle();
-            const pinched = imageTransform(image(1)).scale;
+    test.fails('lifting the fingers keeps the zoom the pinch ended on (#17)', async () => {
+        render(<Lightbox {...lightboxProps()} />);
+        const fingers = fingersOn(image(1), FINGERS_CLOSE);
+        await fingers.moveTo(FINGERS_APART);
+        await settle();
+        const pinched = imageTransform(image(1)).scale;
 
-            fingers.lift();
-            await settle();
+        fingers.lift();
+        await settle();
 
-            expect(imageTransform(image(1)).scale).toBe(pinched);
-        },
-    );
+        expect(imageTransform(image(1)).scale).toBe(pinched);
+    });
 });
 
 describe('with ctrl + wheel (a trackpad pinch in Chrome, Edge and Firefox)', () => {

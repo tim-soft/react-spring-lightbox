@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import Lightbox from '../../src/index';
+
 import type { ImagesListType } from '../../src/index';
+
+import Lightbox from '../../src/index';
 
 // Each test opens this page with query flags that pick a setup, such as
 // ?index=2&singleClickToZoom. The parent below owns currentIndex and
@@ -39,9 +41,7 @@ const arrowStyle = (side: 'left' | 'right'): React.CSSProperties =>
           };
 
 const App = () => {
-    const [currentIndex, setCurrentIndex] = useState(
-        Number(params.get('index') ?? 0),
-    );
+    const [currentIndex, setCurrentIndex] = useState(Number(params.get('index') ?? 0));
     const [isOpen, setIsOpen] = useState(!flag('closed'));
 
     const open = (index: number) => {
@@ -73,7 +73,10 @@ const App = () => {
             renderFooter={() => (
                 <footer style={{ color: 'white', padding: 8 }}>
                     {flag('footerInput') ? (
-                        <input aria-label="Caption" defaultValue="A caption" />
+                        <input
+                            aria-label="Caption"
+                            defaultValue="A caption"
+                        />
                     ) : (
                         `Caption for image ${currentIndex + 1}`
                     )}
@@ -84,7 +87,10 @@ const App = () => {
                     <span style={{ flex: 1 }}>
                         {currentIndex + 1} / {images.length}
                     </span>
-                    <button onClick={close} type="button">
+                    <button
+                        onClick={close}
+                        type="button"
+                    >
                         Close
                     </button>
                 </header>
@@ -131,7 +137,10 @@ const App = () => {
         return (
             <main>
                 <p style={{ height: 600, margin: 0 }}>Above the carousel</p>
-                <div data-testid="carousel" style={{ height: 400 }}>
+                <div
+                    data-testid="carousel"
+                    style={{ height: 400 }}
+                >
                     {lightbox}
                 </div>
                 <p style={{ height: 1200, margin: 0 }}>Below the carousel</p>
@@ -143,24 +152,23 @@ const App = () => {
         <main>
             <h1>Gallery</h1>
             {images.map(({ alt }, index) => (
-                <button key={alt} onClick={() => open(index)} type="button">
+                <button
+                    key={alt}
+                    onClick={() => open(index)}
+                    type="button"
+                >
                     Open {alt}
                 </button>
             ))}
             <p style={{ height: 2000 }}>A long page behind the lightbox</p>
-            <button onClick={() => open(0)} type="button">
+            <button
+                onClick={() => open(0)}
+                type="button"
+            >
                 View the first image from the bottom of the page
             </button>
             {/* A transform traps position: fixed elements inside it */}
-            <div
-                style={
-                    flag('insideTransform')
-                        ? { transform: 'translateZ(0)' }
-                        : undefined
-                }
-            >
-                {lightbox}
-            </div>
+            <div style={flag('insideTransform') ? { transform: 'translateZ(0)' } : undefined}>{lightbox}</div>
         </main>
     );
 };
