@@ -1,3 +1,5 @@
+import type React from 'react';
+
 /**
  * Determines if the provided image is within the viewport
  *

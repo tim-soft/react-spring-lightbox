@@ -1,3 +1,5 @@
+import type React from 'react';
+
 type IGetTranslateOffsetsFromScale = {
     /** The current [x,y] translate values of image */
     currentTranslate: [translateX: number, translateY: number];

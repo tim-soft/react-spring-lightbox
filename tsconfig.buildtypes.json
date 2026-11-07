@@ -1,5 +1,8 @@
 {
     "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "declaration": true
+    },
     "include": ["src/index.tsx"],
     "exclude": ["node_modules", "dist", "example", "src/__tests__"]
 }

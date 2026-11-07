@@ -13,8 +13,8 @@ type ICreatePortal = {
  * @see https://reactjs.org/docs/portals.html
  */
 class CreatePortal extends React.Component<ICreatePortal> {
-    portalContainer: HTMLDivElement;
-    body: HTMLElement;
+    portalContainer!: HTMLDivElement;
+    body!: HTMLElement;
 
     // Only executes on the client-side
     componentDidMount() {
