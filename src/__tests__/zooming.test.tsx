@@ -293,6 +293,18 @@ describe('pinch handling on the image', () => {
 
         expect(imageTransform(image(1)).scale).toBe(pinched);
     });
+
+    test('keeps the zoom when the fingers lift before it starts to animate', async () => {
+        render(<Lightbox {...lightboxProps()} />);
+        const fingers = fingersOn(image(1), FINGERS_CLOSE);
+        await fingers.moveTo(FINGERS_APART);
+
+        fingers.lift();
+        await settle();
+
+        // The fingers spread from 100px to 200px apart, and each pixel zooms 1/250
+        expect(imageTransform(image(1)).scale).toBeCloseTo(1.4);
+    });
 });
 
 describe('with ctrl + wheel (a trackpad pinch in Chrome, Edge and Firefox)', () => {

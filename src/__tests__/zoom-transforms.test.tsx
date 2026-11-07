@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, test } from 'vitest';
 import type { Point } from './helpers';
 
 import Lightbox from '../index';
-import { emulateDesktopSafari, mouse, pressMouse, safariGesture, touch, trackpad } from './devices';
+import { emulateDesktopSafari, mouse, pressMouse, safariGesture, touch, trackpad, wheel } from './devices';
 import { CENTER, FRAME, advance, image, imageTransform, lightboxProps, mockLayout, settle } from './helpers';
 
 // These tests pin, step by step, how each gesture changes the image's scale
@@ -115,6 +115,19 @@ describe('ctrl + wheel', () => {
             expected = pinchStep(expected, wheelAmount(deltaY), at);
             expectTransform(expected);
         }
+    });
+
+    // Firefox reports a mouse wheel in lines
+    test.each([
+        { deltaMode: 1, deltaY: -3, pixels: 40, unit: 'line' },
+        { deltaMode: 2, deltaY: -0.1, pixels: 800, unit: 'page' },
+    ])('counts a $unit of deltaY as $pixels pixels', async ({ deltaMode, deltaY, pixels }) => {
+        render(<Lightbox {...lightboxProps()} />);
+
+        wheel(image(1), { at: OFF_CENTER, ctrlKey: true, deltaMode, deltaY });
+        await settle();
+
+        expectTransform(pinchStep(AT_REST, wheelAmount(deltaY * pixels), OFF_CENTER));
     });
 
     test('stops at 3x without moving the image, then springs back to rest below 1x', async () => {

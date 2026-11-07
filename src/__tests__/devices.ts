@@ -72,16 +72,17 @@ export const mouse = {
     },
 };
 
-/** Fires one wheel event, as a mouse wheel or trackpad does */
+/** Fires one wheel event, as a mouse wheel or trackpad does. A deltaMode of 1 counts lines, and 2 pages. */
 export const wheel = (
     target: Element,
     {
         at: [clientX, clientY] = [512, 384],
         ctrlKey = false,
+        deltaMode = 0,
         deltaX = 0,
         deltaY = 0,
-    }: { at?: Point; ctrlKey?: boolean; deltaX?: number; deltaY?: number }
-) => fireEvent.wheel(target, { clientX, clientY, ctrlKey, deltaX, deltaY });
+    }: { at?: Point; ctrlKey?: boolean; deltaMode?: number; deltaX?: number; deltaY?: number }
+) => fireEvent.wheel(target, { clientX, clientY, ctrlKey, deltaMode, deltaX, deltaY });
 
 export const trackpad = {
     /** A pinch in Chrome, Edge and Firefox, which send it as ctrl + wheel. Negative deltaY zooms in. */
