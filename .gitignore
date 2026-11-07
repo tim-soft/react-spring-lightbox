@@ -13,6 +13,7 @@ build
 dist
 .next
 next-env.d.ts
+*.tsbuildinfo
 
 # misc
 .DS_Store
