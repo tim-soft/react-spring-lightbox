@@ -154,11 +154,9 @@ const ImagePager = ({
                 return;
             },
             onDragEnd: () => {
-                if (isDragging) {
-                    springsApi.start((i) => getPagePositions(i));
-                    // Add small timeout buffer to prevent event handlers from firing in child Images
-                    setTimeout(() => setIsDragging(false), 100);
-                }
+                springsApi.start((i) => getPagePositions(i));
+                // Add small timeout buffer to prevent event handlers from firing in child Images
+                setTimeout(() => setIsDragging(false), 100);
             },
             onWheel: ({ ctrlKey, direction: [xDir, yDir], velocity }) => {
                 // Disable drag if Image has been zoomed in to allow for panning

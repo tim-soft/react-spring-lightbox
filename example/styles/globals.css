@@ -1,0 +1,24 @@
+@import 'tailwindcss';
+
+@theme {
+    --color-accent: #1f1f1f;
+    --color-content: #e2e5ec;
+    --color-highlight: aquamarine;
+    --color-highlight-dark: #00a46d;
+    --color-nav: #e2e5ec;
+    --color-page: #101010;
+}
+
+@layer base {
+    /* normalize.css's line height, which the layout was built on */
+    html {
+        line-height: 1.15;
+    }
+
+    body {
+        background: #1d1e1f;
+        font-family: 'Montserrat', sans-serif;
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-font-smoothing: antialiased;
+    }
+}

@@ -7,7 +7,7 @@ type RefSize = {
 
 type Node = HTMLDivElement | null;
 
-type IUseRefSize = [refSize: RefSize, elementRef: (node: any) => void | null];
+type IUseRefSize = [refSize: RefSize, elementRef: (node: Node) => void];
 
 /**
  * React Hook that returns the current ref size

@@ -4,7 +4,8 @@
 [![NPM](https://img.shields.io/npm/l/react-spring-lightbox.svg?color=brightgreen&style=popout-square)](https://github.com/tim-soft/react-spring-lightbox/blob/master/LICENSE)
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/react-spring-lightbox.svg?style=popout-square)
 ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=popout-square)
-[![Travis (.org)](https://img.shields.io/travis/tim-soft/react-spring-lightbox?style=flat-square)](https://travis-ci.org/tim-soft/react-spring-lightbox)
+[![Tests](https://img.shields.io/github/actions/workflow/status/tim-soft/react-spring-lightbox/test.yml?branch=master&style=flat-square&label=tests)](https://github.com/tim-soft/react-spring-lightbox/actions/workflows/test.yml)
+[![Coverage](https://img.shields.io/codecov/c/github/tim-soft/react-spring-lightbox/master?flag=unit&style=flat-square&label=coverage)](https://codecov.io/gh/tim-soft/react-spring-lightbox)
 
 React-spring-lightbox is a flexible image gallery lightbox with native-feeling touch gestures and buttery smooth animations.
 
@@ -144,28 +145,43 @@ git clone https://github.com/tim-soft/react-spring-lightbox.git react-spring-lig
 cd react-spring-lightbox
 ```
 
-Setup symlinks
+Install the library's dependencies
 
 ```bash
-yarn link
-cd example
-yarn link react-spring-lightbox
+npm install
 ```
 
-Run the library in development mode
+Run the library in development mode, which rebuilds it on every change
 
 ```bash
-yarn start
+npm start
 ```
 
-Run the example app in development mode
+In another terminal, install and run the example app. Its `file:` dependencies are symlinks to the library and to the library's own React, so both use one copy of React.
 
 ```bash
 cd example
-yarn dev
+npm install
+npm run dev
 ```
 
 Changes to the library code should hot reload in the demo app
+
+## Releasing
+
+Every pull request needs a changeset, a short note in `.changeset/` that says what changed for people who use the library and whether that's a patch, minor or major change. The `changeset` check fails without one.
+
+```bash
+npm run ch
+```
+
+For a change that doesn't need a release, such as one to tests or CI, add an empty changeset instead.
+
+```bash
+npx changeset add --empty
+```
+
+Once changesets reach master, a Version Packages pull request collects them. It bumps the version and adds a dated entry to [CHANGELOG.md](./CHANGELOG.md). Merging it publishes the new version to npm, tags it, and creates its GitHub release.
 
 ## License
 

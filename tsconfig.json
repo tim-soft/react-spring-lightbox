@@ -19,9 +19,9 @@
         "rootDir": "src",
         "target": "ES5",
         "isolatedModules": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "typeRoots": ["./node_modules/@types"]
     },
     "include": ["src"],
-    "exclude": ["node_modules", "dist", "example", "src/__tests__"],
-    "types": ["node", "jest", "@testing-library/jest-dom"]
+    "exclude": ["node_modules", "dist", "example"]
 }

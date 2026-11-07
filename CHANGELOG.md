@@ -1,11 +1,5 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
-
-## Upcoming
-
--   Add `swipe up` to close lightbox
-
 ## [1.9.0] - 2026-07-29
 
 -   Drop `styled-components` dependency

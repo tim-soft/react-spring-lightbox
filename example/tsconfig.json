@@ -4,14 +4,15 @@
         "esModuleInterop": true,
         "incremental": true,
         "isolatedModules": true,
-        "jsx": "preserve",
+        "jsx": "react-jsx",
         "lib": ["dom", "dom.iterable", "esnext"],
         "module": "esnext",
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "noEmit": true,
         "resolveJsonModule": true,
         "skipLibCheck": true,
-        "strict": false
+        "strict": false,
+        "target": "ES2017"
     },
     "exclude": ["node_modules"],
     "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]

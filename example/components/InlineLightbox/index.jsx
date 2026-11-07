@@ -1,6 +1,5 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import Lightbox from 'react-spring-lightbox';
 import LightboxArrowButton from '../GalleryLightbox/components/LightboxArrowButton';
 
@@ -32,7 +31,10 @@ const InlineLightbox = ({ images }) => {
     };
 
     return (
-        <Container ref={inlineCarouselElement}>
+        <div
+            className="inline-flex h-[384px] w-full flex-col overflow-hidden"
+            ref={inlineCarouselElement}
+        >
             <Lightbox
                 currentIndex={currentImageIndex}
                 images={images}
@@ -41,14 +43,16 @@ const InlineLightbox = ({ images }) => {
                 onNext={gotoNext}
                 onPrev={gotoPrevious}
                 renderNextButton={({ canNext }) => (
-                    <StyledLightboxArrowButton
+                    <LightboxArrowButton
+                        className="z-10 [&_button]:text-[25px]"
                         disabled={!canNext}
                         onClick={gotoNext}
                         position="right"
                     />
                 )}
                 renderPrevButton={({ canPrev }) => (
-                    <StyledLightboxArrowButton
+                    <LightboxArrowButton
+                        className="z-10 [&_button]:text-[25px]"
                         disabled={!canPrev}
                         onClick={gotoPrevious}
                         position="left"
@@ -56,7 +60,7 @@ const InlineLightbox = ({ images }) => {
                 )}
                 singleClickToZoom
             />
-        </Container>
+        </div>
     );
 };
 
@@ -73,18 +77,3 @@ InlineLightbox.propTypes = {
         }),
     ).isRequired,
 };
-
-const Container = styled.div`
-    display: inline-flex;
-    flex-direction: column;
-    width: 100%;
-    height: 384px;
-    overflow: hidden;
-`;
-
-const StyledLightboxArrowButton = styled(LightboxArrowButton)`
-    z-index: 10;
-    button {
-        font-size: 25px;
-    }
-`;

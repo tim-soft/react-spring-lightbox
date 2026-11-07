@@ -10,7 +10,7 @@ type IUseDoubleClickProps = {
     /** A callback function for single click events */
     onSingleClick?: (event: MouseEvent) => void;
     /** Dom node to watch for double clicks */
-    ref: React.RefObject<HTMLElement>;
+    ref: React.RefObject<HTMLElement | null>;
 };
 
 /**

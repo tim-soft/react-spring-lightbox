@@ -5,20 +5,23 @@
     "license": "MIT",
     "private": true,
     "dependencies": {
-        "@react-spring/web": "link:../node_modules/@react-spring/web",
-        "color": "^4.2.3",
+        "@react-spring/web": "file:../node_modules/@react-spring/web",
         "lodash.clamp": "^4.0.3",
         "lodash.merge": "^4.6.2",
-        "next": "13.5.4",
+        "next": "16.4.5",
         "prop-types": "^15.6.2",
-        "react": "link:../node_modules/react",
-        "react-dom": "link:../node_modules/react-dom",
+        "react": "file:../node_modules/react",
+        "react-dom": "file:../node_modules/react-dom",
         "react-icons": "^4.2.0",
-        "react-is": "link:../node_modules/react-is",
+        "react-is": "file:../node_modules/react-is",
         "react-photo-gallery": "^8.0.0",
-        "react-spring-lightbox": "link:..",
-        "styled-components": "link:../node_modules/styled-components",
-        "styled-normalize": "^8.0.7"
+        "react-spring-lightbox": "file:.."
+    },
+    "overrides": {
+        "react-photo-gallery": {
+            "react": "$react",
+            "react-dom": "$react-dom"
+        }
     },
     "scripts": {
         "dev": "next",
@@ -30,5 +33,13 @@
         "not dead",
         "not ie <= 11",
         "not op_mini all"
-    ]
+    ],
+    "allowScripts": {
+        "file:../..": false
+    },
+    "devDependencies": {
+        "@tailwindcss/postcss": "^4.3.5",
+        "postcss": "^8.5.32",
+        "tailwindcss": "^4.3.5"
+    }
 }

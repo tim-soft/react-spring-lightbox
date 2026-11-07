@@ -8,6 +8,11 @@ example/node_modules/**
 /build
 /dist
 /coverage
+/playwright-report
+/test-results
+/blob-report
+/e2e/harness/images
+/e2e/harness/index.html
 
 # misc
 .DS_Store
@@ -15,7 +20,7 @@ example/node_modules/**
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-yarn.lock*
+package-lock.json*
 package.json*
 CHANGELOG.md*
 README.md*
@@ -25,4 +30,5 @@ example/.env
 example/npm-debug.log*
 example/yarn-debug.log*
 example/yarn-error.log*
-example/yarn.lock*
+example/next-env.d.ts
+*.css

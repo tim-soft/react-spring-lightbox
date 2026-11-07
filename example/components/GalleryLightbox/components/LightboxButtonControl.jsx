@@ -1,20 +1,20 @@
-import styled from 'styled-components';
+import * as React from 'react';
+import PropTypes from 'prop-types';
 
-export default styled.button`
-    z-index: 10;
-    background: none;
-    border-style: none;
-    font-size: 50px;
-    cursor: pointer;
-    padding: 0;
-    margin: 0;
-    color: ${({ theme }) => theme.pageContentFontColor};
-    transition: color 0.2s linear;
-    :hover {
-        color: ${({ theme }) => theme.pageContentLinkHoverColor};
-    }
-    :focus {
-        outline: none;
-        color: ${({ theme }) => theme.pageContentLinkHoverColor};
-    }
-`;
+/**
+ * A borderless icon button that turns aquamarine on hover and focus. Callers
+ * set its color, since two color classes on one element would conflict.
+ */
+const LightboxButtonControl = ({ className = '', ...props }) => (
+    <button
+        className={`z-10 m-0 cursor-pointer bg-transparent p-0 text-[50px] transition-[color] duration-200 ease-linear hover:text-highlight focus:text-highlight focus:outline-none ${className}`}
+        type="button"
+        {...props}
+    />
+);
+
+LightboxButtonControl.propTypes = {
+    className: PropTypes.string,
+};
+
+export default LightboxButtonControl;

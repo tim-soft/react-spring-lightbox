@@ -1,13 +1,14 @@
 import { FiHeart, FiPrinter, FiShare } from 'react-icons/fi';
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import Color from 'color';
 import Gallery from 'react-photo-gallery';
 import Lightbox from 'react-spring-lightbox';
 import GridImage from './components/GridImage';
 import LightboxHeader from './components/LightboxHeader';
 import LightboxArrowButton from './components/LightboxArrowButton';
+
+const overlayIcon =
+    'm-2.5 box-content inline border align-baseline border-white fill-highlight p-[5px] hover:cursor-pointer hover:border-highlight hover:fill-highlight-dark';
 
 class BlogImageGallery extends React.Component {
     static propTypes = {
@@ -106,7 +107,7 @@ class BlogImageGallery extends React.Component {
         });
 
         return (
-            <GalleryContainer>
+            <div className="max-h-[calc(100%-4em)] overflow-y-auto p-[2em]">
                 {clientSide && (
                     <Gallery
                         columns={this.columnConfig}
@@ -117,7 +118,8 @@ class BlogImageGallery extends React.Component {
                         renderImage={GridImage}
                     />
                 )}
-                <StyledLightbox
+                <Lightbox
+                    className="bg-accent/95 selection:bg-highlight"
                     currentIndex={currentImageIndex}
                     galleryTitle={galleryTitle}
                     images={listboxImages}
@@ -134,12 +136,14 @@ class BlogImageGallery extends React.Component {
                         />
                     )}
                     renderImageOverlay={() => (
-                        <ImageOverlay>
-                            <p>Create your own UI</p>
-                            <FiPrinter size="3em" />
-                            <FiShare size="3em" />
-                            <FiHeart size="3em" />
-                        </ImageOverlay>
+                        <div className="absolute top-0 right-0 border border-highlight bg-[rgba(39,39,39,0.5)]">
+                            <p className="my-[0.5em] text-center text-[1.2em] font-bold text-highlight">
+                                Create your own UI
+                            </p>
+                            <FiPrinter className={overlayIcon} size="3em" />
+                            <FiShare className={overlayIcon} size="3em" />
+                            <FiHeart className={overlayIcon} size="3em" />
+                        </div>
                     )}
                     renderNextButton={({ canNext }) => (
                         <LightboxArrowButton
@@ -157,54 +161,9 @@ class BlogImageGallery extends React.Component {
                     )}
                     singleClickToZoom
                 />
-            </GalleryContainer>
+            </div>
         );
     }
 }
 
 export default BlogImageGallery;
-
-const GalleryContainer = styled.div`
-    overflow-y: auto;
-    max-height: calc(100% - 4em);
-    padding: 2em;
-`;
-
-const StyledLightbox = styled(Lightbox)`
-    background: ${({ theme }) =>
-        Color(theme.accentColor).alpha(0.95).hsl().string()};
-    * ::selection {
-        background: ${({ theme }) => theme.pageContentSelectionColor};
-    }
-    * ::-moz-selection {
-        background: ${({ theme }) =>
-            new Color(theme.pageContentSelectionColor).darken(0.57).hex()};
-    }
-`;
-
-const ImageOverlay = styled.div`
-    position: absolute;
-    top: 0%;
-    right: 0%;
-    border: ${({ theme }) => theme.pageContentSelectionColor} 1px solid;
-    background: rgba(39, 39, 39, 0.5);
-    p {
-        color: ${({ theme }) => theme.pageContentSelectionColor};
-        text-align: center;
-        font-weight: bold;
-        font-size: 1.2em;
-        margin: 0.5em 0;
-    }
-    svg {
-        border: white 1px solid;
-        fill: ${({ theme }) => theme.pageContentSelectionColor};
-        margin: 10px;
-        padding: 5px;
-        :hover {
-            border: ${({ theme }) => theme.pageContentSelectionColor} 1px solid;
-            fill: ${({ theme }) =>
-                new Color(theme.pageContentSelectionColor).darken(0.57).hex()};
-            cursor: pointer;
-        }
-    }
-`;

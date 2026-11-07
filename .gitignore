@@ -6,10 +6,14 @@ node_modules
 
 # builds
 coverage
+playwright-report
+test-results
+blob-report
 build
 dist
 .rpt2_cache
 .next
+next-env.d.ts
 
 # misc
 .DS_Store

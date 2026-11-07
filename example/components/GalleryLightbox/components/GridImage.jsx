@@ -1,26 +1,41 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 
 /**
  * A single image element in a masonry style image grid
  */
 const GridImage = ({ index, key, left, onClick, photo, top }) => {
     const { alt, caption, height, src, width } = photo;
+    const open = (event) => onClick(event, { index });
     return (
-        <ImageContainer
-            index={index}
+        <div
+            className="absolute box-content block cursor-pointer border-2 border-transparent outline-none hover:border-highlight focus-visible:border-highlight"
             key={`${key}-${index}`}
-            onClick={(e) => onClick(e, { index })}
+            onClick={open}
+            onKeyDown={(event) => {
+                // Enter and Space press a button, and Space would otherwise scroll the page
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    open(event);
+                }
+            }}
+            role="button"
             style={{ height, left, top, width }}
+            tabIndex={0}
         >
-            <OverlayContainer>
-                <Image alt={alt} caption={caption} src={src} />
-                <Caption>
-                    <h4>{caption}</h4>
-                </Caption>
-            </OverlayContainer>
-        </ImageContainer>
+            <div className="relative h-full overflow-hidden">
+                <img
+                    alt={alt}
+                    className="absolute h-[inherit] w-[inherit]"
+                    src={src}
+                />
+                <div className="absolute bottom-0 w-full bg-accent text-highlight">
+                    <h4 className="my-[1em] text-center font-bold">
+                        {caption}
+                    </h4>
+                </div>
+            </div>
+        </div>
     );
 };
 
@@ -41,39 +56,3 @@ GridImage.propTypes = {
 };
 
 export default GridImage;
-
-const Caption = styled.div`
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    background-color: ${({ theme }) => theme.accentColor};
-    color: ${({ theme }) => theme.pageContentLinkHoverColor};
-    h4 {
-        text-align: center;
-        margin: 1em 0;
-    }
-`;
-
-const OverlayContainer = styled.div`
-    position: relative;
-    height: 100%;
-    overflow: hidden;
-`;
-
-const ImageContainer = styled.div`
-    display: block;
-    position: absolute;
-    cursor: pointer;
-    border-width: 2px;
-    border-color: transparent;
-    border-style: solid;
-    :hover {
-        border-color: ${({ theme }) => theme.pageContentLinkHoverColor};
-    }
-`;
-
-const Image = styled.img`
-    width: inherit;
-    height: inherit;
-    position: absolute;
-`;
