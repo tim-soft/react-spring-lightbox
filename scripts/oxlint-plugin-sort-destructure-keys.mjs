@@ -140,6 +140,10 @@ const sortedDestructuringKeysRule = {
                         const closeStart = close.range[0];
                         const closingLineStart = sourceCode.text.lastIndexOf('\n', closeStart - 1) + 1;
                         const closingIndent = sourceCode.text.slice(closingLineStart, closeStart);
+                        // Code that shares a line with a brace would be copied into every rebuilt line
+                        if (propIndent.trim() !== '' || closingIndent.trim() !== '') {
+                            return null;
+                        }
 
                         const lines = sortedEntries.map(
                             ({ prop }) => `${propIndent}${sourceCode.getText(prop).trim()}`
