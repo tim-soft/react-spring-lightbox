@@ -13,7 +13,6 @@
         "react": "file:../node_modules/react",
         "react-dom": "file:../node_modules/react-dom",
         "react-icons": "^5.7.0",
-        "react-is": "file:../node_modules/react-is",
         "react-photo-gallery": "^8.0.0",
         "react-spring-lightbox": "file:.."
     },
