@@ -52,16 +52,16 @@ export const pressMouse = (target: Element, start: Point) =>
     pressPointer(target, start, { id: 1, pointerType: 'mouse' });
 
 export const mouse = {
-    click(target: Element, point: Point) {
+    click: (target: Element, point: Point) => {
         pressMouse(target, point).release();
     },
-    async doubleClick(target: Element, point: Point) {
+    doubleClick: async (target: Element, point: Point) => {
         mouse.click(target, point);
         await advance(100);
         mouse.click(target, point);
     },
     /** Presses at the first point, moves through the rest `msPerMove` apart, then releases */
-    async drag(target: Element, [start, ...moves]: Point[], msPerMove = FRAME) {
+    drag: async (target: Element, [start, ...moves]: Point[], msPerMove = FRAME) => {
         const button = pressMouse(target, start);
         for (const point of moves) {
             await button.moveTo(point, msPerMove);
@@ -83,14 +83,14 @@ export const wheel = (
 
 export const trackpad = {
     /** A pinch in Chrome, Edge and Firefox, which send it as ctrl + wheel. Negative deltaY zooms in. */
-    async pinch(target: Element, { at, deltaY, ticks = 1 }: { at?: Point; deltaY: number; ticks?: number }) {
+    pinch: async (target: Element, { at, deltaY, ticks = 1 }: { at?: Point; deltaY: number; ticks?: number }) => {
         for (let tick = 0; tick < ticks; tick += 1) {
             wheel(target, { at, ctrlKey: true, deltaY: deltaY / ticks });
             await advance(FRAME);
         }
     },
     /** A two-finger scroll: one wheel event per frame */
-    async scroll(target: Element, { deltaX = 0, deltaY = 0, ticks = 5 }: Record<string, number>) {
+    scroll: async (target: Element, { deltaX = 0, deltaY = 0, ticks = 5 }: Record<string, number>) => {
         for (let tick = 0; tick < ticks; tick += 1) {
             wheel(target, { deltaX: deltaX / ticks, deltaY: deltaY / ticks });
             await advance(FRAME);
@@ -171,13 +171,18 @@ export const touch = (target: Element, points: Point[], { pointerEvents = true }
 };
 
 export const touchscreen = {
-    async doubleTap(target: Element, point: Point) {
+    doubleTap: async (target: Element, point: Point) => {
         touchscreen.tap(target, point);
         await advance(100);
         touchscreen.tap(target, point);
     },
     /** Two fingers moving from `from` to `to` over `steps` frames, then lifting */
-    async pinch(target: Element, from: [Point, Point], to: [Point, Point], { pointerEvents = true, steps = 3 } = {}) {
+    pinch: async (
+        target: Element,
+        from: [Point, Point],
+        to: [Point, Point],
+        { pointerEvents = true, steps = 3 } = {}
+    ) => {
         const fingers = touch(target, from, { pointerEvents });
         for (let step = 1; step <= steps; step += 1) {
             const between = (a: Point, b: Point): Point => [
@@ -189,14 +194,14 @@ export const touchscreen = {
         fingers.lift();
     },
     /** One finger from the first point through the rest, `msPerMove` apart */
-    async swipe(target: Element, [start, ...moves]: Point[], msPerMove = FRAME) {
+    swipe: async (target: Element, [start, ...moves]: Point[], msPerMove = FRAME) => {
         const finger = touch(target, [start]);
         for (const point of moves) {
             await finger.moveTo([point], msPerMove);
         }
         finger.lift();
     },
-    tap(target: Element, point: Point) {
+    tap: (target: Element, point: Point) => {
         touch(target, [point]).lift();
     },
 };

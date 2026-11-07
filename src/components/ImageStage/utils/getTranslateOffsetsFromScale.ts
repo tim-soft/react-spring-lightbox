@@ -28,7 +28,7 @@ const getTranslateOffsetsFromScale = ({
     scale,
     touchOrigin: [touchOriginX, touchOriginY],
 }: IGetTranslateOffsetsFromScale): ITranslateOffsetsReturnType => {
-    if (!imageRef?.current) {
+    if (!imageRef.current) {
         return [0, 0];
     }
 

@@ -11,7 +11,7 @@ function getSortKey(prop) {
     if (prop.type === 'RestElement') {
         return null;
     }
-    if (prop.type !== 'Property' || prop.method || prop.kind !== 'init') {
+    if (prop.method || prop.kind !== 'init') {
         return null;
     }
     if (prop.computed) {

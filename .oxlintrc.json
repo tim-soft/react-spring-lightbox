@@ -2,6 +2,9 @@
     "$schema": "./node_modules/oxlint/configuration_schema.json",
     "plugins": ["eslint", "oxc", "unicorn", "typescript", "import", "react", "vitest", "jsx-a11y"],
     "jsPlugins": ["./scripts/oxlint-plugin-sort-destructure-keys.mjs"],
+    "options": {
+        "typeAware": true
+    },
     "env": {
         "builtin": true,
         "browser": true,
@@ -195,6 +198,21 @@
                 "ignoreCase": true
             }
         ],
+        "typescript/no-floating-promises": [
+            "error",
+            {
+                "allowForKnownSafeCalls": [
+                    {
+                        "from": "package",
+                        "name": "start",
+                        "package": "@react-spring/core"
+                    }
+                ]
+            }
+        ],
+        "typescript/no-unnecessary-condition": "error",
+        "typescript/prefer-optional-chain": "error",
+        "typescript/switch-exhaustiveness-check": "error",
         "unicode-bom": ["error", "never"],
         "vitest/expect-expect": [
             "error",

@@ -13,8 +13,8 @@ type ICreatePortal = {
  * @see https://reactjs.org/docs/portals.html
  */
 class CreatePortal extends React.Component<ICreatePortal> {
-    portalContainer!: HTMLDivElement;
-    body!: HTMLElement;
+    portalContainer: HTMLDivElement | undefined;
+    body: HTMLElement | undefined;
 
     // Only executes on the client-side
     componentDidMount() {
@@ -37,12 +37,13 @@ class CreatePortal extends React.Component<ICreatePortal> {
         this.portalContainer.addEventListener('wheel', this.preventWheel);
     }
 
+    // React unmounts only what it mounted, so componentDidMount has set both fields
     componentWillUnmount() {
         // Remove wheel event listener
-        this.portalContainer.removeEventListener('wheel', this.preventWheel);
+        this.portalContainer!.removeEventListener('wheel', this.preventWheel);
 
         // Cleanup Portal from DOM
-        this.body.removeChild(this.portalContainer);
+        this.body!.removeChild(this.portalContainer!);
     }
 
     preventWheel = (e: WheelEvent) => e.preventDefault();

@@ -27,7 +27,7 @@ const useDoubleClick = ({
     useEffect(() => {
         const clickRef = ref.current;
         let clickCount = 0;
-        let timer: ReturnType<typeof setTimeout>;
+        let timer: ReturnType<typeof setTimeout> | undefined;
 
         const handleClick = (e: MouseEvent) => {
             if (enabled) {

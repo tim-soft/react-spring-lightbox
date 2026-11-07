@@ -57,6 +57,7 @@ type ILightboxProps = {
 const Lightbox = ({
     className = '',
     currentIndex,
+    // oxlint-disable-next-line typescript/no-useless-default-assignment -- JavaScript callers can leave out images
     images = [],
     inline = false,
     isOpen,
@@ -99,7 +100,7 @@ const Lightbox = ({
                         onNext();
                         break;
                     case 'Escape':
-                        onClose && onClose();
+                        onClose?.();
                         break;
                     default:
                         e.preventDefault();
