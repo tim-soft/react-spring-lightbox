@@ -2,7 +2,7 @@ type IGetTranslateOffsetsFromScale = {
     /** The current [x,y] translate values of image */
     currentTranslate: [translateX: number, translateY: number];
     /** The image dom node used as a reference to calculate translate offsets */
-    imageRef: React.RefObject<HTMLImageElement>;
+    imageRef: React.RefObject<HTMLImageElement | null>;
     /** The amount of change in the new transform scale */
     pinchDelta: number;
     /** The current transform scale of image */
