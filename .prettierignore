@@ -8,8 +8,6 @@ blob-report/**
 e2e/harness/images/**
 example/node_modules/**
 example/.next/**
-yarn.lock
-yarn-error.log
 .editorconfig
 .eslintignore
 .gitignore

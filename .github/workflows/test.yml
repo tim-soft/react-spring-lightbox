@@ -22,12 +22,12 @@ jobs:
             - uses: actions/setup-node@v7
               with:
                   node-version: 24
-                  cache: yarn
-            - run: yarn install --frozen-lockfile
-            - run: yarn lint:eslint
-            - run: yarn lint:prettier
+                  cache: npm
+            - run: npm ci
+            - run: npm run lint:eslint
+            - run: npm run lint:prettier
             # Vitest doesn't type-check, so tsc checks the tests along with the source
-            - run: yarn lint:ts
+            - run: npm run lint:ts
 
     test:
         runs-on: ubuntu-latest
@@ -37,9 +37,9 @@ jobs:
             - uses: actions/setup-node@v7
               with:
                   node-version: 24
-                  cache: yarn
-            - run: yarn install --frozen-lockfile
-            - run: yarn test
+                  cache: npm
+            - run: npm ci
+            - run: npm test
             # Uploads even when coverage misses a threshold, so Codecov shows the
             # uncovered lines. Errors never fail this required job. Fork PRs
             # upload without a token, and Dependabot PRs need CODECOV_TOKEN as a
@@ -61,10 +61,10 @@ jobs:
             - uses: actions/setup-node@v7
               with:
                   node-version: 24
-                  cache: yarn
-            - run: yarn install --frozen-lockfile
+                  cache: npm
+            - run: npm ci
             - run: npx playwright install --with-deps chromium firefox webkit
-            - run: yarn test:e2e
+            - run: npm run test:e2e
               env:
                   # Records the library lines Chromium runs, in coverage/e2e
                   E2E_COVERAGE: true

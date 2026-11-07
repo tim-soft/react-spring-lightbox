@@ -145,25 +145,24 @@ git clone https://github.com/tim-soft/react-spring-lightbox.git react-spring-lig
 cd react-spring-lightbox
 ```
 
-Setup symlinks
+Install the library's dependencies
 
 ```bash
-yarn link
-cd example
-yarn link react-spring-lightbox
+npm install
 ```
 
-Run the library in development mode
+Run the library in development mode, which rebuilds it on every change
 
 ```bash
-yarn start
+npm start
 ```
 
-Run the example app in development mode
+In another terminal, install and run the example app. Its `file:` dependencies are symlinks to the library and to the library's own React, so both use one copy of React.
 
 ```bash
 cd example
-yarn dev
+npm install
+npm run dev
 ```
 
 Changes to the library code should hot reload in the demo app

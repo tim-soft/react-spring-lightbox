@@ -13,6 +13,7 @@ build
 dist
 .rpt2_cache
 .next
+next-env.d.ts
 
 # misc
 .DS_Store
