@@ -15,10 +15,13 @@ const InlineLightbox = ({ images }) => {
     };
 
     React.useEffect(() => {
-        inlineCarouselElement?.current?.addEventListener('wheel', preventWheel);
+        const element = inlineCarouselElement.current;
+        element?.addEventListener('wheel', preventWheel);
 
         // oxlint-disable-next-line react/set-state-in-effect -- goes back to the first image when the demo swaps in new images
         setCurrentImageIndex(0);
+
+        return () => element?.removeEventListener('wheel', preventWheel);
     }, [inlineCarouselElement, images]);
 
     const canPrev = currentImageIndex > 0;
