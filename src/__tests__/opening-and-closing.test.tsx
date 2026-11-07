@@ -1,7 +1,8 @@
+import { render, screen, within } from '@testing-library/react';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
-import { render, screen, within } from '@testing-library/react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+
 import Lightbox from '../index';
 import { mouse, pressKey, touchscreen, wheel } from './devices';
 import {
@@ -43,7 +44,12 @@ describe('opening', () => {
 
     test('fades and grows into view', async () => {
         const props = lightboxProps();
-        const { rerender } = render(<Lightbox {...props} isOpen={false} />);
+        const { rerender } = render(
+            <Lightbox
+                {...props}
+                isOpen={false}
+            />
+        );
 
         rerender(<Lightbox {...props} />);
         expect(containerAppearance()).toEqual({ opacity: 0, scale: 0.75 });
@@ -68,7 +74,7 @@ describe('opening', () => {
                         enter: { opacity: 0.5 },
                     },
                 })}
-            />,
+            />
         );
 
         // A duration-based spring eases linearly, so halfway there by 500ms
@@ -110,7 +116,12 @@ describe('closing', () => {
         const { rerender } = render(<Lightbox {...props} />);
         await settle();
 
-        rerender(<Lightbox {...props} isOpen={false} />);
+        rerender(
+            <Lightbox
+                {...props}
+                isOpen={false}
+            />
+        );
         await advance(FRAME * 5);
         const midway = containerAppearance();
         expect(midway.opacity).toBeGreaterThan(0);
@@ -193,7 +204,10 @@ describe('staying open', () => {
         const onShare = vi.fn();
         const props = lightboxProps({
             renderImageOverlay: () => (
-                <button onClick={onShare} type="button">
+                <button
+                    onClick={onShare}
+                    type="button"
+                >
                     Share
                 </button>
             ),
@@ -201,10 +215,7 @@ describe('staying open', () => {
         render(<Lightbox {...props} />);
         await settle();
 
-        mouse.click(
-            within(pageOf(1)).getByRole('button', { name: 'Share' }),
-            CENTER,
-        );
+        mouse.click(within(pageOf(1)).getByRole('button', { name: 'Share' }), CENTER);
 
         expect(onShare).toHaveBeenCalledTimes(1);
         expect(props.onClose).not.toHaveBeenCalled();
@@ -242,7 +253,7 @@ describe('staying open', () => {
                 [300, 300],
                 [350, 300],
             ],
-            100,
+            100
         );
 
         expect(props.onClose).not.toHaveBeenCalled();
@@ -257,14 +268,11 @@ describe('the page behind it', () => {
         expect(wheel(lightboxContainer(), { deltaY: 100 })).toBe(false);
     });
 
-    test.each(['ArrowUp', 'ArrowDown', 'End', 'Home', 'PageUp', 'PageDown'])(
-        'does not scroll with %s',
-        (key) => {
-            render(<Lightbox {...lightboxProps()} />);
+    test.each(['ArrowUp', 'ArrowDown', 'End', 'Home', 'PageUp', 'PageDown'])('does not scroll with %s', (key) => {
+        render(<Lightbox {...lightboxProps()} />);
 
-            expect(pressKey(key)).toBe(false);
-        },
-    );
+        expect(pressKey(key)).toBe(false);
+    });
 
     test('scrolls with the keyboard again once closed', () => {
         render(<Lightbox {...lightboxProps({ isOpen: false })} />);
@@ -278,22 +286,19 @@ describe('the page behind it', () => {
         expect(pressKey('a')).toBe(true);
     });
 
-    test.fails(
-        'lets a text field inside the lightbox move its cursor with Home and End (#65)',
-        () => {
-            render(
-                <Lightbox
-                    {...lightboxProps({
-                        renderFooter: () => <input aria-label="Caption" />,
-                    })}
-                />,
-            );
-            const caption = screen.getByRole('textbox', { name: 'Caption' });
+    test.fails('lets a text field inside the lightbox move its cursor with Home and End (#65)', () => {
+        render(
+            <Lightbox
+                {...lightboxProps({
+                    renderFooter: () => <input aria-label="Caption" />,
+                })}
+            />
+        );
+        const caption = screen.getByRole('textbox', { name: 'Caption' });
 
-            expect(pressKey('Home', caption)).toBe(true);
-            expect(pressKey('End', caption)).toBe(true);
-        },
-    );
+        expect(pressKey('Home', caption)).toBe(true);
+        expect(pressKey('End', caption)).toBe(true);
+    });
 });
 
 test('reopens on the new currentIndex at full size', async () => {
@@ -302,9 +307,19 @@ test('reopens on the new currentIndex at full size', async () => {
     await mouse.doubleClick(image(1), CENTER);
     await settle();
 
-    rerender(<Lightbox {...props} isOpen={false} />);
+    rerender(
+        <Lightbox
+            {...props}
+            isOpen={false}
+        />
+    );
     await settle();
-    rerender(<Lightbox {...props} currentIndex={3} />);
+    rerender(
+        <Lightbox
+            {...props}
+            currentIndex={3}
+        />
+    );
     await settle();
 
     expect(shownImage()).toBe('Image 4');

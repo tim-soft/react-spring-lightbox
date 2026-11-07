@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
-import { ImageStage, PageContainer, CreatePortal } from './components';
+
 import type { ImagesList } from './types/ImagesList';
+
+import { ImageStage, PageContainer, CreatePortal } from './components';
 
 export type ImagesListType = ImagesList;
 
@@ -55,6 +57,7 @@ type ILightboxProps = {
 const Lightbox = ({
     className = '',
     currentIndex,
+    // oxlint-disable-next-line typescript/no-useless-default-assignment -- JavaScript callers can leave out images
     images = [],
     inline = false,
     isOpen,
@@ -77,16 +80,11 @@ const Lightbox = ({
          * when lightbox is open
          */
         const preventBackgroundScroll = (e: KeyboardEvent) => {
-            const keysToIgnore = [
-                'ArrowUp',
-                'ArrowDown',
-                'End',
-                'Home',
-                'PageUp',
-                'PageDown',
-            ];
+            const keysToIgnore = ['ArrowUp', 'ArrowDown', 'End', 'Home', 'PageUp', 'PageDown'];
 
-            if (isOpen && keysToIgnore.includes(e.key)) e.preventDefault();
+            if (isOpen && keysToIgnore.includes(e.key)) {
+                e.preventDefault();
+            }
         };
 
         /**
@@ -102,7 +100,7 @@ const Lightbox = ({
                         onNext();
                         break;
                     case 'Escape':
-                        onClose && onClose();
+                        onClose?.();
                         break;
                     default:
                         e.preventDefault();

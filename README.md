@@ -21,18 +21,18 @@ React-spring-lightbox is a flexible image gallery lightbox with native-feeling t
 
 ## ✨ Features
 
--   :point_up: &nbsp;&nbsp;&nbsp;`Mousewheel`, swipe or click+drag to page photos
--   :keyboard: &nbsp;Keyboard controls <kbd>&leftarrow;</kbd> <kbd>&rightarrow;</kbd> <kbd>Esc</kbd>
--   :mouse2: &nbsp;<kbd>Ctrl</kbd> + `Mousewheel` or `Trackpad Pinch` to zoom
--   :mag_right: &nbsp;Double/Single-tap or double/single-click to zoom in/out
--   :ok_hand: &nbsp;&nbsp;&nbsp;Pinch to zoom
--   :point_left: &nbsp;Panning on zoomed-in images
--   :checkered_flag: &nbsp;Highly performant spring based animations via [react-spring](https://github.com/react-spring/react-spring)
--   No external CSS
--   Implement your own UI
--   Supports IE 11, Edge, Safari, Chrome, Firefox and Opera
--   Full typescript support
--   Supports any `<img />` attribute including `loading` (lazy loading), `srcset` and `aria-*`
+- :point_up: &nbsp;&nbsp;&nbsp;`Mousewheel`, swipe or click+drag to page photos
+- :keyboard: &nbsp;Keyboard controls <kbd>&leftarrow;</kbd> <kbd>&rightarrow;</kbd> <kbd>Esc</kbd>
+- :mouse2: &nbsp;<kbd>Ctrl</kbd> + `Mousewheel` or `Trackpad Pinch` to zoom
+- :mag_right: &nbsp;Double/Single-tap or double/single-click to zoom in/out
+- :ok_hand: &nbsp;&nbsp;&nbsp;Pinch to zoom
+- :point_left: &nbsp;Panning on zoomed-in images
+- :checkered_flag: &nbsp;Highly performant spring based animations via [react-spring](https://github.com/react-spring/react-spring)
+- No external CSS
+- Implement your own UI
+- Supports IE 11, Edge, Safari, Chrome, Firefox and Opera
+- Full typescript support
+- Supports any `<img />` attribute including `loading` (lazy loading), `srcset` and `aria-*`
 
 ## Install
 

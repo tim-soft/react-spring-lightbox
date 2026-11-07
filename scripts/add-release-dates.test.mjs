@@ -1,4 +1,5 @@
 import { expect, test } from 'vitest';
+
 import { addReleaseDates } from './add-release-dates.mjs';
 
 // What `changeset version` leaves at the top of CHANGELOG.md, above the
@@ -46,10 +47,7 @@ test('changes nothing when it runs again, even on a later day', () => {
 });
 
 test('dates prereleases too', () => {
-    const { dated } = addReleaseDates(
-        '## 2.0.0-beta.1\n\n- Try it\n',
-        '2026-11-07',
-    );
+    const { dated } = addReleaseDates('## 2.0.0-beta.1\n\n- Try it\n', '2026-11-07');
 
     expect(dated).toEqual(['2.0.0-beta.1']);
 });

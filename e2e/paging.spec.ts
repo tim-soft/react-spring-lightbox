@@ -1,4 +1,7 @@
 import type { Page } from '@playwright/test';
+
+import type { Point } from './support';
+
 import {
     calls,
     chromiumInput,
@@ -11,7 +14,6 @@ import {
     shownImage,
     test,
 } from './support';
-import type { Point } from './support';
 
 /** Presses at `from`, then moves `dx` in four steps 100ms apart, under 2px/ms */
 const slowMouseDrag = async (page: Page, [x, y]: Point, dx: number) => {
@@ -27,9 +29,7 @@ const slowMouseDrag = async (page: Page, [x, y]: Point, dx: number) => {
 test.describe('dragging with a mouse', () => {
     test.skip(({ isMobile }) => isMobile, 'Mouse input');
 
-    test('a slow drag left past 1/3.5 of the stage shows the next image', async ({
-        page,
-    }) => {
+    test('a slow drag left past 1/3.5 of the stage shows the next image', async ({ page }) => {
         await openHarness(page, 'index=2');
 
         await slowMouseDrag(page, [900, 300], -500);
@@ -38,9 +38,7 @@ test.describe('dragging with a mouse', () => {
         expect(await shownImage(page)).toBe('Image 4');
     });
 
-    test('a slow drag right past 1/3.5 of the stage shows the previous image', async ({
-        page,
-    }) => {
+    test('a slow drag right past 1/3.5 of the stage shows the previous image', async ({ page }) => {
         await openHarness(page, 'index=2');
 
         await slowMouseDrag(page, [300, 300], 500);
@@ -65,11 +63,7 @@ test.describe('dragging with a mouse', () => {
         await openHarness(page, 'index=2');
 
         await slowMouseDrag(page, [900, 300], -200);
-        const centers = await sampleFrames(
-            page.getByAltText('Image 3'),
-            'centerX',
-            6,
-        );
+        const centers = await sampleFrames(page.getByAltText('Image 3'), 'centerX', 6);
         await settle(page);
 
         expect(centers[0]).toBeLessThan(centers[centers.length - 1]);
@@ -89,9 +83,7 @@ test.describe('dragging with a mouse', () => {
         expect(await shownImage(page)).toBe('Image 3');
     });
 
-    test('does not ask for an image before the first or after the last', async ({
-        page,
-    }) => {
+    test('does not ask for an image before the first or after the last', async ({ page }) => {
         await openHarness(page, 'index=0');
         await slowMouseDrag(page, [300, 300], 500);
         await settle(page);
@@ -114,9 +106,7 @@ test.describe('dragging with a mouse', () => {
         expect((await calls(page)).onNext).toBe(0);
     });
 
-    test('two drags in quick succession move two images, the second mid-slide', async ({
-        page,
-    }) => {
+    test('two drags in quick succession move two images, the second mid-slide', async ({ page }) => {
         await openHarness(page, 'index=1');
 
         for (let drag = 0; drag < 2; drag += 1) {
@@ -136,7 +126,7 @@ test.describe('dragging with a mouse', () => {
 test.describe('swiping on a touchscreen', () => {
     test.skip(
         ({ browserName, isMobile }) => !isMobile || browserName !== 'chromium',
-        'Multi-touch through the DevTools protocol',
+        'Multi-touch through the DevTools protocol'
     );
 
     test('a slow swipe pages in either direction', async ({ page }) => {
@@ -151,7 +141,7 @@ test.describe('swiping on a touchscreen', () => {
                 [125, 300],
                 [50, 300],
             ],
-            100,
+            100
         );
         await settle(page);
         expect(await shownImage(page)).toBe('Image 4');
@@ -164,7 +154,7 @@ test.describe('swiping on a touchscreen', () => {
                 [275, 300],
                 [350, 300],
             ],
-            100,
+            100
         );
         await settle(page);
         expect(await shownImage(page)).toBe('Image 3');
@@ -193,7 +183,7 @@ test.describe('swiping on a touchscreen', () => {
                 [260, 300],
                 [220, 300],
             ],
-            100,
+            100
         );
         await settle(page);
 
@@ -235,9 +225,7 @@ test.describe('swiping on a touchscreen', () => {
         expect(await shownImage(page)).toBe('Image 3');
     });
 
-    test('two quick flicks in a row move two images, the second mid-slide', async ({
-        page,
-    }) => {
+    test('two quick flicks in a row move two images, the second mid-slide', async ({ page }) => {
         await openHarness(page, 'index=1');
         const { touch } = await chromiumInput(page);
 
@@ -265,9 +253,7 @@ test.describe('scrolling with a mouse wheel or trackpad', () => {
         await settle(page);
     };
 
-    test('scrolling down quickly shows the previous image', async ({
-        page,
-    }) => {
+    test('scrolling down quickly shows the previous image', async ({ page }) => {
         await openHarness(page, 'index=2');
 
         await scroll(page, 0, 300);
@@ -327,9 +313,7 @@ test.describe('the keyboard', () => {
         expect(await shownImage(page)).toBe('Image 2');
     });
 
-    test('arrow keys in a text field move the caret, not the gallery (#65)', async ({
-        page,
-    }) => {
+    test('arrow keys in a text field move the caret, not the gallery (#65)', async ({ page }) => {
         await openHarness(page, 'footerInput&index=2');
 
         await page.getByRole('textbox', { name: 'Caption' }).click();
@@ -343,9 +327,7 @@ test.describe('the keyboard', () => {
 });
 
 test.describe('arrow buttons', () => {
-    test('page through the gallery and disable themselves at either end', async ({
-        page,
-    }) => {
+    test('page through the gallery and disable themselves at either end', async ({ page }) => {
         await openHarness(page, 'index=3');
         const next = page.getByRole('button', { name: 'Next' });
         const previous = page.getByRole('button', { name: 'Previous' });
@@ -363,18 +345,11 @@ test.describe('arrow buttons', () => {
         await expect(previous).toBeDisabled();
     });
 
-    test('unstyled buttons are not covered by the pager (#54)', async ({
-        page,
-    }) => {
+    test('unstyled buttons are not covered by the pager (#54)', async ({ page }) => {
         await openHarness(page, 'plainButtons&index=2');
 
-        const [x, y] = await pointIn(
-            page.getByRole('button', { name: 'Next' }),
-        );
-        const topmost = await page.evaluate(
-            ([px, py]) => document.elementFromPoint(px, py)?.textContent,
-            [x, y],
-        );
+        const [x, y] = await pointIn(page.getByRole('button', { name: 'Next' }));
+        const topmost = await page.evaluate(([px, py]) => document.elementFromPoint(px, py)?.textContent, [x, y]);
 
         test.fail();
         expect(topmost).toBe('Next');
@@ -413,11 +388,7 @@ test('slides to the new image when currentIndex changes', async ({ page }) => {
     const middle = (page.viewportSize()?.width ?? 0) / 2;
 
     await page.getByRole('button', { name: 'Next' }).click();
-    const centers = await sampleFrames(
-        page.getByAltText('Image 4'),
-        'centerX',
-        6,
-    );
+    const centers = await sampleFrames(page.getByAltText('Image 4'), 'centerX', 6);
     await settle(page);
 
     expect(centers[0]).toBeGreaterThan(centers[centers.length - 1]);
@@ -425,9 +396,7 @@ test('slides to the new image when currentIndex changes', async ({ page }) => {
     expect(await shownImage(page)).toBe('Image 4');
 });
 
-test('keeps the current image centered when the window resizes', async ({
-    page,
-}) => {
+test('keeps the current image centered when the window resizes', async ({ page }) => {
     await openHarness(page, 'index=2');
     const { height = 0, width = 0 } = page.viewportSize() ?? {};
 

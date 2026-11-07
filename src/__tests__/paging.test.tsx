@@ -1,15 +1,11 @@
-import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
+import React from 'react';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+
+import type { Point } from './helpers';
+
 import Lightbox from '../index';
-import {
-    mouse,
-    pressKey,
-    pressMouse,
-    touch,
-    touchscreen,
-    trackpad,
-} from './devices';
+import { mouse, pressKey, pressMouse, touch, touchscreen, trackpad } from './devices';
 import {
     CENTER,
     FRAME,
@@ -23,7 +19,6 @@ import {
     shownImage,
     translateX,
 } from './helpers';
-import type { Point } from './helpers';
 
 // Image 3 starts centered, with one image to page to in either direction
 const START = 2;
@@ -92,17 +87,14 @@ describe('dragging with a mouse', () => {
     test.each([
         ['left', LEFT, 'Image 4'],
         ['right', RIGHT, 'Image 2'],
-    ])(
-        'a slow drag %s past 1/3.5 of the stage width pages',
-        async (_, path, expected) => {
-            await openGallery();
+    ])('a slow drag %s past 1/3.5 of the stage width pages', async (_, path, expected) => {
+        await openGallery();
 
-            await mouse.drag(pageOf(3), path, 100);
-            await settle();
+        await mouse.drag(pageOf(3), path, 100);
+        await settle();
 
-            expect(shownImage()).toBe(expected);
-        },
-    );
+        expect(shownImage()).toBe(expected);
+    });
 
     test('a quick flick pages', async () => {
         await openGallery();
@@ -192,17 +184,14 @@ describe('swiping on a touchscreen', () => {
     test.each([
         ['left', LEFT, 'Image 4'],
         ['right', RIGHT, 'Image 2'],
-    ])(
-        'a slow swipe %s past 1/3.5 of the stage width pages',
-        async (_, path, expected) => {
-            await openGallery();
+    ])('a slow swipe %s past 1/3.5 of the stage width pages', async (_, path, expected) => {
+        await openGallery();
 
-            await touchscreen.swipe(image(3), path, 100);
-            await settle();
+        await touchscreen.swipe(image(3), path, 100);
+        await settle();
 
-            expect(shownImage()).toBe(expected);
-        },
-    );
+        expect(shownImage()).toBe(expected);
+    });
 
     test('a quick flick pages', async () => {
         await openGallery();
@@ -251,14 +240,14 @@ describe('swiping on a touchscreen', () => {
                 [550, 300],
                 [600, 300],
             ],
-            100,
+            100
         );
         await fingers.moveTo(
             [
                 [200, 300],
                 [250, 300],
             ],
-            100,
+            100
         );
         fingers.lift();
         await settle();
@@ -383,23 +372,17 @@ describe('the keyboard', () => {
         expect(props.onNext).not.toHaveBeenCalled();
     });
 
-    test.fails(
-        'leaves arrow keys to a text field inside the lightbox (#65)',
-        () => {
-            const props = lightboxProps({
-                currentIndex: START,
-                renderFooter: () => <input aria-label="Caption" />,
-            });
-            render(<Lightbox {...props} />);
+    test.fails('leaves arrow keys to a text field inside the lightbox (#65)', () => {
+        const props = lightboxProps({
+            currentIndex: START,
+            renderFooter: () => <input aria-label="Caption" />,
+        });
+        render(<Lightbox {...props} />);
 
-            pressKey(
-                'ArrowRight',
-                screen.getByRole('textbox', { name: 'Caption' }),
-            );
+        pressKey('ArrowRight', screen.getByRole('textbox', { name: 'Caption' }));
 
-            expect(props.onNext).not.toHaveBeenCalled();
-        },
-    );
+        expect(props.onNext).not.toHaveBeenCalled();
+    });
 });
 
 describe('custom arrow buttons', () => {
@@ -420,12 +403,12 @@ describe('custom arrow buttons', () => {
                         renderNextButton,
                         renderPrevButton,
                     })}
-                />,
+                />
             );
 
             expect(renderNextButton).toHaveBeenLastCalledWith({ canNext });
             expect(renderPrevButton).toHaveBeenLastCalledWith({ canPrev });
-        },
+        }
     );
 
     test('page through the gallery and disable themselves at either end', async () => {
@@ -438,10 +421,7 @@ describe('custom arrow buttons', () => {
         expect(next).toBeDisabled();
 
         for (let image = 5; image > 1; image -= 1) {
-            mouse.click(
-                screen.getByRole('button', { name: 'Previous' }),
-                CENTER,
-            );
+            mouse.click(screen.getByRole('button', { name: 'Previous' }), CENTER);
             await settle();
         }
         expect(shownImage()).toBe('Image 1');
@@ -455,7 +435,12 @@ describe('when currentIndex changes', () => {
         const { rerender } = render(<Lightbox {...props} />);
         await settle();
 
-        rerender(<Lightbox {...props} currentIndex={START + 1} />);
+        rerender(
+            <Lightbox
+                {...props}
+                currentIndex={START + 1}
+            />
+        );
         await advance(FRAME * 5);
         expect(translateX(pageOf(4))).toBeGreaterThan(0);
         expect(translateX(pageOf(4))).toBeLessThan(800);
@@ -468,7 +453,12 @@ describe('when currentIndex changes', () => {
         const props = lightboxProps({ currentIndex: 0 });
         const { rerender } = render(<Lightbox {...props} />);
 
-        rerender(<Lightbox {...props} currentIndex={4} />);
+        rerender(
+            <Lightbox
+                {...props}
+                currentIndex={4}
+            />
+        );
         await settle();
 
         expect(shownImage()).toBe('Image 5');
@@ -480,30 +470,21 @@ describe('page layout', () => {
     test('lines pages up a stage width apart, showing only the current image and its neighbours', async () => {
         await openGallery();
 
-        expect([2, 3, 4].map((n) => translateX(pageOf(n)))).toEqual([
-            -800, 0, 800,
-        ]);
-        [2, 3, 4].forEach((n) =>
-            expect(pageOf(n)).toHaveStyle({ display: 'flex' }),
-        );
-        [1, 5].forEach((n) =>
-            expect(pageOf(n)).toHaveStyle({ display: 'none' }),
-        );
+        expect([2, 3, 4].map((n) => translateX(pageOf(n)))).toEqual([-800, 0, 800]);
+        [2, 3, 4].forEach((n) => expect(pageOf(n)).toHaveStyle({ display: 'flex' }));
+        [1, 5].forEach((n) => expect(pageOf(n)).toHaveStyle({ display: 'none' }));
     });
 
-    test.each(['resize', 'orientationchange'])(
-        'lays the pages out again on window %s',
-        async (eventType) => {
-            await openGallery();
+    test.each(['resize', 'orientationchange'])('lays the pages out again on window %s', async (eventType) => {
+        await openGallery();
 
-            layout.stage.width = 1000;
-            fireEvent(window, new Event(eventType));
-            await settle();
+        layout.stage.width = 1000;
+        fireEvent(window, new Event(eventType));
+        await settle();
 
-            expect(translateX(pageOf(2))).toBe(-1000);
-            expect(translateX(pageOf(4))).toBe(1000);
-        },
-    );
+        expect(translateX(pageOf(2))).toBe(-1000);
+        expect(translateX(pageOf(4))).toBe(1000);
+    });
 
     test('fits images to the stage height, minus 50px of room for controls', () => {
         render(<Lightbox {...lightboxProps()} />);
@@ -514,7 +495,10 @@ describe('page layout', () => {
     test('keeps paging when images are added or removed', async () => {
         const props = lightboxProps({ currentIndex: 2 });
         const { rerender } = render(
-            <Lightbox {...props} images={props.images.slice(0, 3)} />,
+            <Lightbox
+                {...props}
+                images={props.images.slice(0, 3)}
+            />
         );
         await settle();
         expect(screen.queryByAltText('Image 4')).not.toBeInTheDocument();
@@ -530,7 +514,7 @@ describe('page layout', () => {
                 {...props}
                 currentIndex={1}
                 images={props.images.slice(0, 2)}
-            />,
+            />
         );
         await settle();
         expect(screen.getAllByRole('img', { hidden: true })).toHaveLength(2);

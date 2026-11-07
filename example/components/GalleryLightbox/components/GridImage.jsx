@@ -1,5 +1,5 @@
-import * as React from 'react';
 import PropTypes from 'prop-types';
+import * as React from 'react';
 
 /**
  * A single image element in a masonry style image grid
@@ -19,6 +19,7 @@ const GridImage = ({ index, key, left, onClick, photo, top }) => {
                     open(event);
                 }
             }}
+            // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- the tile holds block content, which a <button> can't contain
             role="button"
             style={{ height, left, top, width }}
             tabIndex={0}
@@ -30,9 +31,7 @@ const GridImage = ({ index, key, left, onClick, photo, top }) => {
                     src={src}
                 />
                 <div className="absolute bottom-0 w-full bg-accent text-highlight">
-                    <h4 className="my-[1em] text-center font-bold">
-                        {caption}
-                    </h4>
+                    <h4 className="my-[1em] text-center font-bold">{caption}</h4>
                 </div>
             </div>
         </div>

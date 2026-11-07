@@ -12,9 +12,7 @@ export default defineConfig({
         { name: 'mobile-chromium', use: { ...devices['Pixel 7'] } },
         { name: 'mobile-webkit', use: { ...devices['iPhone 15'] } },
     ],
-    reporter: process.env.CI
-        ? [['github'], ['html', { open: 'never' }]]
-        : 'list',
+    reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
     retries: process.env.CI ? 1 : 0,
     testDir: './e2e',
     use: {

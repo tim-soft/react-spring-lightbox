@@ -1,11 +1,12 @@
-import { FiHeart, FiPrinter, FiShare } from 'react-icons/fi';
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
+import { FiHeart, FiPrinter, FiShare } from 'react-icons/fi';
 import Gallery from 'react-photo-gallery';
 import Lightbox from 'react-spring-lightbox';
+
 import GridImage from './components/GridImage';
-import LightboxHeader from './components/LightboxHeader';
 import LightboxArrowButton from './components/LightboxArrowButton';
+import LightboxHeader from './components/LightboxHeader';
 
 const overlayIcon =
     'm-2.5 box-content inline border align-baseline border-white fill-highlight p-[5px] hover:cursor-pointer hover:border-highlight hover:fill-highlight-dark';
@@ -21,7 +22,7 @@ class BlogImageGallery extends React.Component {
                 height: PropTypes.number,
                 src: PropTypes.string.isRequired,
                 width: PropTypes.number,
-            }),
+            })
         ).isRequired,
     };
 
@@ -40,6 +41,7 @@ class BlogImageGallery extends React.Component {
     }
 
     componentDidMount() {
+        // oxlint-disable-next-line react/no-did-mount-set-state -- renders the gallery only in the browser, after hydration
         this.setState({ clientSide: true });
     }
 
@@ -86,9 +88,15 @@ class BlogImageGallery extends React.Component {
      */
     columnConfig = (containerWidth) => {
         let columns = 1;
-        if (containerWidth >= 500) columns = 2;
-        if (containerWidth >= 900) columns = 3;
-        if (containerWidth >= 1500) columns = 4;
+        if (containerWidth >= 500) {
+            columns = 2;
+        }
+        if (containerWidth >= 900) {
+            columns = 3;
+        }
+        if (containerWidth >= 1500) {
+            columns = 4;
+        }
 
         return columns;
     };
@@ -140,9 +148,18 @@ class BlogImageGallery extends React.Component {
                             <p className="my-[0.5em] text-center text-[1.2em] font-bold text-highlight">
                                 Create your own UI
                             </p>
-                            <FiPrinter className={overlayIcon} size="3em" />
-                            <FiShare className={overlayIcon} size="3em" />
-                            <FiHeart className={overlayIcon} size="3em" />
+                            <FiPrinter
+                                className={overlayIcon}
+                                size="3em"
+                            />
+                            <FiShare
+                                className={overlayIcon}
+                                size="3em"
+                            />
+                            <FiHeart
+                                className={overlayIcon}
+                                size="3em"
+                            />
                         </div>
                     )}
                     renderNextButton={({ canNext }) => (

@@ -1,11 +1,11 @@
+import type React from 'react';
+
 /**
  * Determines if the provided image is within the viewport
  *
  * @returns True if image needs to be resized to fit viewport, otherwise false
  */
-const imageIsOutOfBounds = (
-    imageRef: React.RefObject<HTMLImageElement | null>,
-): boolean => {
+const imageIsOutOfBounds = (imageRef: React.RefObject<HTMLImageElement | null>): boolean => {
     // If no ref is provided, return false
     if (!imageRef.current) {
         return false;
@@ -16,7 +16,7 @@ const imageIsOutOfBounds = (
         left: topLeftX,
         right: bottomRightX,
         top: topLeftY,
-    } = imageRef.current?.getBoundingClientRect();
+    } = imageRef.current.getBoundingClientRect();
     const { innerHeight: windowHeight, innerWidth: windowWidth } = window;
 
     if (
@@ -24,8 +24,9 @@ const imageIsOutOfBounds = (
         topLeftY > windowHeight * (1 / 2) ||
         bottomRightX < windowWidth * (1 / 2) ||
         bottomRightY < windowHeight * (1 / 2)
-    )
+    ) {
         return true;
+    }
 
     return false;
 };

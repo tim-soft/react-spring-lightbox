@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import GalleryLightbox from '../components/GalleryLightbox';
 import InlineLightbox from '../components/InlineLightbox';
 
@@ -114,26 +115,19 @@ const images = [
 const heading = 'my-[0.83em] text-center text-[1.5em] font-bold';
 const button =
     'mx-auto my-5 cursor-pointer rounded-[10px] border-2 border-black bg-[teal] px-2.5 py-4 text-white [border-style:outset] hover:bg-[darkblue] active:bg-[darkseagreen]';
-const otherInlineContent =
-    'box-content flex w-[400px] items-center justify-center bg-[blueviolet] p-2.5';
+const otherInlineContent = 'box-content flex w-[400px] items-center justify-center bg-[blueviolet] p-2.5';
 
 const getRandomImages = (numImages: number) => {
-    const imageArray = [...new Array(numImages)];
-
-    const getRandomInt = (min, max) => {
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
+    const getRandomInt = (min: number, max: number) => {
+        const low = Math.ceil(min);
+        const high = Math.floor(max);
+        return Math.floor(Math.random() * (high - low) + low); //The maximum is exclusive and the minimum is inclusive
     };
 
     const altCaption = 'picsum photo';
-    const randomizedArray = imageArray.map((imageObj) => {
-        const imageURL = `https://picsum.photos/id/${getRandomInt(
-            1,
-            200,
-        )}/1920/1280`;
+    const randomizedArray = Array.from({ length: numImages }, () => {
+        const imageURL = `https://picsum.photos/id/${getRandomInt(1, 200)}/1920/1280`;
         return {
-            ...imageObj,
             alt: altCaption,
             caption: altCaption,
             src: imageURL,
@@ -146,7 +140,7 @@ const getRandomImages = (numImages: number) => {
 const HomePage = () => {
     // Random images only after a click, since the page is prerendered and a
     // random first render would differ between the server and the browser
-    const [inlineImages, setInlineImages] = React.useState(images);
+    const [inlineImages, setInlineImages] = React.useState<{ alt: string; caption: string; src: string }[]>(images);
 
     return (
         <div className="h-full w-full bg-[#272727] px-0 py-[50px] text-white select-none">
@@ -158,23 +152,17 @@ const HomePage = () => {
                     images={images}
                 />
             </div>
-            <hr className="my-2 border border-[gray] [border-style:inset]" />
+            <hr className="my-2 border [border-style:inset] border-[gray]" />
             <div className="flex h-full w-full flex-col">
                 <h2 className={heading}>Inline Lightbox</h2>
                 <div className="flex w-full justify-center">
-                    <div className={otherInlineContent}>
-                        🎉🎉Inline content🎉🎉
-                    </div>
+                    <div className={otherInlineContent}>🎉🎉Inline content🎉🎉</div>
                     <InlineLightbox images={inlineImages} />
-                    <div className={otherInlineContent}>
-                        🎉🎉Inline content🎉🎉
-                    </div>
+                    <div className={otherInlineContent}>🎉🎉Inline content🎉🎉</div>
                 </div>
                 <button
                     className={button}
-                    onClick={() =>
-                        setInlineImages(getRandomImages(inlineImages.length))
-                    }
+                    onClick={() => setInlineImages(getRandomImages(inlineImages.length))}
                 >
                     Generate new images
                 </button>

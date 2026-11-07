@@ -1,15 +1,11 @@
-import React from 'react';
 import { fireEvent, render, screen, within } from '@testing-library/react';
+import React from 'react';
 import { beforeEach, expect, test } from 'vitest';
-import Lightbox from '../index';
+
 import type { ImagesListType } from '../index';
-import {
-    image,
-    lightboxContainer,
-    lightboxProps,
-    mockLayout,
-    pageOf,
-} from './helpers';
+
+import Lightbox from '../index';
+import { image, lightboxContainer, lightboxProps, mockLayout, pageOf } from './helpers';
 
 beforeEach(() => {
     mockLayout();
@@ -22,7 +18,7 @@ test('renders the header above the images and the footer below them', () => {
                 renderFooter: () => <footer>Footer</footer>,
                 renderHeader: () => <header>Header</header>,
             })}
-        />,
+        />
     );
 
     const [header, stage, footer] = Array.from(lightboxContainer().children);
@@ -38,12 +34,10 @@ test('renders the previous and next buttons on either side of the images', () =>
                 renderNextButton: () => <button type="button">Next</button>,
                 renderPrevButton: () => <button type="button">Previous</button>,
             })}
-        />,
+        />
     );
 
-    const [previous, pager, next] = Array.from(
-        screen.getByTestId('lightbox-image-stage').children,
-    );
+    const [previous, pager, next] = Array.from(screen.getByTestId('lightbox-image-stage').children);
     expect(previous).toHaveTextContent('Previous');
     expect(pager).toContainElement(image(1));
     expect(next).toHaveTextContent('Next');
@@ -55,7 +49,7 @@ test('renders the image overlay with every image', () => {
             {...lightboxProps({
                 renderImageOverlay: () => <div data-testid="overlay" />,
             })}
-        />,
+        />
     );
 
     expect(screen.getAllByTestId('overlay')).toHaveLength(5);
@@ -69,7 +63,7 @@ test('applies className and style to the root container, over its defaults', () 
                 className: 'cool-class',
                 style: { background: 'grey', zIndex: 1000 },
             })}
-        />,
+        />
     );
 
     expect(lightboxContainer()).toHaveClass('lightbox-container', 'cool-class');
@@ -94,7 +88,7 @@ test('passes image props through to each image element', () => {
                     },
                 ],
             })}
-        />,
+        />
     );
 
     const custom = screen.getByAltText('Custom');
@@ -120,7 +114,7 @@ test('renders no images when the images prop is left out', () => {
         <Lightbox
             {...lightboxProps({ inline: true })}
             images={undefined as unknown as ImagesListType}
-        />,
+        />
     );
 
     expect(screen.queryByRole('img')).not.toBeInTheDocument();

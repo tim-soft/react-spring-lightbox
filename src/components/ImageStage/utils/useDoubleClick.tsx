@@ -27,15 +27,18 @@ const useDoubleClick = ({
     useEffect(() => {
         const clickRef = ref.current;
         let clickCount = 0;
-        let timer: ReturnType<typeof setTimeout>;
+        let timer: ReturnType<typeof setTimeout> | undefined;
 
         const handleClick = (e: MouseEvent) => {
             if (enabled) {
                 clickCount += 1;
 
                 timer = setTimeout(() => {
-                    if (clickCount === 1) onSingleClick(e);
-                    else if (clickCount === 2) onDoubleClick(e);
+                    if (clickCount === 1) {
+                        onSingleClick(e);
+                    } else if (clickCount === 2) {
+                        onDoubleClick(e);
+                    }
 
                     clickCount = 0;
                 }, latency);

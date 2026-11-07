@@ -1,13 +1,8 @@
 import type { Page } from '@playwright/test';
-import {
-    chromiumInput,
-    expect,
-    imageTransform,
-    openHarness,
-    settle,
-    test,
-} from './support';
+
 import type { Point } from './support';
+
+import { chromiumInput, expect, imageTransform, openHarness, settle, test } from './support';
 
 // The same zoom math as src/__tests__/zoom-transforms.test.tsx, checked in
 // Chromium with real input and real layout, so that upgrading the gesture
@@ -19,12 +14,7 @@ type Transform = { scale: number; x: number; y: number };
 const AT_REST: Transform = { scale: 1, x: 0, y: 0 };
 
 /** Zooms to `scale` around a point on screen, keeping that point in place */
-const zoomAround = (
-    center: Point,
-    from: Transform,
-    scale: number,
-    [pointX, pointY]: Point,
-): Transform => {
+const zoomAround = (center: Point, from: Transform, scale: number, [pointX, pointY]: Point): Transform => {
     const imageX = (pointX - center[0] - from.x) / from.scale;
     const imageY = (pointY - center[1] - from.y) / from.scale;
     return {
@@ -35,15 +25,14 @@ const zoomAround = (
 };
 
 /** Adds `amount` to the scale around `origin`, stopping at 3x and springing back below 1x */
-const pinchStep = (
-    center: Point,
-    from: Transform,
-    amount: number,
-    origin: Point,
-): Transform => {
+const pinchStep = (center: Point, from: Transform, amount: number, origin: Point): Transform => {
     const scale = from.scale + amount;
-    if (scale < 1) return AT_REST;
-    if (scale > 3) return { ...from, scale: 3 };
+    if (scale < 1) {
+        return AT_REST;
+    }
+    if (scale > 3) {
+        return { ...from, scale: 3 };
+    }
     return zoomAround(center, from, scale, origin);
 };
 
@@ -57,27 +46,24 @@ const expectTransform = async (page: Page, expected: Transform) => {
 /** The center of Image 3 at rest, which the zoom math measures from */
 const restingCenter = async (page: Page): Promise<Point> => {
     const box = await page.getByAltText('Image 3').boundingBox();
-    if (!box) throw new Error('Image 3 is not visible');
+    if (!box) {
+        throw new Error('Image 3 is not visible');
+    }
     return [box.x + box.width / 2, box.y + box.height / 2];
 };
 
 test.describe('in desktop Chromium', () => {
     test.skip(
         ({ browserName, isMobile }) => isMobile || browserName !== 'chromium',
-        'Input through the DevTools protocol',
+        'Input through the DevTools protocol'
     );
 
-    test('each ctrl + wheel tick zooms around the cursor by 7/1000 of its deltaY', async ({
-        page,
-    }) => {
+    test('each ctrl + wheel tick zooms around the cursor by 7/1000 of its deltaY', async ({ page }) => {
         await openHarness(page, 'index=2');
         const center = await restingCenter(page);
         const { wheel } = await chromiumInput(page);
         // Whole pixels, since the browser reports the cursor in whole pixels
-        const near = (dx: number, dy: number): Point => [
-            Math.round(center[0] + dx),
-            Math.round(center[1] + dy),
-        ];
+        const near = (dx: number, dy: number): Point => [Math.round(center[0] + dx), Math.round(center[1] + dy)];
         const ticks: [deltaY: number, at: Point][] = [
             [-50, near(100, 50)],
             [-50, near(180, -80)],
@@ -94,9 +80,7 @@ test.describe('in desktop Chromium', () => {
         }
     });
 
-    test('a pan moves the image by the pointer movement, less the 3px drag threshold', async ({
-        page,
-    }) => {
+    test('a pan moves the image by the pointer movement, less the 3px drag threshold', async ({ page }) => {
         await openHarness(page, 'index=2');
         const center = await restingCenter(page);
         await page.mouse.dblclick(...center);
@@ -110,7 +94,7 @@ test.describe('in desktop Chromium', () => {
                 [center[0] + 60, center[1] + 30],
                 [center[0] - 60, center[1] - 20],
             ],
-            100,
+            100
         );
         await settle(page);
 
@@ -121,7 +105,7 @@ test.describe('in desktop Chromium', () => {
 test.describe('with two fingers in mobile Chromium', () => {
     test.skip(
         ({ browserName, isMobile }) => !isMobile || browserName !== 'chromium',
-        'Multi-touch through the DevTools protocol',
+        'Multi-touch through the DevTools protocol'
     );
 
     const around = ([x, y]: Point, spread: number): [Point, Point] => [
@@ -147,12 +131,10 @@ test.describe('with two fingers in mobile Chromium', () => {
         for (const move of moves) {
             await touch.move(move);
             await settle(page);
-            expected = pinchStep(
-                center,
-                expected,
-                (move[1][0] - move[0][0] - 60) / 250,
-                [(move[0][0] + move[1][0]) / 2, move[0][1]],
-            );
+            expected = pinchStep(center, expected, (move[1][0] - move[0][0] - 60) / 250, [
+                (move[0][0] + move[1][0]) / 2,
+                move[0][1],
+            ]);
             await expectTransform(page, expected);
         }
     });
@@ -169,8 +151,6 @@ test.describe('with two fingers in mobile Chromium', () => {
         }
         await settle(page);
 
-        expect((await imageTransform(page, 'Image 3')).scale).toBeGreaterThan(
-            1,
-        );
+        expect((await imageTransform(page, 'Image 3')).scale).toBeGreaterThan(1);
     });
 });

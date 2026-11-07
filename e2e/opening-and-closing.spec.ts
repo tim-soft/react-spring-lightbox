@@ -1,16 +1,8 @@
 import type { Page } from '@playwright/test';
-import {
-    calls,
-    chromiumInput,
-    expect,
-    openHarness,
-    pointIn,
-    sampleFrames,
-    settle,
-    shownImage,
-    test,
-} from './support';
+
 import type { Point } from './support';
+
+import { calls, chromiumInput, expect, openHarness, pointIn, sampleFrames, settle, shownImage, test } from './support';
 
 const container = (page: Page) => page.getByTestId('lightbox-container');
 const scrollY = (page: Page) => page.evaluate(() => window.scrollY);
@@ -67,9 +59,7 @@ test.describe('with a mouse and keyboard', () => {
         await expect(container(page)).toBeVisible();
     });
 
-    test('a button in the image overlay works and keeps it open', async ({
-        page,
-    }) => {
+    test('a button in the image overlay works and keeps it open', async ({ page }) => {
         await openHarness(page, 'overlay');
 
         await page.getByRole('button', { name: 'Share' }).first().click();
@@ -78,9 +68,7 @@ test.describe('with a mouse and keyboard', () => {
         await expect(container(page)).toBeVisible();
     });
 
-    test('clicking the backdrop while zoomed in keeps it open', async ({
-        page,
-    }) => {
+    test('clicking the backdrop while zoomed in keeps it open', async ({ page }) => {
         await openHarness(page);
         await page.getByAltText('Image 1').dblclick();
         await settle(page);
@@ -91,9 +79,7 @@ test.describe('with a mouse and keyboard', () => {
         await expect(container(page)).toBeVisible();
     });
 
-    test('a drag across the backdrop keeps it open, though the browser clicks at the end', async ({
-        page,
-    }) => {
+    test('a drag across the backdrop keeps it open, though the browser clicks at the end', async ({ page }) => {
         await openHarness(page, 'index=2');
 
         await page.mouse.move(100, 200);
@@ -107,9 +93,7 @@ test.describe('with a mouse and keyboard', () => {
         await expect(container(page)).toBeVisible();
     });
 
-    test('the page behind does not scroll while open, and does once closed', async ({
-        page,
-    }) => {
+    test('the page behind does not scroll while open, and does once closed', async ({ page }) => {
         await openHarness(page);
 
         await page.mouse.move(640, 300);
@@ -137,9 +121,7 @@ test.describe('with a mouse and keyboard', () => {
         expect(scrolled).toBe(0);
     });
 
-    test('a text field in the footer keeps its Home and End keys (#65)', async ({
-        page,
-    }) => {
+    test('a text field in the footer keeps its Home and End keys (#65)', async ({ page }) => {
         await openHarness(page, 'footerInput');
         const caption = page.getByRole('textbox', { name: 'Caption' });
         await caption.click();
@@ -147,17 +129,13 @@ test.describe('with a mouse and keyboard', () => {
         await caption.evaluate((input) => {
             const prevented: boolean[] = [];
             Object.assign(window, { prevented });
-            input.addEventListener('keydown', (event) =>
-                setTimeout(() => prevented.push(event.defaultPrevented)),
-            );
+            input.addEventListener('keydown', (event) => setTimeout(() => prevented.push(event.defaultPrevented)));
         });
 
         await page.keyboard.press('Home');
         await page.keyboard.press('End');
         await page.waitForTimeout(100);
-        const prevented = await page.evaluate(
-            () => (window as unknown as { prevented: boolean[] }).prevented,
-        );
+        const prevented = await page.evaluate(() => (window as unknown as { prevented: boolean[] }).prevented);
 
         test.fail();
         expect(prevented).toEqual([false, false]);
@@ -185,21 +163,15 @@ test.describe('on a touchscreen', () => {
         await expect(container(page)).toBeVisible();
     });
 
-    test('a swipe up the footer does not scroll the page behind', async ({
-        browserName,
-        page,
-    }) => {
-        test.skip(
-            browserName !== 'chromium',
-            'Touch input through the DevTools protocol',
-        );
+    test('a swipe up the footer does not scroll the page behind', async ({ browserName, page }) => {
+        test.skip(browserName !== 'chromium', 'Touch input through the DevTools protocol');
         await openHarness(page);
         const { touch } = await chromiumInput(page);
         const [x, y] = await pointIn(page.getByRole('contentinfo'));
 
         await touch.swipe(
             [0, 1, 2, 3, 4].map((step): Point => [x, y - step * 60]),
-            30,
+            30
         );
         await page.waitForTimeout(600);
         const scrolled = await scrollY(page);

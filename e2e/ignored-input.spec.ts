@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test';
+
 import {
     calls,
     chromiumInput,
@@ -24,16 +25,12 @@ const expectUntouched = async (page: Page) => {
 test.describe('saving an image with a right click', () => {
     test.skip(({ isMobile }) => isMobile, 'Mouse input');
 
-    test('right clicks on the image or the backdrop leave the gallery and the browser menu alone', async ({
-        page,
-    }) => {
+    test('right clicks on the image or the backdrop leave the gallery and the browser menu alone', async ({ page }) => {
         await openHarness(page, 'index=2');
         await page.evaluate(() => {
             const menusBlocked: boolean[] = [];
             Object.assign(window, { menusBlocked });
-            window.addEventListener('contextmenu', (event) =>
-                menusBlocked.push(event.defaultPrevented),
-            );
+            window.addEventListener('contextmenu', (event) => menusBlocked.push(event.defaultPrevented));
         });
         const onImage = await pointIn(page.getByAltText('Image 3'), [0.7, 0.5]);
 
@@ -43,13 +40,11 @@ test.describe('saving an image with a right click', () => {
         await settle(page);
 
         await expectUntouched(page);
-        expect(
-            await page.evaluate(
-                () =>
-                    (window as unknown as { menusBlocked: boolean[] })
-                        .menusBlocked,
-            ),
-        ).toEqual([false, false, false]);
+        expect(await page.evaluate(() => (window as unknown as { menusBlocked: boolean[] }).menusBlocked)).toEqual([
+            false,
+            false,
+            false,
+        ]);
     });
 
     test('a drag with the right button does not page', async ({ page }) => {
@@ -70,14 +65,9 @@ test.describe('saving an image with a right click', () => {
 test.describe('on a touchscreen', () => {
     test.skip(({ isMobile }) => !isMobile, 'Touch input');
 
-    test('a double tap on a button over the image presses it without zooming', async ({
-        page,
-    }) => {
+    test('a double tap on a button over the image presses it without zooming', async ({ page }) => {
         await openHarness(page, 'index=2&overlay');
-        const share = page
-            .getByAltText('Image 3')
-            .locator('..')
-            .getByRole('button', { name: 'Share' });
+        const share = page.getByAltText('Image 3').locator('..').getByRole('button', { name: 'Share' });
         const point = await pointIn(share);
 
         await page.touchscreen.tap(...point);
@@ -93,12 +83,10 @@ test.describe('on a touchscreen', () => {
 test.describe('touches through the DevTools protocol', () => {
     test.skip(
         ({ browserName, isMobile }) => !isMobile || browserName !== 'chromium',
-        'Touch input through the DevTools protocol',
+        'Touch input through the DevTools protocol'
     );
 
-    test('holding a finger on the image, as to save it, leaves the gallery alone', async ({
-        page,
-    }) => {
+    test('holding a finger on the image, as to save it, leaves the gallery alone', async ({ page }) => {
         await openHarness(page, 'index=2');
         const point = await pointIn(page.getByAltText('Image 3'), [0.7, 0.5]);
         const { touch } = await chromiumInput(page);
@@ -126,12 +114,12 @@ test.describe('touches through the DevTools protocol', () => {
         await expectUntouched(page);
     });
 
-    test('pinching the backdrop zooms neither the image nor the page', async ({
-        page,
-    }) => {
+    test('pinching the backdrop zooms neither the image nor the page', async ({ page }) => {
         await openHarness(page, 'index=2');
         const box = await page.getByAltText('Image 3').boundingBox();
-        if (!box) throw new Error('Image 3 is not visible');
+        if (!box) {
+            throw new Error('Image 3 is not visible');
+        }
         const x = box.x + box.width / 2;
         const aboveImage = box.y - 40;
         const { touch } = await chromiumInput(page);
@@ -144,7 +132,7 @@ test.describe('touches through the DevTools protocol', () => {
             [
                 [x - 120, aboveImage],
                 [x + 120, aboveImage],
-            ],
+            ]
         );
         await settle(page);
 

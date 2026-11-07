@@ -3,5 +3,13 @@
     "javascript.validate.enable": false,
     "editor.tabSize": 4,
     "editor.detectIndentation": false,
-    "eslint.enable": true
+    "[javascript][javascriptreact][typescript][typescriptreact]": {
+        "editor.defaultFormatter": "oxc.oxc-vscode"
+    },
+    "[json][jsonc][yaml][css][html][markdown]": {
+        "editor.defaultFormatter": "oxc.oxc-vscode"
+    },
+    "editor.codeActionsOnSave": {
+        "source.fixAll.oxc": "always"
+    }
 }

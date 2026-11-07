@@ -1,5 +1,5 @@
-import React from 'react';
 import { useTransition, animated, config } from '@react-spring/web';
+import React from 'react';
 
 type IPageContainerProps = {
     /** All child components of Lightbox */
@@ -17,13 +17,7 @@ type IPageContainerProps = {
 /**
  * Animates the lightbox as it opens/closes
  */
-const PageContainer = ({
-    children,
-    className,
-    isOpen,
-    pageTransitionConfig,
-    style,
-}: IPageContainerProps) => {
+const PageContainer = ({ children, className, isOpen, pageTransitionConfig, style }: IPageContainerProps) => {
     const defaultTransition = {
         config: { ...config.default, friction: 32, mass: 1, tension: 320 },
         enter: { opacity: 1, transform: 'scale(1)' },
@@ -42,9 +36,7 @@ const PageContainer = ({
                 (animatedStyles, item) =>
                     item && (
                         <animated.div
-                            className={`lightbox-container${
-                                className ? ` ${className}` : ''
-                            }`}
+                            className={`lightbox-container${className ? ` ${className}` : ''}`}
                             data-testid="lightbox-container"
                             style={{
                                 bottom: 0,
@@ -61,7 +53,7 @@ const PageContainer = ({
                         >
                             {children}
                         </animated.div>
-                    ),
+                    )
             )}
         </>
     );

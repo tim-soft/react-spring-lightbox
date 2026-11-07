@@ -1,26 +1,12 @@
-import React from 'react';
 import { render } from '@testing-library/react';
+import React from 'react';
 import { beforeEach, describe, expect, test } from 'vitest';
-import Lightbox from '../index';
-import {
-    emulateDesktopSafari,
-    mouse,
-    pressMouse,
-    safariGesture,
-    touch,
-    trackpad,
-} from './devices';
-import {
-    CENTER,
-    FRAME,
-    advance,
-    image,
-    imageTransform,
-    lightboxProps,
-    mockLayout,
-    settle,
-} from './helpers';
+
 import type { Point } from './helpers';
+
+import Lightbox from '../index';
+import { emulateDesktopSafari, mouse, pressMouse, safariGesture, touch, trackpad } from './devices';
+import { CENTER, FRAME, advance, image, imageTransform, lightboxProps, mockLayout, settle } from './helpers';
 
 // These tests pin, step by step, how each gesture changes the image's scale
 // and translate offsets, so that upgrading the gesture library can't change
@@ -36,11 +22,7 @@ const AT_REST: Transform = { scale: 1, x: 0, y: 0 };
  * Zooms to `scale` around a point on screen, keeping that point in place.
  * The mocked image box is centered at CENTER before its transform.
  */
-const zoomAround = (
-    from: Transform,
-    scale: number,
-    [pointX, pointY]: Point,
-): Transform => {
+const zoomAround = (from: Transform, scale: number, [pointX, pointY]: Point): Transform => {
     const imageX = (pointX - CENTER[0] - from.x) / from.scale;
     const imageY = (pointY - CENTER[1] - from.y) / from.scale;
     return {
@@ -55,14 +37,14 @@ const zoomAround = (
  * scale stops at 3 and the offsets stay put. Below 1x the image springs back
  * to rest.
  */
-const pinchStep = (
-    from: Transform,
-    amount: number,
-    origin: Point,
-): Transform => {
+const pinchStep = (from: Transform, amount: number, origin: Point): Transform => {
     const scale = from.scale + amount;
-    if (scale < 1) return AT_REST;
-    if (scale > 3) return { ...from, scale: 3 };
+    if (scale < 1) {
+        return AT_REST;
+    }
+    if (scale > 3) {
+        return { ...from, scale: 3 };
+    }
     return zoomAround(from, scale, origin);
 };
 
@@ -71,17 +53,12 @@ const wheelAmount = (deltaY: number) => (-deltaY * 7) / 1000;
 
 /** Fingers add 1/250 of how far their distance has changed since the pinch began */
 const fingerAmount = (fingers: [Point, Point], startDistance: number) =>
-    (Math.hypot(fingers[1][0] - fingers[0][0], fingers[1][1] - fingers[0][1]) -
-        startDistance) /
-    250;
+    (Math.hypot(fingers[1][0] - fingers[0][0], fingers[1][1] - fingers[0][1]) - startDistance) / 250;
 
 /** Safari adds 260/250 of how far its gesture scale has moved from 1 */
 const safariAmount = (gestureScale: number) => ((gestureScale - 1) * 260) / 250;
 
-const midpoint = ([[ax, ay], [bx, by]]: [Point, Point]): Point => [
-    (ax + bx) / 2,
-    (ay + by) / 2,
-];
+const midpoint = ([[ax, ay], [bx, by]]: [Point, Point]): Point => [(ax + bx) / 2, (ay + by) / 2];
 
 const expectTransform = (expected: Transform) => {
     const actual = imageTransform(image(1));
@@ -175,11 +152,7 @@ describe('two fingers on the image', () => {
         for (const move of moves) {
             await fingers.moveTo(move);
             await settle();
-            expected = pinchStep(
-                expected,
-                fingerAmount(move, START_DISTANCE),
-                midpoint(move),
-            );
+            expected = pinchStep(expected, fingerAmount(move, START_DISTANCE), midpoint(move));
             expectTransform(expected);
         }
         return { expected, fingers };
@@ -206,13 +179,7 @@ describe('two fingers on the image', () => {
         fingers.lift();
         await settle();
         const last = moves[moves.length - 1];
-        expectTransform(
-            pinchStep(
-                expected,
-                fingerAmount(last, START_DISTANCE),
-                midpoint(last),
-            ),
-        );
+        expectTransform(pinchStep(expected, fingerAmount(last, START_DISTANCE), midpoint(last)));
     });
 
     test('stops at 3x without moving the image', async () => {
@@ -236,7 +203,7 @@ describe('two fingers on the image', () => {
                 [362, 384],
                 [662, 384],
             ],
-            { pointerEvents: false },
+            { pointerEvents: false }
         );
 
         await fingers.moveTo([
@@ -260,11 +227,7 @@ describe('trackpad pinch in desktop Safari', () => {
         for (const gestureScale of [1.1, 1.3, 1.2]) {
             safariGesture(image(1), 'gesturechange', OFF_CENTER, gestureScale);
             await settle();
-            expected = pinchStep(
-                expected,
-                safariAmount(gestureScale),
-                OFF_CENTER,
-            );
+            expected = pinchStep(expected, safariAmount(gestureScale), OFF_CENTER);
             expectTransform(expected);
         }
 
@@ -303,13 +266,7 @@ describe('panning a zoomed-in image', () => {
         // Zooming the panned image keeps the cursor's point in place
         await trackpad.pinch(image(1), { at: OFF_CENTER, deltaY: -50 });
         await settle();
-        expectTransform(
-            pinchStep(
-                { scale: 2, x: -63, y: -23 },
-                wheelAmount(-50),
-                OFF_CENTER,
-            ),
-        );
+        expectTransform(pinchStep({ scale: 2, x: -63, y: -23 }, wheelAmount(-50), OFF_CENTER));
     });
 });
 
@@ -328,7 +285,7 @@ describe('at 60fps, frame by frame', () => {
                 [462, 384],
                 [562, 384],
             ],
-            { pointerEvents: false },
+            { pointerEvents: false }
         );
 
         const frames: string[] = [];
@@ -366,7 +323,7 @@ describe('at 60fps, frame by frame', () => {
                 [312, 384],
                 [712, 384],
             ],
-            { pointerEvents: false },
+            { pointerEvents: false }
         );
 
         const frames: string[] = [];

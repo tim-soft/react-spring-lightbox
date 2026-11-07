@@ -1,23 +1,28 @@
-import * as React from 'react';
 import PropTypes from 'prop-types';
+import * as React from 'react';
 import Lightbox from 'react-spring-lightbox';
+
 import LightboxArrowButton from '../GalleryLightbox/components/LightboxArrowButton';
 
 const InlineLightbox = ({ images }) => {
     const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
     const inlineCarouselElement = React.useRef();
 
-    React.useEffect(() => {
-        inlineCarouselElement?.current?.addEventListener('wheel', preventWheel);
-
-        setCurrentImageIndex(0);
-    }, [inlineCarouselElement, images]);
-
     const preventWheel = (e) => {
         e.preventDefault();
         e.stopPropagation();
         return false;
     };
+
+    React.useEffect(() => {
+        const element = inlineCarouselElement.current;
+        element?.addEventListener('wheel', preventWheel);
+
+        // oxlint-disable-next-line react/set-state-in-effect -- goes back to the first image when the demo swaps in new images
+        setCurrentImageIndex(0);
+
+        return () => element?.removeEventListener('wheel', preventWheel);
+    }, [inlineCarouselElement, images]);
 
     const canPrev = currentImageIndex > 0;
     const canNext = currentImageIndex + 1 < images.length;
@@ -74,6 +79,6 @@ InlineLightbox.propTypes = {
             height: PropTypes.number,
             src: PropTypes.string.isRequired,
             width: PropTypes.number,
-        }),
+        })
     ).isRequired,
 };

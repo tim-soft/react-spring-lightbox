@@ -11,9 +11,9 @@ test-results
 blob-report
 build
 dist
-.rpt2_cache
 .next
 next-env.d.ts
+*.tsbuildinfo
 
 # misc
 .DS_Store

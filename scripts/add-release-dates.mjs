@@ -21,9 +21,13 @@ export const addReleaseDates = (markdown, date) => {
     lines.forEach((line, index) => {
         output.push(line);
         const version = VERSION_HEADING.exec(line)?.[1];
-        if (!version) return;
+        if (!version) {
+            return;
+        }
         const next = lines.slice(index + 1).find((later) => later.trim());
-        if (next && RELEASE_DATE.test(next)) return;
+        if (next && RELEASE_DATE.test(next)) {
+            return;
+        }
         output.push('', `_Released ${date}_`);
         dated.push(version);
     });
@@ -34,14 +38,11 @@ export const addReleaseDates = (markdown, date) => {
 if (realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
     const changelog = new URL('../CHANGELOG.md', import.meta.url);
     const today = new Date().toISOString().slice(0, 10);
-    const { dated, markdown } = addReleaseDates(
-        readFileSync(changelog, 'utf8'),
-        today,
-    );
+    const { dated, markdown } = addReleaseDates(readFileSync(changelog, 'utf8'), today);
     writeFileSync(changelog, markdown);
     console.log(
         dated.length
             ? `add-release-dates: dated ${dated.join(', ')} ${today}`
-            : 'add-release-dates: every release already has a date',
+            : 'add-release-dates: every release already has a date'
     );
 }

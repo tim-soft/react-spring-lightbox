@@ -1,8 +1,10 @@
 import { animated, useSprings } from '@react-spring/web';
-import { useGesture } from 'react-use-gesture';
-import Image from '../Image';
 import React, { useEffect, useRef, useState } from 'react';
+import { useGesture } from 'react-use-gesture';
+
 import type { ImagesList } from '../../../../types/ImagesList';
+
+import Image from '../Image';
 
 type IImagePager = {
     /** Index of image in images array that is currently shown */
@@ -50,11 +52,10 @@ const ImagePager = ({
 
     //Determine the absolute height of the image pager
     useEffect(() => {
-        const currPagerHeight = inline
-            ? imageStageHeight
-            : imageStageHeight - 50;
+        const currPagerHeight = inline ? imageStageHeight : imageStageHeight - 50;
 
         if (currPagerHeight !== pagerHeight) {
+            // oxlint-disable-next-line react/set-state-in-effect -- the server render and the first paint keep '100%'
             setPagerHeight(currPagerHeight);
         }
     }, [inline, pagerHeight, imageStageHeight]);
@@ -62,15 +63,14 @@ const ImagePager = ({
     // Generate page positions based on current index
     const getPagePositions = React.useCallback(
         (i: number, down = false, xDelta = 0) => {
-            const x =
-                (i - currentIndex) * imageStageWidth + (down ? xDelta : 0);
+            const x = (i - currentIndex) * imageStageWidth + (down ? xDelta : 0);
 
             if (i < currentIndex - 1 || i > currentIndex + 1) {
                 return { display: 'none', x };
             }
             return { display: 'flex', x };
         },
-        [currentIndex, imageStageWidth],
+        [currentIndex, imageStageWidth]
     );
 
     /**
@@ -78,9 +78,7 @@ const ImagePager = ({
      *
      * @see https://www.react-spring.io/docs/hooks/use-springs
      */
-    const [pagerSprings, springsApi] = useSprings(images.length, (i) =>
-        getPagePositions(i),
-    );
+    const [pagerSprings, springsApi] = useSprings(images.length, (i) => getPagePositions(i));
 
     // Animate page change if currentIndex changes
     useEffect(() => {
@@ -120,12 +118,8 @@ const ImagePager = ({
                 }
 
                 const isHorizontalDrag = Math.abs(xDir) > 0.7;
-                const draggedFarEnough =
-                    down &&
-                    isHorizontalDrag &&
-                    distance > imageStageWidth / 3.5;
-                const draggedFastEnough =
-                    down && isHorizontalDrag && velocity > 2;
+                const draggedFarEnough = down && isHorizontalDrag && distance > imageStageWidth / 3.5;
+                const draggedFastEnough = down && isHorizontalDrag && velocity > 2;
 
                 // Handle next/prev image from valid drag
                 if ((draggedFarEnough || draggedFastEnough) && active) {
@@ -194,7 +188,7 @@ const ImagePager = ({
             wheel: {
                 enabled: !inline,
             },
-        },
+        }
     );
 
     return (
@@ -206,11 +200,7 @@ const ImagePager = ({
                     key={i}
                     onClick={() => {
                         if (onClose) {
-                            return (
-                                Math.abs(x.get()) < 1 &&
-                                !disableDrag &&
-                                onClose()
-                            );
+                            return Math.abs(x.get()) < 1 && !disableDrag && onClose();
                         }
                     }}
                     role="presentation"
@@ -226,9 +216,7 @@ const ImagePager = ({
                         right: 0,
                         top: 0,
                         touchAction: !inline ? 'none' : 'pan-y',
-                        transform: x.to(
-                            (xInterp: number) => `translateX(${xInterp}px)`,
-                        ),
+                        transform: x.to((xInterp: number) => `translateX(${xInterp}px)`),
                         width: '100%',
                         willChange: 'transform',
                     }}
@@ -247,6 +235,7 @@ const ImagePager = ({
                                 justifyContent: 'center',
                             }}
                         >
+                            {/* oxlint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- keeps clicks on the image from reaching the page's close handler */}
                             <div
                                 onClick={(e) => {
                                     e.stopPropagation();
