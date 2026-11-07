@@ -53,7 +53,6 @@ test.describe('saving an image with a right click', () => {
     });
 
     test('a drag with the right button does not page', async ({ page }) => {
-        test.fail(true, 'react-use-gesture 9 drags with any mouse button');
         await openHarness(page, 'index=2');
         const [x, y] = await pointIn(page.getByAltText('Image 3'), [0.7, 0.5]);
 
@@ -63,6 +62,7 @@ test.describe('saving an image with a right click', () => {
         await page.mouse.up({ button: 'right' });
         await settle(page);
 
+        test.fail(true, 'react-use-gesture 9 drags with any mouse button');
         await expectUntouched(page);
     });
 });

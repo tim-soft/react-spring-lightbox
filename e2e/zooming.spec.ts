@@ -95,10 +95,6 @@ test.describe('with a mouse', () => {
 
     test('ctrl + wheel zooms in toward the cursor', async ({ page }) => {
         await openHarness(page, 'index=2');
-        test.fail(
-            await page.evaluate(() => 'GestureEvent' in window),
-            'Where the browser has GestureEvent, as desktop Safari does, the gesture library pinches with gesture events and ignores ctrl + wheel',
-        );
         const image = page.getByAltText('Image 3');
         const point = await pointIn(image, OFF_CENTER);
 
@@ -107,8 +103,13 @@ test.describe('with a mouse', () => {
         await page.mouse.wheel(0, -40);
         await page.keyboard.up('Control');
         await settle(page);
+        const scale = await scaleOf(page);
 
-        expect(await scaleOf(page)).toBeGreaterThan(1);
+        test.fail(
+            await page.evaluate(() => 'GestureEvent' in window),
+            'Where the browser has GestureEvent, as desktop Safari does, the gesture library pinches with gesture events and ignores ctrl + wheel',
+        );
+        expect(scale).toBeGreaterThan(1);
         await expectKeptInPlace(image, OFF_CENTER, point);
         expect(await calls(page)).toEqual({ onClose: 0, onNext: 0, onPrev: 0 });
     });
@@ -343,7 +344,6 @@ test.describe('with two fingers', () => {
     test('lifting them keeps the zoom the pinch ended on (#17)', async ({
         page,
     }) => {
-        test.fail();
         await openHarness(page, 'index=2');
         const { touch } = await chromiumInput(page);
         const from = await fingersAround(page, 30);
@@ -360,7 +360,9 @@ test.describe('with two fingers', () => {
         const pinched = await scaleOf(page);
         await touch.lift();
         await settle(page);
+        const lifted = await scaleOf(page);
 
-        expect(await scaleOf(page)).toBeCloseTo(pinched, 2);
+        test.fail();
+        expect(lifted).toBeCloseTo(pinched, 2);
     });
 });

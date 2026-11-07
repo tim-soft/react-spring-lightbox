@@ -35,10 +35,11 @@ test.describe('with a keyboard', () => {
     });
 
     test('focus moves into the lightbox when it opens', async ({ page }) => {
-        test.fail(true, 'Focus stays on the thumbnail behind the lightbox');
         await openWithKeyboard(page);
+        const focusInside = await focusIsInLightbox(page);
 
-        expect(await focusIsInLightbox(page)).toBe(true);
+        test.fail(true, 'Focus stays on the thumbnail behind the lightbox');
+        expect(focusInside).toBe(true);
     });
 
     test('Tab cycles through the lightbox, never reaching the page behind', async ({
@@ -49,27 +50,29 @@ test.describe('with a keyboard', () => {
             browserName === 'webkit',
             'WebKit on macOS tabs only to text fields by default',
         );
-        test.fail(true, 'Tab reaches the thumbnails behind the lightbox');
         await openWithKeyboard(page);
-
+        const stayedInside: boolean[] = [];
         for (let press = 0; press < 6; press += 1) {
             await page.keyboard.press('Tab');
-            expect(await focusIsInLightbox(page)).toBe(true);
+            stayedInside.push(await focusIsInLightbox(page));
         }
+
+        test.fail(true, 'Tab reaches the thumbnails behind the lightbox');
+        expect(stayedInside).toEqual(Array(6).fill(true));
     });
 
     test('screen readers announce it as a dialog', async ({ page }) => {
-        test.fail(true, 'Nothing in the lightbox has role="dialog"');
         await openWithKeyboard(page);
+        const dialogs = await page.getByRole('dialog').count();
 
-        expect(await page.getByRole('dialog').count()).toBe(1);
+        test.fail(true, 'Nothing in the lightbox has role="dialog"');
+        expect(dialogs).toBe(1);
     });
 });
 
 test('opens without animating when the user prefers reduced motion', async ({
     page,
 }) => {
-    test.fail(true, 'The springs ignore prefers-reduced-motion');
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await openHarness(page, 'closed');
 
@@ -80,5 +83,6 @@ test('opens without animating when the user prefers reduced motion', async ({
         1,
     );
 
+    test.fail(true, 'The springs ignore prefers-reduced-motion');
     expect(firstFrame).toBe(1);
 });

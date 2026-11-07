@@ -127,19 +127,19 @@ test.describe('with a mouse and keyboard', () => {
     });
 
     test('Space does not scroll the page behind', async ({ page }) => {
-        test.fail(true, 'Space is missing from the keys the lightbox blocks');
         await openHarness(page);
 
         await page.keyboard.press('Space');
         await page.waitForTimeout(300);
+        const scrolled = await scrollY(page);
 
-        expect(await scrollY(page)).toBe(0);
+        test.fail(true, 'Space is missing from the keys the lightbox blocks');
+        expect(scrolled).toBe(0);
     });
 
     test('a text field in the footer keeps its Home and End keys (#65)', async ({
         page,
     }) => {
-        test.fail();
         await openHarness(page, 'footerInput');
         const caption = page.getByRole('textbox', { name: 'Caption' });
         await caption.click();
@@ -155,12 +155,12 @@ test.describe('with a mouse and keyboard', () => {
         await page.keyboard.press('Home');
         await page.keyboard.press('End');
         await page.waitForTimeout(100);
+        const prevented = await page.evaluate(
+            () => (window as unknown as { prevented: boolean[] }).prevented,
+        );
 
-        expect(
-            await page.evaluate(
-                () => (window as unknown as { prevented: boolean[] }).prevented,
-            ),
-        ).toEqual([false, false]);
+        test.fail();
+        expect(prevented).toEqual([false, false]);
     });
 });
 
@@ -193,7 +193,6 @@ test.describe('on a touchscreen', () => {
             browserName !== 'chromium',
             'Touch input through the DevTools protocol',
         );
-        test.fail(true, 'Only the image stage sets touch-action: none');
         await openHarness(page);
         const { touch } = await chromiumInput(page);
         const [x, y] = await pointIn(page.getByRole('contentinfo'));
@@ -203,8 +202,10 @@ test.describe('on a touchscreen', () => {
             30,
         );
         await page.waitForTimeout(600);
+        const scrolled = await scrollY(page);
 
-        expect(await scrollY(page)).toBe(0);
+        test.fail(true, 'Only the image stage sets touch-action: none');
+        expect(scrolled).toBe(0);
     });
 });
 

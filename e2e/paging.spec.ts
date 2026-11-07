@@ -296,7 +296,6 @@ test.describe('scrolling with a mouse wheel or trackpad', () => {
     });
 
     test('one trackpad swipe moves one image (#52)', async ({ page }) => {
-        test.fail();
         await openHarness(page, 'index=0');
 
         await page.mouse.move(640, 300);
@@ -305,8 +304,10 @@ test.describe('scrolling with a mouse wheel or trackpad', () => {
             await page.waitForTimeout(16);
         }
         await settle(page);
+        const { onNext } = await calls(page);
 
-        expect((await calls(page)).onNext).toBe(1);
+        test.fail();
+        expect(onNext).toBe(1);
     });
 });
 
@@ -329,14 +330,15 @@ test.describe('the keyboard', () => {
     test('arrow keys in a text field move the caret, not the gallery (#65)', async ({
         page,
     }) => {
-        test.fail();
         await openHarness(page, 'footerInput&index=2');
 
         await page.getByRole('textbox', { name: 'Caption' }).click();
         await page.keyboard.press('ArrowRight');
         await settle(page);
+        const { onNext } = await calls(page);
 
-        expect((await calls(page)).onNext).toBe(0);
+        test.fail();
+        expect(onNext).toBe(0);
     });
 });
 
@@ -364,7 +366,6 @@ test.describe('arrow buttons', () => {
     test('unstyled buttons are not covered by the pager (#54)', async ({
         page,
     }) => {
-        test.fail();
         await openHarness(page, 'plainButtons&index=2');
 
         const [x, y] = await pointIn(
@@ -375,6 +376,7 @@ test.describe('arrow buttons', () => {
             [x, y],
         );
 
+        test.fail();
         expect(topmost).toBe('Next');
     });
 

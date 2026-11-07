@@ -72,12 +72,12 @@ test.describe('with a mouse and keyboard', () => {
     test('leaves the page keys to the page around it (#65)', async ({
         page,
     }) => {
-        test.fail();
         await openCarousel(page);
         const before = await scrollY(page);
 
         await page.keyboard.press('PageDown');
 
+        test.fail();
         await expect
             .poll(() => scrollY(page), { timeout: 1000 })
             .toBeGreaterThan(before);
