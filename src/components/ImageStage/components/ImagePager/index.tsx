@@ -162,7 +162,13 @@ const ImagePager = ({
                 // Add small timeout buffer to prevent event handlers from firing in child Images
                 setTimeout(() => setIsDragging(false), 100);
             },
-            onWheel: ({ ctrlKey, delta: [xDelta, yDelta], last, velocity: [xVelocity, yVelocity] }) => {
+            onWheel: ({
+                ctrlKey,
+                delta: [xDelta, yDelta],
+                last,
+                memo: canPage = true,
+                velocity: [xVelocity, yVelocity],
+            }) => {
                 // react-use-gesture 9 reported one speed for both axes, and 0 for the
                 // last wheel event, where @use-gesture repeats the one before it
                 const velocity = last ? 0 : Math.hypot(xVelocity, yVelocity);
@@ -174,6 +180,13 @@ const ImagePager = ({
 
                 if (!isDragging) {
                     setIsDragging(true);
+                }
+
+                // A trackpad sends wheel events for about a second after the fingers lift,
+                // as its scroll slows down, so a swipe pages once. Fingers landing for another
+                // swipe stop the scroll, so the next swipe can page once the scroll nearly stops.
+                if (!canPage) {
+                    return velocity < 0.2;
                 }
 
                 const draggedFastEnough = velocity > 1.1;
@@ -188,6 +201,8 @@ const ImagePager = ({
                         onPrev();
                     }
                 }
+
+                return !draggedFastEnough;
             },
             onWheelEnd: () => {
                 springsApi.start((i) => getPagePositions(i));
