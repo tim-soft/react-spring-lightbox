@@ -281,7 +281,7 @@ test.describe('scrolling with a mouse wheel or trackpad', () => {
         expect(await shownImage(page)).toBe('Image 3');
     });
 
-    test('one trackpad swipe moves one image (#52)', async ({ page }) => {
+    test('one trackpad swipe moves one image', async ({ page }) => {
         await openHarness(page, 'index=0');
 
         await page.mouse.move(640, 300);
@@ -292,8 +292,55 @@ test.describe('scrolling with a mouse wheel or trackpad', () => {
         await settle(page);
         const { onNext } = await calls(page);
 
-        test.fail();
         expect(onNext).toBe(1);
+    });
+});
+
+test.describe('swiping on a trackpad in Chromium', () => {
+    test.skip(
+        ({ browserName, isMobile }) => isMobile || browserName !== 'chromium',
+        'Wheel events with timestamps through the DevTools protocol'
+    );
+
+    const fingers = (peak: number) => [0.1, 0.3, 0.6, 1].map((share) => Math.round(peak * share));
+
+    const momentum = (from: number) => {
+        const deltas: number[] = [];
+        for (let delta = from * 0.94; Math.abs(delta) >= 1; delta *= 0.94) {
+            deltas.push(Math.round(delta));
+        }
+        return deltas;
+    };
+
+    const swipe = async (wheel: (point: Point, event: { deltaX: number }) => Promise<unknown>, deltasX: number[]) => {
+        for (const deltaX of deltasX) {
+            await wheel([640, 300], { deltaX });
+        }
+    };
+
+    test('one swipe moves one image, as it keeps scrolling after the fingers lift', async ({ page }) => {
+        await openHarness(page, 'index=0');
+        const { wheel } = await chromiumInput(page);
+
+        await swipe(wheel, [...fingers(-50), ...momentum(-50)]);
+        await settle(page);
+
+        expect((await calls(page)).onNext).toBe(1);
+        expect(await shownImage(page)).toBe('Image 2');
+    });
+
+    test('a second swipe moves another image, even before the first one stops scrolling', async ({ page }) => {
+        await openHarness(page, 'index=0');
+        const { wheel } = await chromiumInput(page);
+
+        await swipe(wheel, [...fingers(-50), ...momentum(-50).slice(0, 8)]);
+        // Fingers landing on the trackpad stop the scroll. The next wheel event moves 2px in 40ms.
+        await wheel([640, 300], { deltaX: -2, ms: 40 });
+        await swipe(wheel, [...fingers(-50), ...momentum(-50)]);
+        await settle(page);
+
+        expect((await calls(page)).onNext).toBe(2);
+        expect(await shownImage(page)).toBe('Image 3');
     });
 });
 

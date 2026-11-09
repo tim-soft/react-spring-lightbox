@@ -40,6 +40,16 @@ const SHORT_LEFT: Point[] = [
     [560, 300],
 ];
 
+const fingers = (peak: number) => [0.1, 0.3, 0.6, 1].map((share) => Math.round(peak * share));
+
+const momentum = (from: number) => {
+    const deltas: number[] = [];
+    for (let delta = from * 0.94; Math.abs(delta) >= 1; delta *= 0.94) {
+        deltas.push(Math.round(delta));
+    }
+    return deltas;
+};
+
 let layout: ReturnType<typeof mockLayout>;
 
 beforeEach(() => {
@@ -372,13 +382,76 @@ describe('scrolling with a mouse wheel or trackpad', () => {
         expect(shownImage()).toBe('Image 3');
     });
 
-    test.fails('one trackpad swipe pages one image (#52)', async () => {
+    test('one trackpad swipe pages one image', async () => {
         const props = lightboxProps({ currentIndex: START });
         render(<Lightbox {...props} />);
 
         await trackpad.scroll(pageOf(3), { deltaX: -600, ticks: 6 });
 
         expect(props.onNext).toHaveBeenCalledTimes(1);
+    });
+
+    test('one trackpad swipe pages one image, as it keeps scrolling after the fingers lift', async () => {
+        const props = lightboxProps({ currentIndex: START });
+        render(<Lightbox {...props} />);
+
+        await trackpad.swipe(pageOf(3), [...fingers(-50), ...momentum(-50)]);
+        await settle();
+
+        expect(props.onNext).toHaveBeenCalledOnce();
+    });
+
+    test('a swipe on a Windows touchpad pages once, though Chrome sends an empty wheel event as the fingers lift', async () => {
+        const props = lightboxProps({ currentIndex: START });
+        render(<Lightbox {...props} />);
+
+        await trackpad.swipe(pageOf(3), [...fingers(-50), 0, -50, ...momentum(-50)]);
+        await settle();
+
+        expect(props.onNext).toHaveBeenCalledOnce();
+    });
+
+    test('a swipe that slows down and speeds up again, without stopping, pages once', async () => {
+        const props = lightboxProps({ currentIndex: START });
+        render(<Lightbox {...props} />);
+
+        await trackpad.swipe(pageOf(3), [...fingers(-50), -20, -8, -8, -20, -35, -50, ...momentum(-50)]);
+        await settle();
+
+        expect(props.onNext).toHaveBeenCalledOnce();
+    });
+
+    test.each([
+        ['the same way', -50, 2, 0],
+        ['back', 50, 1, 1],
+    ])(
+        'a second swipe %s pages again, even before the first one stops scrolling',
+        async (_, secondPeak, nextCalls, prevCalls) => {
+            const props = lightboxProps({ currentIndex: START });
+            render(<Lightbox {...props} />);
+
+            await trackpad.swipe(pageOf(3), [...fingers(-50), ...momentum(-50).slice(0, 8)]);
+            // Fingers landing on the trackpad stop the scroll. The next wheel event moves 2px in 40ms.
+            await advance(40 - FRAME);
+            await trackpad.swipe(pageOf(3), [-2, ...fingers(secondPeak), ...momentum(secondPeak)]);
+            await settle();
+
+            expect(props.onNext).toHaveBeenCalledTimes(nextCalls);
+            expect(props.onPrev).toHaveBeenCalledTimes(prevCalls);
+        }
+    );
+
+    test('a mouse wheel spun quickly pages once', async () => {
+        const props = lightboxProps({ currentIndex: START });
+        render(<Lightbox {...props} />);
+
+        for (let notch = 0; notch < 5; notch += 1) {
+            fireEvent.wheel(pageOf(3), { deltaY: 100 });
+            await advance(50);
+        }
+        await settle();
+
+        expect(props.onPrev).toHaveBeenCalledOnce();
     });
 });
 

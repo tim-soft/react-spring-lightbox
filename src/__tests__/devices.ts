@@ -98,6 +98,12 @@ export const trackpad = {
             await advance(FRAME);
         }
     },
+    swipe: async (target: Element, deltasX: number[]) => {
+        for (const deltaX of deltasX) {
+            wheel(target, { deltaX });
+            await advance(FRAME);
+        }
+    },
 };
 
 type Finger = { id: number; point: Point };
