@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, test } from 'vitest';
 import type { Point } from './helpers';
 
 import Lightbox from '../index';
-import { emulateDesktopSafari, mouse, pressMouse, safariGesture, touch, trackpad } from './devices';
+import { mouse, pressMouse, touch, trackpad, wheel } from './devices';
 import { CENTER, FRAME, advance, image, imageTransform, lightboxProps, mockLayout, settle } from './helpers';
 
 // These tests pin, step by step, how each gesture changes the image's scale
@@ -54,9 +54,6 @@ const wheelAmount = (deltaY: number) => (-deltaY * 7) / 1000;
 /** Fingers add 1/250 of how far their distance has changed since the pinch began */
 const fingerAmount = (fingers: [Point, Point], startDistance: number) =>
     (Math.hypot(fingers[1][0] - fingers[0][0], fingers[1][1] - fingers[0][1]) - startDistance) / 250;
-
-/** Safari adds 260/250 of how far its gesture scale has moved from 1 */
-const safariAmount = (gestureScale: number) => ((gestureScale - 1) * 260) / 250;
 
 const midpoint = ([[ax, ay], [bx, by]]: [Point, Point]): Point => [(ax + bx) / 2, (ay + by) / 2];
 
@@ -117,6 +114,19 @@ describe('ctrl + wheel', () => {
         }
     });
 
+    // Firefox reports a mouse wheel in lines
+    test.each([
+        { deltaMode: 1, deltaY: -3, pixels: 40, unit: 'line' },
+        { deltaMode: 2, deltaY: -0.1, pixels: 800, unit: 'page' },
+    ])('counts a $unit of deltaY as $pixels pixels', async ({ deltaMode, deltaY, pixels }) => {
+        render(<Lightbox {...lightboxProps()} />);
+
+        wheel(image(1), { at: OFF_CENTER, ctrlKey: true, deltaMode, deltaY });
+        await settle();
+
+        expectTransform(pinchStep(AT_REST, wheelAmount(deltaY * pixels), OFF_CENTER));
+    });
+
     test('stops at 3x without moving the image, then springs back to rest below 1x', async () => {
         render(<Lightbox {...lightboxProps()} />);
         await trackpad.pinch(image(1), { at: OFF_CENTER, deltaY: -100 });
@@ -175,11 +185,10 @@ describe('two fingers on the image', () => {
         ];
         const { expected, fingers } = await pinchWith(moves);
 
-        // Lifting the fingers repeats the last step once more (#17)
+        // Lifting the fingers keeps the zoom (#17)
         fingers.lift();
         await settle();
-        const last = moves[moves.length - 1];
-        expectTransform(pinchStep(expected, fingerAmount(last, START_DISTANCE), midpoint(last)));
+        expectTransform(expected);
     });
 
     test('stops at 3x without moving the image', async () => {
@@ -213,29 +222,6 @@ describe('two fingers on the image', () => {
         await settle();
 
         expectTransform(AT_REST);
-    });
-});
-
-describe('trackpad pinch in desktop Safari', () => {
-    test('each gesture change zooms around the cursor by 260/250 of its scale above 1', async () => {
-        emulateDesktopSafari();
-        render(<Lightbox {...lightboxProps()} />);
-        safariGesture(image(1), 'gesturestart', OFF_CENTER, 1);
-        await settle();
-
-        let expected = AT_REST;
-        for (const gestureScale of [1.1, 1.3, 1.2]) {
-            safariGesture(image(1), 'gesturechange', OFF_CENTER, gestureScale);
-            await settle();
-            expected = pinchStep(expected, safariAmount(gestureScale), OFF_CENTER);
-            expectTransform(expected);
-        }
-
-        // Ending the gesture repeats the last step once more, as lifting
-        // fingers does (#17)
-        safariGesture(image(1), 'gestureend', OFF_CENTER, 1.2);
-        await settle();
-        expectTransform(pinchStep(expected, safariAmount(1.2), OFF_CENTER));
     });
 });
 

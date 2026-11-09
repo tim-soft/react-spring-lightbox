@@ -135,6 +135,41 @@ describe('dragging with a mouse', () => {
         expect(shownImage()).toBe('Image 3');
     });
 
+    test('a quick drag that is mostly vertical does not page', async () => {
+        await openGallery();
+
+        await mouse.drag(pageOf(3), [
+            [600, 200],
+            [605, 260],
+            [610, 320],
+            [615, 380],
+        ]);
+        await settle();
+
+        expect(shownImage()).toBe('Image 3');
+    });
+
+    test('dragging back and forth short of the threshold does not page', async () => {
+        await openGallery();
+
+        await mouse.drag(
+            pageOf(3),
+            [
+                [600, 300],
+                [500, 300],
+                [400, 300],
+                [500, 300],
+                [600, 300],
+                [500, 300],
+                [400, 300],
+            ],
+            100
+        );
+        await settle();
+
+        expect(shownImage()).toBe('Image 3');
+    });
+
     test('does not ask for a previous image from the first one', async () => {
         const props = lightboxProps({ currentIndex: 0 });
         render(<Lightbox {...props} />);
@@ -281,6 +316,27 @@ describe('scrolling with a mouse wheel or trackpad', () => {
         await settle();
 
         expect(shownImage()).toBe(expected);
+    });
+
+    test('a quick scroll pages once, and not again when it ends', async () => {
+        const props = lightboxProps({ currentIndex: START });
+        render(<Lightbox {...props} />);
+
+        await trackpad.scroll(pageOf(3), { deltaX: -60, ticks: 2 });
+        await settle();
+
+        expect(props.onNext).toHaveBeenCalledOnce();
+    });
+
+    test('a quick, mostly downward scroll pages back, even when it drifts left', async () => {
+        const props = lightboxProps({ currentIndex: START });
+        render(<Lightbox {...props} />);
+
+        await trackpad.scroll(pageOf(3), { deltaX: -10, deltaY: 100, ticks: 2 });
+        await settle();
+
+        expect(props.onPrev).toHaveBeenCalledOnce();
+        expect(props.onNext).not.toHaveBeenCalled();
     });
 
     test('slow scrolling stays on the image', async () => {

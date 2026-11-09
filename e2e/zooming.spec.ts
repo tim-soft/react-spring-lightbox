@@ -94,10 +94,6 @@ test.describe('with a mouse', () => {
         await settle(page);
         const scale = await scaleOf(page);
 
-        test.fail(
-            await page.evaluate(() => 'GestureEvent' in window),
-            'Where the browser has GestureEvent, as desktop Safari does, the gesture library pinches with gesture events and ignores ctrl + wheel'
-        );
         expect(scale).toBeGreaterThan(1);
         await expectKeptInPlace(image, OFF_CENTER, point);
         expect(await calls(page)).toEqual({ onClose: 0, onNext: 0, onPrev: 0 });
@@ -324,7 +320,6 @@ test.describe('with two fingers', () => {
         await settle(page);
         const lifted = await scaleOf(page);
 
-        test.fail();
         expect(lifted).toBeCloseTo(pinched, 2);
     });
 });

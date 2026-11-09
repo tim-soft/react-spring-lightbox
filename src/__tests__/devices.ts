@@ -1,5 +1,4 @@
 import { fireEvent } from '@testing-library/react';
-import { onTestFinished, vi } from 'vitest';
 
 import type { Point } from './helpers';
 
@@ -25,7 +24,9 @@ const firePointer = (
         pointerType,
     });
 
-const fireClick = (target: Element, [clientX, clientY]: Point) => fireEvent.click(target, { clientX, clientY });
+// A browser's click counts the clicks in `detail`, which a keyboard click leaves at 0
+const fireClick = (target: Element, [clientX, clientY]: Point) =>
+    fireEvent.click(target, { clientX, clientY, detail: 1 });
 
 /** Holds a mouse button or pen down on `target` until `release` */
 export const pressPointer = (target: Element, start: Point, pointer: { id: number; pointerType: PointerType }) => {
@@ -70,16 +71,17 @@ export const mouse = {
     },
 };
 
-/** Fires one wheel event, as a mouse wheel or trackpad does */
+/** Fires one wheel event, as a mouse wheel or trackpad does. A deltaMode of 1 counts lines, and 2 pages. */
 export const wheel = (
     target: Element,
     {
         at: [clientX, clientY] = [512, 384],
         ctrlKey = false,
+        deltaMode = 0,
         deltaX = 0,
         deltaY = 0,
-    }: { at?: Point; ctrlKey?: boolean; deltaX?: number; deltaY?: number }
-) => fireEvent.wheel(target, { clientX, clientY, ctrlKey, deltaX, deltaY });
+    }: { at?: Point; ctrlKey?: boolean; deltaMode?: number; deltaX?: number; deltaY?: number }
+) => fireEvent.wheel(target, { clientX, clientY, ctrlKey, deltaMode, deltaX, deltaY });
 
 export const trackpad = {
     /** A pinch in Chrome, Edge and Firefox, which send it as ctrl + wheel. Negative deltaY zooms in. */
@@ -111,6 +113,7 @@ export const touch = (target: Element, points: Point[], { pointerEvents = true }
         clientX,
         clientY,
         identifier: id,
+        target,
     });
     const touchLists = (changed: Finger[]) => {
         const touches = fingers.map(toTouch);
@@ -206,33 +209,7 @@ export const touchscreen = {
     },
 };
 
-/** Hides a window event handler property, the way browsers without that event lack it */
-const removeForTest = (handler: 'ontouchstart') => {
-    let owner: object = window;
-    while (!Object.prototype.hasOwnProperty.call(owner, handler)) {
-        owner = Object.getPrototypeOf(owner);
-    }
-    const descriptor = Object.getOwnPropertyDescriptor(owner, handler) as PropertyDescriptor;
-    delete (owner as Record<string, unknown>)[handler];
-
-    onTestFinished(() => {
-        Object.defineProperty(owner, handler, descriptor);
-    });
-};
-
-/**
- * Desktop Safari: pointer events but no touch events, and trackpad pinches
- * arrive as WebKit gesture events. Call before rendering.
- */
-export const emulateDesktopSafari = () => {
-    removeForTest('ontouchstart');
-    vi.stubGlobal('GestureEvent', class GestureEvent extends UIEvent {});
-    onTestFinished(() => {
-        vi.unstubAllGlobals();
-    });
-};
-
-/** One WebKit gesture event, as desktop Safari sends for a trackpad pinch */
+/** One WebKit gesture event, as desktop Safari sends for a trackpad pinch. See desktop-safari.test.tsx. */
 export const safariGesture = (
     target: Element,
     type: 'gesturechange' | 'gestureend' | 'gesturestart',

@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, test } from 'vitest';
 import type { Point } from './helpers';
 
 import Lightbox from '../index';
-import { emulateDesktopSafari, mouse, pressKey, safariPinch, touch, touchscreen, trackpad, wheel } from './devices';
+import { mouse, pressKey, touch, touchscreen, trackpad, wheel } from './devices';
 import {
     BACKDROP,
     CENTER,
@@ -281,7 +281,7 @@ describe('pinch handling on the image', () => {
         expect(shownImage()).toBe('Image 4');
     });
 
-    test.fails('lifting the fingers keeps the zoom the pinch ended on (#17)', async () => {
+    test('lifting the fingers keeps the zoom the pinch ended on (#17)', async () => {
         render(<Lightbox {...lightboxProps()} />);
         const fingers = fingersOn(image(1), FINGERS_CLOSE);
         await fingers.moveTo(FINGERS_APART);
@@ -292,6 +292,18 @@ describe('pinch handling on the image', () => {
         await settle();
 
         expect(imageTransform(image(1)).scale).toBe(pinched);
+    });
+
+    test('keeps the zoom when the fingers lift before it starts to animate', async () => {
+        render(<Lightbox {...lightboxProps()} />);
+        const fingers = fingersOn(image(1), FINGERS_CLOSE);
+        await fingers.moveTo(FINGERS_APART);
+
+        fingers.lift();
+        await settle();
+
+        // The fingers spread from 100px to 200px apart, and each pixel zooms 1/250
+        expect(imageTransform(image(1)).scale).toBeCloseTo(1.4);
     });
 });
 
@@ -334,28 +346,6 @@ describe('with ctrl + wheel (a trackpad pinch in Chrome, Edge and Firefox)', () 
         await advance(FRAME);
 
         expect(props.onNext).not.toHaveBeenCalled();
-    });
-});
-
-describe('with a trackpad pinch in desktop Safari', () => {
-    test('zooms in toward the cursor', async () => {
-        emulateDesktopSafari();
-        render(<Lightbox {...lightboxProps()} />);
-
-        await safariPinch(image(1), { at: [712, 484], scales: [1.2, 1.5] });
-        await settle();
-
-        keepsInPlace(image(1), [200, 100]);
-    });
-
-    test('springs back to full size when zoomed out past 1x', async () => {
-        emulateDesktopSafari();
-        render(<Lightbox {...lightboxProps()} />);
-
-        await safariPinch(image(1), { at: CENTER, scales: [0.8, 0.5] });
-        await settle();
-
-        expect(image(1)).toHaveStyle({ transform: AT_REST });
     });
 });
 

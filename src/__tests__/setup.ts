@@ -9,6 +9,16 @@ Globals.assign({
     requestAnimationFrame: (callback) => requestAnimationFrame(callback),
 });
 
+// jsdom has no pointer capture. devices.ts already sends each event to the
+// element the gesture started on, so capturing a pointer can do nothing.
+if (!('setPointerCapture' in Element.prototype)) {
+    Object.assign(Element.prototype, {
+        hasPointerCapture: () => false,
+        releasePointerCapture: () => {},
+        setPointerCapture: () => {},
+    });
+}
+
 beforeEach(() => {
     vi.useFakeTimers();
 });
