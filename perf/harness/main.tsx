@@ -1,6 +1,6 @@
 // perf/vite.config.mts points this at the src/ of the variant being measured
 import Lightbox from 'perf-lightbox';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import type { ImagesListType } from '../../src/index';
@@ -22,6 +22,11 @@ const images = Array.from({ length: count }, (_, i) => ({
 const App = () => {
     const [currentIndex, setCurrentIndex] = useState(Number(params.get('index') ?? 0));
     const [isOpen, setIsOpen] = useState(!params.has('closed'));
+
+    // Lets a script jump to any image, as a consumer's thumbnails would
+    useEffect(() => {
+        Object.assign(window, { setLightboxIndex: setCurrentIndex });
+    }, []);
 
     const gotoPrevious = () => currentIndex > 0 && setCurrentIndex(currentIndex - 1);
     const gotoNext = () => currentIndex + 1 < images.length && setCurrentIndex(currentIndex + 1);
