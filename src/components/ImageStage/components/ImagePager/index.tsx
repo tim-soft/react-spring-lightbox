@@ -47,31 +47,28 @@ const ImagePager = ({
     const firstRender = useRef(true);
 
     const [disableDrag, setDisableDrag] = useState<boolean>(false);
-    const [pagerHeight, setPagerHeight] = useState<'100%' | number>('100%');
     const [isDragging, setIsDragging] = useState<boolean>(false);
 
-    //Determine the absolute height of the image pager
-    useEffect(() => {
-        const currPagerHeight = inline ? imageStageHeight : imageStageHeight - 50;
-
-        if (currPagerHeight !== pagerHeight) {
-            // oxlint-disable-next-line react/set-state-in-effect -- the server render and the first paint keep '100%'
-            setPagerHeight(currPagerHeight);
-        }
-    }, [inline, pagerHeight, imageStageHeight]);
+    // The absolute height of the image pager, with 50px of room for controls unless inline
+    const pagerHeight = inline ? imageStageHeight : imageStageHeight - 50;
 
     // Generate page positions based on current index
     const getPagePositions = React.useCallback(
         (i: number, down = false, xDelta = 0) => {
-            const x = (i - currentIndex) * imageStageWidth + (down ? xDelta : 0);
+            const x = (i - currentIndex) * imageStageWidth;
 
+            // Pages past the neighbors are hidden, so drags skip them and a page change sets them in place
             if (i < currentIndex - 1 || i > currentIndex + 1) {
                 return { display: 'none', x };
             }
-            return { display: 'flex', x };
+            return { display: 'flex', x: x + (down ? xDelta : 0) };
         },
         [currentIndex, imageStageWidth]
     );
+
+    // A drag moves only the pages it can show. Hidden pages already rest in place.
+    const getShownPagePositions = (i: number, down = false, xDelta = 0) =>
+        Math.abs(i - currentIndex) <= 1 ? getPagePositions(i, down, xDelta) : null;
 
     /**
      * Animates translateX of all images at the same time
@@ -87,8 +84,16 @@ const ImagePager = ({
             firstRender.current = false;
             return;
         }
-        // Update page positions after prev/next page state change
-        springsApi.start((i) => getPagePositions(i));
+        // Update page positions after prev/next page state change. Hidden pages move with set(), because
+        // react-spring searches its whole frame queue for each spring that start() adds to it.
+        springsApi.start((i, ctrl) => {
+            const position = getPagePositions(i);
+            if (position.display === 'none') {
+                ctrl.set(position);
+                return null;
+            }
+            return position;
+        });
     }, [currentIndex, getPagePositions, springsApi]);
 
     /**
@@ -154,11 +159,11 @@ const ImagePager = ({
                 }
 
                 // Update page x-coordinates for single finger/mouse gestures
-                springsApi.start((i) => getPagePositions(i, down, xMovement));
+                springsApi.start((i) => getShownPagePositions(i, down, xMovement));
                 return;
             },
             onDragEnd: () => {
-                springsApi.start((i) => getPagePositions(i));
+                springsApi.start((i) => getShownPagePositions(i));
                 // Add small timeout buffer to prevent event handlers from firing in child Images
                 setTimeout(() => setIsDragging(false), 100);
             },
@@ -205,7 +210,7 @@ const ImagePager = ({
                 return !draggedFastEnough;
             },
             onWheelEnd: () => {
-                springsApi.start((i) => getPagePositions(i));
+                springsApi.start((i) => getShownPagePositions(i));
                 // Add small timeout buffer to prevent event handlers from firing in child Images
                 setTimeout(() => setIsDragging(false), 100);
             },
@@ -284,8 +289,10 @@ const ImagePager = ({
                                     imgProps={images[i]}
                                     inline={inline}
                                     isCurrentImage={i === currentIndex}
+                                    isShown={Math.abs(i - currentIndex) <= 1}
                                     pagerHeight={pagerHeight}
-                                    pagerIsDragging={isDragging}
+                                    // Hidden pages get no input, so they skip the render when a drag starts or ends
+                                    pagerIsDragging={isDragging && Math.abs(i - currentIndex) <= 1}
                                     setDisableDrag={setDisableDrag}
                                     singleClickToZoom={singleClickToZoom}
                                 />

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1"
+        />
+        <title>react-spring-lightbox perf harness</title>
+        <style>
+            html,
+            body {
+                margin: 0;
+                font-family: sans-serif;
+            }
+        </style>
+        <script>
+            // With ?count, record what the lightbox does instead of timing it. React DevTools
+            // reads renders the same way, from the PerformedWork flag of each committed fiber.
+            if (new URLSearchParams(location.search).has('count')) {
+                const counts = { listenersAdded: 0, listenersRemoved: 0, renders: {}, styleWrites: 0 };
+                window.__counts = counts;
+                window.__resetCounts = () => {
+                    counts.listenersAdded = 0;
+                    counts.listenersRemoved = 0;
+                    counts.renders = {};
+                    counts.styleWrites = 0;
+                };
+
+                const { addEventListener, removeEventListener } = EventTarget.prototype;
+                EventTarget.prototype.addEventListener = function (...args) {
+                    counts.listenersAdded += 1;
+                    return addEventListener.apply(this, args);
+                };
+                EventTarget.prototype.removeEventListener = function (...args) {
+                    counts.listenersRemoved += 1;
+                    return removeEventListener.apply(this, args);
+                };
+
+                new MutationObserver((records) => {
+                    counts.styleWrites += records.length;
+                }).observe(document, { attributeFilter: ['style'], subtree: true });
+
+                const performedWork = 1;
+                const countRenders = (first) => {
+                    const stack = [first];
+                    while (stack.length) {
+                        const fiber = stack.pop();
+                        const name = typeof fiber.type === 'function' && (fiber.type.displayName || fiber.type.name);
+                        if (name && (fiber.alternate === null || fiber.flags & performedWork)) {
+                            counts.renders[name] = (counts.renders[name] ?? 0) + 1;
+                        }
+                        if (fiber.sibling) {
+                            stack.push(fiber.sibling);
+                        }
+                        // A child that is the same fiber as last commit's bailed out with its subtree
+                        if (fiber.child && fiber.child !== fiber.alternate?.child) {
+                            stack.push(fiber.child);
+                        }
+                    }
+                };
+                window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
+                    checkDCE() {},
+                    inject: () => 1,
+                    onCommitFiberRoot: (_id, root) => root.current.child && countRenders(root.current.child),
+                    onCommitFiberUnmount() {},
+                    onPostCommitFiberRoot() {},
+                    onScheduleFiberRoot() {},
+                    renderers: new Map(),
+                    supportsFiber: true,
+                };
+            }
+        </script>
+    </head>
+    <body>
+        <div id="root"></div>
+        <script
+            type="module"
+            src="./main.tsx"
+        ></script>
+    </body>
+</html>
