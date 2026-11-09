@@ -23,7 +23,7 @@ type IImageProps = {
     /** True for the current image and its neighbors, the images a drag can show */
     isShown: boolean;
     /** Fixed height of the image stage, used to restrict maximum height of images */
-    pagerHeight: '100%' | number;
+    pagerHeight: number;
     /** Indicates parent ImagePager is in a state of dragging, if true click to zoom is disabled */
     pagerIsDragging: boolean;
     /** Function that can be called to disable dragging in the pager */

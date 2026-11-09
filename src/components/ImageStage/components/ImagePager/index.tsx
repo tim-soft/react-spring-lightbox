@@ -47,18 +47,10 @@ const ImagePager = ({
     const firstRender = useRef(true);
 
     const [disableDrag, setDisableDrag] = useState<boolean>(false);
-    const [pagerHeight, setPagerHeight] = useState<'100%' | number>('100%');
     const [isDragging, setIsDragging] = useState<boolean>(false);
 
-    //Determine the absolute height of the image pager
-    useEffect(() => {
-        const currPagerHeight = inline ? imageStageHeight : imageStageHeight - 50;
-
-        if (currPagerHeight !== pagerHeight) {
-            // oxlint-disable-next-line react/set-state-in-effect -- the server render and the first paint keep '100%'
-            setPagerHeight(currPagerHeight);
-        }
-    }, [inline, pagerHeight, imageStageHeight]);
+    // The absolute height of the image pager, with 50px of room for controls unless inline
+    const pagerHeight = inline ? imageStageHeight : imageStageHeight - 50;
 
     // Generate page positions based on current index
     const getPagePositions = React.useCallback(
