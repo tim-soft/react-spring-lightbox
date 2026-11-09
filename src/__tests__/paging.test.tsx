@@ -56,6 +56,16 @@ beforeEach(() => {
     layout = mockLayout();
 });
 
+/** The images a user can see, as [image number, translateX], for pages that overlap the 800px stage */
+const imagesOnStage = () =>
+    screen.queryAllByRole('img', { hidden: true }).flatMap((img) => {
+        const page = img.closest('.lightbox-image-pager') as HTMLElement;
+        const x = translateX(page);
+        return page.style.display !== 'none' && Math.abs(x) < 800
+            ? [[Number(img.getAttribute('alt')?.replace('Image ', '')), x]]
+            : [];
+    });
+
 const openGallery = async (initialIndex = START) => {
     render(<Gallery initialIndex={initialIndex} />);
     await settle();
@@ -75,6 +85,31 @@ describe('dragging with a mouse', () => {
         expect(firstOffset).toBeLessThan(0);
         expect(translateX(pageOf(3)) - firstOffset).toBe(-50);
         expect(translateX(pageOf(4))).toBe(translateX(pageOf(3)) + 800);
+    });
+
+    test('a new file for the shown image while a drag is held leaves the pages under the pointer', async () => {
+        const props = lightboxProps({ currentIndex: START });
+        const { rerender } = render(<Lightbox {...props} />);
+        await settle();
+        const button = pressMouse(pageOf(3), [600, 300]);
+        await button.moveTo([500, 300], 100);
+        await settle();
+        const dragged = translateX(pageOf(3));
+
+        // A larger file replaces image 3, as progressive loading does
+        rerender(
+            <Lightbox
+                {...props}
+                images={props.images.map((image, index) =>
+                    index === START ? { ...image, src: 'image-3-large.jpg' } : image
+                )}
+            />
+        );
+        await advance(FRAME * 5);
+
+        expect(dragged).toBeLessThan(0);
+        expect(translateX(pageOf(3))).toBe(dragged);
+        button.release();
     });
 
     test('springs back when released short of the threshold', async () => {
@@ -613,6 +648,263 @@ describe('when currentIndex changes', () => {
         }
 
         expect(offsets).toEqual([0, 0, 0, 0, 0]);
+    });
+
+    test.each([
+        { from: 1, side: -1, to: 5 },
+        { from: 5, side: 1, to: 1 },
+    ])('a jump from image $from to image $to slides one off the stage and the other on', async ({ from, side, to }) => {
+        const props = lightboxProps({ currentIndex: from - 1 });
+        const { rerender } = render(<Lightbox {...props} />);
+        await settle();
+
+        rerender(
+            <Lightbox
+                {...props}
+                currentIndex={to - 1}
+            />
+        );
+        const frames: number[][][] = [];
+        for (let frame = 0; frame < 40; frame += 1) {
+            await advance(FRAME);
+            frames.push(imagesOnStage());
+        }
+
+        const leaving = frames.map((frame) => frame.find(([n]) => n === from)?.[1]);
+        const arriving = frames.map((frame) => frame.find(([n]) => n === to)?.[1]);
+        // The old image stays on the stage as it moves off one side
+        expect(leaving.slice(0, 5)).not.toContain(undefined);
+        expect(leaving.slice(0, 5).every((x) => (x as number) * side >= 0)).toBe(true);
+        expect((leaving[4] as number) * side).toBeGreaterThan(0);
+        // The new image comes on at once, from the other side
+        const firstArrival = arriving.findIndex((x) => x !== undefined);
+        expect(firstArrival).toBeGreaterThanOrEqual(0);
+        expect(firstArrival).toBeLessThanOrEqual(2);
+        expect(Math.sign(arriving[firstArrival] as number)).toBe(-side);
+        // Nothing else crosses the stage on the way
+        expect(frames.flat().filter(([n]) => n !== from && n !== to)).toEqual([]);
+
+        await settle();
+        expect(shownImage()).toBe(`Image ${to}`);
+        expect(pageOf(from)).toHaveStyle({ display: 'none' });
+    });
+
+    test('resizing the window while the old image slides off lets it finish sliding off', async () => {
+        const props = lightboxProps({ currentIndex: 0 });
+        const { rerender } = render(<Lightbox {...props} />);
+        await settle();
+
+        rerender(
+            <Lightbox
+                {...props}
+                currentIndex={4}
+            />
+        );
+        await advance(FRAME * 4);
+        layout.stage.width = 1000;
+        fireEvent(window, new Event('resize'));
+        await advance(FRAME);
+
+        expect(imagesOnStage().map(([n]) => n)).toContain(1);
+        await settle();
+        expect(pageOf(1)).toHaveStyle({ display: 'none' });
+        expect([4, 5].map((n) => translateX(pageOf(n)))).toEqual([-1000, 0]);
+    });
+
+    test('jumping back before the old image finishes sliding off brings it back from where it is', async () => {
+        const props = lightboxProps({ currentIndex: 0 });
+        const { rerender } = render(<Lightbox {...props} />);
+        await settle();
+
+        rerender(
+            <Lightbox
+                {...props}
+                currentIndex={4}
+            />
+        );
+        await advance(FRAME * 4);
+        const before = imagesOnStage().find(([n]) => n === 1)?.[1] ?? NaN;
+        rerender(
+            <Lightbox
+                {...props}
+                currentIndex={0}
+            />
+        );
+        const offsets: number[] = [];
+        for (let frame = 0; frame < 20; frame += 1) {
+            await advance(FRAME);
+            offsets.push(imagesOnStage().find(([n]) => n === 1)?.[1] ?? NaN);
+        }
+
+        expect(before).toBeLessThan(0);
+        expect(Math.abs(offsets[0] - before)).toBeLessThan(100);
+        expect(offsets.every((x) => x <= 0.5)).toBe(true);
+        await settle();
+        expect(translateX(pageOf(1))).toBe(0);
+        expect(shownImage()).toBe('Image 1');
+    });
+
+    test('jumping next to the old image before it finishes sliding off keeps it as the neighbor', async () => {
+        const props = lightboxProps({ currentIndex: 0 });
+        const { rerender } = render(<Lightbox {...props} />);
+        await settle();
+
+        rerender(
+            <Lightbox
+                {...props}
+                currentIndex={4}
+            />
+        );
+        await advance(FRAME * 4);
+        rerender(
+            <Lightbox
+                {...props}
+                currentIndex={1}
+            />
+        );
+        await settle();
+
+        expect(shownImage()).toBe('Image 2');
+        expect(pageOf(1)).toHaveStyle({ display: 'flex' });
+        expect(translateX(pageOf(1))).toBe(-800);
+    });
+
+    test('a jump soon after a page change still slides the old image off the far side', async () => {
+        const props = lightboxProps({ currentIndex: 0 });
+        const { rerender } = render(<Lightbox {...props} />);
+        await settle();
+        rerender(
+            <Lightbox
+                {...props}
+                currentIndex={1}
+            />
+        );
+        // Image 2 has nearly settled, a few pixels short of the center
+        await advance(FRAME * 25);
+
+        rerender(
+            <Lightbox
+                {...props}
+                currentIndex={4}
+            />
+        );
+        const frames: number[][][] = [];
+        for (let frame = 0; frame < 30; frame += 1) {
+            await advance(FRAME);
+            frames.push(imagesOnStage());
+        }
+
+        const leaving = frames.map((frame) => frame.find(([n]) => n === 2)?.[1]);
+        const arriving = frames.map((frame) => frame.find(([n]) => n === 5)?.[1]);
+        // Image 2 only moves left while image 5 comes on from the right, so they never cross
+        const shown = leaving.filter((x) => x !== undefined);
+        expect(shown.filter((x, k) => k > 0 && x > shown[k - 1])).toEqual([]);
+        expect(
+            frames.filter((_, k) => leaving[k] !== undefined && arriving[k] !== undefined && leaving[k] >= arriving[k])
+        ).toEqual([]);
+    });
+
+    test('keeps the shown image still when images added before it move it onto an existing page', async () => {
+        const props = lightboxProps({ currentIndex: 2 });
+        const { rerender } = render(
+            <Lightbox
+                {...props}
+                currentIndex={0}
+                images={props.images.slice(2)}
+            />
+        );
+        await settle();
+
+        rerender(<Lightbox {...props} />);
+        const offsets: number[] = [];
+        for (let frame = 0; frame < 5; frame += 1) {
+            await advance(FRAME);
+            offsets.push(translateX(pageOf(3)));
+        }
+
+        expect(offsets).toEqual([0, 0, 0, 0, 0]);
+    });
+
+    test('a jump that swaps in other images hides the old page instead of sliding one of the new images off', async () => {
+        const props = lightboxProps({ currentIndex: 4 });
+        const { rerender } = render(<Lightbox {...props} />);
+        await settle();
+
+        rerender(
+            <Lightbox
+                {...props}
+                currentIndex={0}
+                images={props.images.map(({ src }, index) => ({
+                    alt: `Filtered ${index + 1}`,
+                    src: src.replace('image', 'filtered'),
+                }))}
+            />
+        );
+        const seen = new Set<string | null>();
+        for (let frame = 0; frame < 30; frame += 1) {
+            await advance(FRAME);
+            for (const img of screen.queryAllByRole('img', { hidden: true })) {
+                const page = img.closest('.lightbox-image-pager') as HTMLElement;
+                if (page.style.display !== 'none' && Math.abs(translateX(page)) < 800) {
+                    seen.add(img.getAttribute('alt'));
+                }
+            }
+        }
+
+        expect([...seen]).toEqual(['Filtered 1']);
+    });
+
+    test('a jump between two copies of the same image still slides one off and the other on', async () => {
+        const props = lightboxProps({ currentIndex: 0 });
+        const images = props.images.map((image) => ({ ...image, src: 'same.jpg' }));
+        const { rerender } = render(
+            <Lightbox
+                {...props}
+                images={images}
+            />
+        );
+        await settle();
+
+        rerender(
+            <Lightbox
+                {...props}
+                currentIndex={4}
+                images={images}
+            />
+        );
+        await advance(FRAME);
+
+        expect(imagesOnStage().map(([n]) => n)).toEqual([1, 5]);
+    });
+
+    test('a second page change before the first one ends slides the first image the rest of the way off', async () => {
+        const props = lightboxProps({ currentIndex: 0 });
+        const { rerender } = render(<Lightbox {...props} />);
+        await settle();
+
+        rerender(
+            <Lightbox
+                {...props}
+                currentIndex={1}
+            />
+        );
+        await advance(FRAME * 4);
+        const before = imagesOnStage().find(([n]) => n === 1)?.[1];
+        rerender(
+            <Lightbox
+                {...props}
+                currentIndex={2}
+            />
+        );
+        await advance(FRAME);
+        const after = imagesOnStage().find(([n]) => n === 1)?.[1];
+
+        expect(before).toBeLessThan(0);
+        expect(after).toBeDefined();
+        expect(after).toBeLessThan(before as number);
+        await settle();
+        expect(shownImage()).toBe('Image 3');
+        expect(pageOf(1)).toHaveStyle({ display: 'none' });
     });
 });
 
