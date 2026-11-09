@@ -289,8 +289,10 @@ const ImagePager = ({
                                     imgProps={images[i]}
                                     inline={inline}
                                     isCurrentImage={i === currentIndex}
+                                    isShown={Math.abs(i - currentIndex) <= 1}
                                     pagerHeight={pagerHeight}
-                                    pagerIsDragging={isDragging}
+                                    // Hidden pages get no input, so they skip the render when a drag starts or ends
+                                    pagerIsDragging={isDragging && Math.abs(i - currentIndex) <= 1}
                                     setDisableDrag={setDisableDrag}
                                     singleClickToZoom={singleClickToZoom}
                                 />

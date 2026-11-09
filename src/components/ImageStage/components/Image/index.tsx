@@ -20,6 +20,8 @@ type IImageProps = {
     inline: boolean;
     /** True if this image is currently shown in pager, otherwise false */
     isCurrentImage: boolean;
+    /** True for the current image and its neighbors, the images a drag can show */
+    isShown: boolean;
     /** Fixed height of the image stage, used to restrict maximum height of images */
     pagerHeight: '100%' | number;
     /** Indicates parent ImagePager is in a state of dragging, if true click to zoom is disabled */
@@ -328,4 +330,10 @@ const Image = ({
 
 Image.displayName = 'Image';
 
-export default Image;
+// A hidden image can't be seen or touched, so it skips the renders its props don't need.
+// The current image and its neighbors render along with ImagePager, as they always have.
+export default React.memo(
+    Image,
+    (previous, next) =>
+        !next.isShown && (Object.keys(next) as (keyof IImageProps)[]).every((key) => previous[key] === next[key])
+);
