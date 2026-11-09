@@ -63,15 +63,20 @@ const ImagePager = ({
     // Generate page positions based on current index
     const getPagePositions = React.useCallback(
         (i: number, down = false, xDelta = 0) => {
-            const x = (i - currentIndex) * imageStageWidth + (down ? xDelta : 0);
+            const x = (i - currentIndex) * imageStageWidth;
 
+            // Pages past the neighbors are hidden, so they jump into place instead of animating
             if (i < currentIndex - 1 || i > currentIndex + 1) {
-                return { display: 'none', x };
+                return { display: 'none', immediate: true, x };
             }
-            return { display: 'flex', x };
+            return { display: 'flex', x: x + (down ? xDelta : 0) };
         },
         [currentIndex, imageStageWidth]
     );
+
+    // A drag moves only the pages it can show. Hidden pages already rest in place.
+    const getShownPagePositions = (i: number, down = false, xDelta = 0) =>
+        Math.abs(i - currentIndex) <= 1 ? getPagePositions(i, down, xDelta) : null;
 
     /**
      * Animates translateX of all images at the same time
@@ -154,11 +159,11 @@ const ImagePager = ({
                 }
 
                 // Update page x-coordinates for single finger/mouse gestures
-                springsApi.start((i) => getPagePositions(i, down, xMovement));
+                springsApi.start((i) => getShownPagePositions(i, down, xMovement));
                 return;
             },
             onDragEnd: () => {
-                springsApi.start((i) => getPagePositions(i));
+                springsApi.start((i) => getShownPagePositions(i));
                 // Add small timeout buffer to prevent event handlers from firing in child Images
                 setTimeout(() => setIsDragging(false), 100);
             },
@@ -205,7 +210,7 @@ const ImagePager = ({
                 return !draggedFastEnough;
             },
             onWheelEnd: () => {
-                springsApi.start((i) => getPagePositions(i));
+                springsApi.start((i) => getShownPagePositions(i));
                 // Add small timeout buffer to prevent event handlers from firing in child Images
                 setTimeout(() => setIsDragging(false), 100);
             },
