@@ -25,34 +25,36 @@ const median = (list) => {
     return sorted.length % 2 ? sorted[middle] : (sorted[middle - 1] + sorted[middle]) / 2;
 };
 
-/** Exact two-sided p-value of the Mann-Whitney U test, by enumerating every split of the ranks */
+/**
+ * Exact two-sided p-value of the Mann-Whitney U test. It counts how many ways each rank sum can
+ * arise for a sample the size of `a`, one rank at a time, instead of listing every split of the ranks.
+ */
 const mannWhitney = (a, b) => {
-    const all = [...a.map((value) => ({ group: 0, value })), ...b.map((value) => ({ group: 1, value }))].sort(
-        (x, y) => x.value - y.value
-    );
-    const ranks = all.map(({ value }) => {
-        const first = all.findIndex((item) => item.value === value);
-        const last = all.findLastIndex((item) => item.value === value);
-        return (first + last) / 2 + 1;
-    });
-    const rankSum = (indexes) => indexes.reduce((sum, index) => sum + ranks[index], 0);
-    const observed = rankSum(all.flatMap(({ group }, index) => (group === 0 ? [index] : [])));
-    const expected = (a.length * (all.length + 1)) / 2;
+    const values = [...a, ...b].sort((x, y) => x - y);
+    // Twice each midrank, so tied ranks stay whole numbers
+    const doubledRank = (value) => values.indexOf(value) + values.lastIndexOf(value) + 2;
+    const ranks = values.map(doubledRank);
+    const observed = a.reduce((sum, value) => sum + doubledRank(value), 0);
+    const expected = a.length * (values.length + 1);
+    const most = ranks.reduce((sum, rank) => sum + rank, 0);
+    // ways[k][sum] counts the picks of k ranks, among those seen so far, that add up to sum
+    const ways = Array.from({ length: a.length + 1 }, () => new Float64Array(most + 1));
+    ways[0][0] = 1;
+    for (const rank of ranks) {
+        for (let k = a.length; k >= 1; k -= 1) {
+            for (let sum = most; sum >= rank; sum -= 1) {
+                ways[k][sum] += ways[k - 1][sum - rank];
+            }
+        }
+    }
     let extreme = 0;
     let total = 0;
-    const choose = (start, picked) => {
-        if (picked.length === a.length) {
-            total += 1;
-            if (Math.abs(rankSum(picked) - expected) >= Math.abs(observed - expected) - 1e-9) {
-                extreme += 1;
-            }
-            return;
+    ways[a.length].forEach((count, sum) => {
+        total += count;
+        if (Math.abs(sum - expected) >= Math.abs(observed - expected)) {
+            extreme += count;
         }
-        for (let index = start; index <= all.length - (a.length - picked.length); index += 1) {
-            choose(index + 1, [...picked, index]);
-        }
-    };
-    choose(0, []);
+    });
     return extreme / total;
 };
 
@@ -70,8 +72,14 @@ for (const [group, rows] of groups) {
             let cell = `${metric} ${format(median(list))} [${format(Math.min(...list))}-${format(Math.max(...list))}]`;
             if (variant !== baseName) {
                 const base = baseRows.map((row) => row[metric]);
-                const change = median(base) ? ((median(list) - median(base)) / median(base)) * 100 : 0;
-                cell += ` ${change >= 0 ? '+' : ''}${change.toFixed(0)}% p=${mannWhitney(base, list).toFixed(3)}`;
+                const baseMedian = median(base);
+                const change = ((median(list) - baseMedian) / baseMedian) * 100;
+                let percent = `${change >= 0 ? '+' : ''}${change.toFixed(0)}%`;
+                // A change from a median of 0 has no percentage
+                if (baseMedian === 0) {
+                    percent = median(list) === 0 ? '+0%' : 'n/a';
+                }
+                cell += ` ${percent} p=${mannWhitney(base, list).toFixed(3)}`;
             }
             return cell;
         });
