@@ -57,9 +57,9 @@ const ImagePager = ({
         (i: number, down = false, xDelta = 0) => {
             const x = (i - currentIndex) * imageStageWidth;
 
-            // Pages past the neighbors are hidden, so they jump into place instead of animating
+            // Pages past the neighbors are hidden, so drags skip them and a page change sets them in place
             if (i < currentIndex - 1 || i > currentIndex + 1) {
-                return { display: 'none', immediate: true, x };
+                return { display: 'none', x };
             }
             return { display: 'flex', x: x + (down ? xDelta : 0) };
         },
@@ -84,8 +84,16 @@ const ImagePager = ({
             firstRender.current = false;
             return;
         }
-        // Update page positions after prev/next page state change
-        springsApi.start((i) => getPagePositions(i));
+        // Update page positions after prev/next page state change. Hidden pages move with set(), because
+        // react-spring searches its whole frame queue for each spring that start() adds to it.
+        springsApi.start((i, ctrl) => {
+            const position = getPagePositions(i);
+            if (position.display === 'none') {
+                ctrl.set(position);
+                return null;
+            }
+            return position;
+        });
     }, [currentIndex, getPagePositions, springsApi]);
 
     /**

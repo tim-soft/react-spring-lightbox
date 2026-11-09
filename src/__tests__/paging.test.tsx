@@ -593,6 +593,27 @@ describe('when currentIndex changes', () => {
         expect(shownImage()).toBe('Image 5');
         expect(pageOf(1)).toHaveStyle({ display: 'none' });
     });
+
+    test('keeps the shown image still when images are added before it', async () => {
+        const props = lightboxProps({ currentIndex: 4 });
+        const { rerender } = render(
+            <Lightbox
+                {...props}
+                currentIndex={0}
+                images={props.images.slice(4)}
+            />
+        );
+        await settle();
+
+        rerender(<Lightbox {...props} />);
+        const offsets: number[] = [];
+        for (let frame = 0; frame < 5; frame += 1) {
+            await advance(FRAME);
+            offsets.push(translateX(pageOf(5)));
+        }
+
+        expect(offsets).toEqual([0, 0, 0, 0, 0]);
+    });
 });
 
 describe('page layout', () => {
