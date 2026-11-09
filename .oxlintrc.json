@@ -232,7 +232,7 @@
             }
         },
         {
-            "files": ["scripts/**"],
+            "files": ["perf/**", "scripts/**"],
             "rules": {
                 "no-console": "off"
             }
