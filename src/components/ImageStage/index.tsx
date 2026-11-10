@@ -17,6 +17,7 @@ type IImageStageProps = {
     inline: boolean;
     /** Function that closes the Lightbox */
     onClose?: () => void;
+    onKeyDown?: React.KeyboardEventHandler<HTMLElement>;
     /** Function that can be called to disable dragging in the pager */
     onNext: () => void;
     /** True if this image is currently shown in pager, otherwise false */
@@ -40,6 +41,7 @@ const ImageStage = ({
     images,
     inline,
     onClose,
+    onKeyDown,
     onNext,
     onPrev,
     renderImageOverlay,
@@ -57,9 +59,11 @@ const ImageStage = ({
     const [{ height: containerHeight, width: containerWidth }, containerRef] = useRefSize();
 
     return (
+        // oxlint-disable-next-line jsx-a11y/no-static-element-interactions -- an inline carousel handles the keys that bubble up from the controls inside it
         <div
             className={className}
             data-testid="lightbox-image-stage"
+            onKeyDown={onKeyDown}
             ref={containerRef}
             style={{
                 alignItems: 'center',

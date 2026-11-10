@@ -1,10 +1,16 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import type { ImagesList } from './types/ImagesList';
 
 import { ImageStage, PageContainer, CreatePortal } from './components';
 
 export type ImagesListType = ImagesList;
+
+const TEXT_FIELD = 'input, select, textarea, [contenteditable]:not([contenteditable="false"])';
+
+const PRESSED_BY_SPACE = 'button, summary';
+
+const SCROLL_KEYS = ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End'];
 
 type ILightboxProps = {
     /** Accessible name of the lightbox dialog, used when there is no visible title */
@@ -79,50 +85,42 @@ const Lightbox = ({
     singleClickToZoom = false,
     style = {},
 }: ILightboxProps) => {
-    // Handle event listeners for keyboard
-    useEffect(() => {
-        /**
-         * Prevent keyboard from controlling background page
-         * when lightbox is open
-         */
-        const preventBackgroundScroll = (e: KeyboardEvent) => {
-            const keysToIgnore = ['ArrowUp', 'ArrowDown', 'End', 'Home', 'PageUp', 'PageDown'];
+    // A native listener on the dialog would run before React calls the handlers of the controls
+    // inside it, so only a React handler sees a control claim a key with preventDefault()
+    const onKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+        const target = event.target as Element;
+        if (
+            !isOpen ||
+            event.defaultPrevented ||
+            event.nativeEvent.isComposing ||
+            // React also bubbles keys from content that a control inside portals out of the lightbox
+            !event.currentTarget.contains(target)
+        ) {
+            return;
+        }
+        const inTextField = target.closest(TEXT_FIELD) !== null;
+        const shortcut = event.altKey || event.ctrlKey || event.metaKey;
 
-            if (isOpen && keysToIgnore.includes(e.key)) {
-                e.preventDefault();
+        if (!event.repeat && !shortcut) {
+            if (event.key === 'Escape') {
+                onClose?.();
+            } else if (event.key === 'ArrowLeft' && !inTextField) {
+                onPrev();
+            } else if (event.key === 'ArrowRight' && !inTextField) {
+                onNext();
             }
-        };
-
-        /**
-         * Navigate images with arrow keys, close on Esc key
-         */
-        const handleKeyboardInput = (e: KeyboardEvent) => {
-            if (isOpen) {
-                switch (e.key) {
-                    case 'ArrowLeft':
-                        onPrev();
-                        break;
-                    case 'ArrowRight':
-                        onNext();
-                        break;
-                    case 'Escape':
-                        onClose?.();
-                        break;
-                    default:
-                        e.preventDefault();
-                        break;
-                }
-            }
-        };
-
-        document.addEventListener('keyup', handleKeyboardInput);
-        document.addEventListener('keydown', preventBackgroundScroll);
-
-        return () => {
-            document.removeEventListener('keyup', handleKeyboardInput);
-            document.removeEventListener('keydown', preventBackgroundScroll);
-        };
-    });
+        }
+        // Inert content still scrolls. These keys would scroll the page behind the modal, also with
+        // Alt, Ctrl, or Cmd held, as Cmd+↓ does on macOS. Space scrolls unless one of those is held
+        // or Space presses the focused control.
+        const scrollsPage =
+            event.key === ' '
+                ? !shortcut && target.closest(PRESSED_BY_SPACE) === null
+                : SCROLL_KEYS.includes(event.key);
+        if (!inline && !inTextField && scrollsPage) {
+            event.preventDefault();
+        }
+    };
 
     const imageStage = (
         <ImageStage
@@ -130,6 +128,7 @@ const Lightbox = ({
             images={images}
             inline={inline}
             onClose={onClose}
+            onKeyDown={inline ? onKeyDown : undefined}
             onNext={onNext}
             onPrev={onPrev}
             renderImageOverlay={renderImageOverlay}
@@ -150,6 +149,7 @@ const Lightbox = ({
                 aria-labelledby={ariaLabelledby}
                 className={className}
                 isOpen={isOpen}
+                onKeyDown={onKeyDown}
                 pageTransitionConfig={pageTransitionConfig}
                 style={style}
             >

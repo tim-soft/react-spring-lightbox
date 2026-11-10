@@ -12,6 +12,7 @@ type IPageContainerProps = {
     className: string;
     /** Flag that dictates if the lightbox is open or closed */
     isOpen: boolean;
+    onKeyDown: React.KeyboardEventHandler<HTMLElement>;
     /** React-Spring useTransition config for page open/close animation */
     pageTransitionConfig: any;
     /** Inline styles are applied to the root lightbox component */
@@ -27,6 +28,7 @@ const PageContainer = ({
     children,
     className,
     isOpen,
+    onKeyDown,
     pageTransitionConfig,
     style,
 }: IPageContainerProps) => {
@@ -55,7 +57,10 @@ const PageContainer = ({
                             aria-modal="true"
                             className={`lightbox-container${className ? ` ${className}` : ''}`}
                             data-testid="lightbox-container"
-                            onKeyDown={wrapTab}
+                            onKeyDown={(event) => {
+                                wrapTab(event);
+                                onKeyDown(event);
+                            }}
                             ref={dialogRef}
                             // oxlint-disable-next-line jsx-a11y/prefer-tag-over-role -- resetting the browser border and padding of a <dialog> inline would override a consumer's className
                             role="dialog"
