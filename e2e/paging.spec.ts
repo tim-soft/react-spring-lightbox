@@ -488,6 +488,7 @@ test.describe('widening the window', () => {
         const frames = await stop();
 
         expect(frames.length).toBeGreaterThan(0);
+        expect(frames.filter((alts) => !alts.includes('Portrait'))).toEqual([]);
         expect(frames.filter((alts) => alts.some((alt) => alt !== 'Portrait'))).toEqual([]);
     });
 });
