@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import type { ImagesList } from './types/ImagesList';
 
@@ -85,17 +85,9 @@ const Lightbox = ({
     singleClickToZoom = false,
     style = {},
 }: ILightboxProps) => {
-    // A native listener on the dialog would run before React calls the handlers of the controls
-    // inside it, so only a React handler sees a control claim a key with preventDefault()
-    const onKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+    const onKey = (event: KeyboardEvent) => {
         const target = event.target as Element;
-        if (
-            !isOpen ||
-            event.defaultPrevented ||
-            event.nativeEvent.isComposing ||
-            // React also bubbles keys from content that a control inside portals out of the lightbox
-            !event.currentTarget.contains(target)
-        ) {
+        if (!isOpen || event.defaultPrevented || event.isComposing) {
             return;
         }
         const inTextField = target.closest(TEXT_FIELD) !== null;
@@ -121,6 +113,30 @@ const Lightbox = ({
             event.preventDefault();
         }
     };
+
+    // A native listener on the dialog would run before React calls the handlers of the controls
+    // inside it, so only a React handler sees a control claim a key with preventDefault()
+    const onKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+        // React also bubbles keys from content that a control inside portals out of the lightbox
+        if (event.currentTarget.contains(event.target as Node)) {
+            onKey(event.nativeEvent);
+        }
+    };
+
+    // A control that turns disabled or leaves the page while it has focus, as Next does on the last
+    // image, drops focus to <body>. Nothing behind the open modal can take focus, so those keys are its own.
+    useEffect(() => {
+        if (!isOpen || inline) {
+            return undefined;
+        }
+        const onKeyWithoutFocus = (event: KeyboardEvent) => {
+            if (event.target === document.body) {
+                onKey(event);
+            }
+        };
+        document.addEventListener('keydown', onKeyWithoutFocus);
+        return () => document.removeEventListener('keydown', onKeyWithoutFocus);
+    });
 
     const imageStage = (
         <ImageStage
