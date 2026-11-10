@@ -52,6 +52,8 @@ test('every other prop is optional', () => {
     expectTypeOf<Props['inline']>().toEqualTypeOf<boolean | undefined>();
     expectTypeOf<Props['singleClickToZoom']>().toEqualTypeOf<boolean | undefined>();
     expectTypeOf<Props['className']>().toEqualTypeOf<string | undefined>();
+    expectTypeOf<Props['aria-label']>().toEqualTypeOf<string | undefined>();
+    expectTypeOf<Props['aria-labelledby']>().toEqualTypeOf<string | undefined>();
 });
 
 test('the arrow buttons learn whether there is a previous or next image', () => {

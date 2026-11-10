@@ -1,9 +1,8 @@
 import type { Page } from '@playwright/test';
 
-import { expect, openHarness, sampleFrames, settle, test } from './support';
+import { expect, openHarness, sampleFrames, settle, shownImage, test } from './support';
 
 // What keyboard, screen reader and reduced-motion users need from a modal.
-// The expected failures follow the WAI-ARIA dialog pattern.
 
 /** Opens Image 3 from its thumbnail with the keyboard */
 const openWithKeyboard = async (page: Page) => {
@@ -30,10 +29,8 @@ test.describe('with a keyboard', () => {
 
     test('focus moves into the lightbox when it opens', async ({ page }) => {
         await openWithKeyboard(page);
-        const focusInside = await focusIsInLightbox(page);
 
-        test.fail(true, 'Focus stays on the thumbnail behind the lightbox');
-        expect(focusInside).toBe(true);
+        expect(await focusIsInLightbox(page)).toBe(true);
     });
 
     test('Tab cycles through the lightbox, never reaching the page behind', async ({ browserName, page }) => {
@@ -45,16 +42,49 @@ test.describe('with a keyboard', () => {
             stayedInside.push(await focusIsInLightbox(page));
         }
 
-        test.fail(true, 'Tab reaches the thumbnails behind the lightbox');
         expect(stayedInside).toEqual(Array(6).fill(true));
     });
 
     test('screen readers announce it as a dialog', async ({ page }) => {
         await openWithKeyboard(page);
-        const dialogs = await page.getByRole('dialog').count();
 
-        test.fail(true, 'Nothing in the lightbox has role="dialog"');
-        expect(dialogs).toBe(1);
+        await expect(page.getByRole('dialog')).toHaveCount(1);
+        await expect(page.getByRole('dialog', { name: 'Image gallery' })).toBeVisible();
+    });
+
+    test('Enter after paging with the arrow keys presses nothing behind the lightbox', async ({ page }) => {
+        await openWithKeyboard(page);
+
+        await page.keyboard.press('ArrowRight');
+        await page.keyboard.press('ArrowRight');
+        await page.keyboard.press('Enter');
+        await settle(page);
+
+        expect(await shownImage(page)).toBe('Image 5');
+    });
+
+    test('Enter on Close closes it and focus goes back to the thumbnail', async ({ page }) => {
+        await openWithKeyboard(page);
+        await page.getByRole('button', { name: 'Close' }).focus();
+
+        await page.keyboard.press('Enter');
+
+        await expect(page.getByTestId('lightbox-container')).toHaveCount(0);
+        await expect(page.getByRole('button', { name: 'Open Image 3' })).toBeFocused();
+    });
+
+    test('an element portaled to the body after it opens can still be focused and clicked', async ({ page }) => {
+        await openHarness(page, 'closed&portalMenu');
+        await page.getByRole('button', { name: 'Open Image 3' }).click();
+        await settle(page);
+
+        await page.getByRole('button', { name: 'Menu' }).click();
+        const item = page.getByRole('button', { name: 'Portaled item' });
+        await item.focus();
+        await expect(item).toBeFocused();
+        await item.click();
+
+        await expect(page).toHaveTitle('Picked');
     });
 });
 

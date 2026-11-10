@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { createRoot } from 'react-dom/client';
 
 import type { ImagesListType } from '../../src/index';
@@ -43,6 +44,7 @@ const arrowStyle = (side: 'left' | 'right'): React.CSSProperties =>
 const App = () => {
     const [currentIndex, setCurrentIndex] = useState(Number(params.get('index') ?? 0));
     const [isOpen, setIsOpen] = useState(!flag('closed'));
+    const [menuIsOpen, setMenuIsOpen] = useState(false);
 
     const open = (index: number) => {
         setCurrentIndex(index);
@@ -63,6 +65,7 @@ const App = () => {
 
     const lightbox = (
         <Lightbox
+            aria-label="Image gallery"
             currentIndex={currentIndex}
             images={images}
             inline={flag('inline')}
@@ -87,6 +90,14 @@ const App = () => {
                     <span style={{ flex: 1 }}>
                         {currentIndex + 1} / {images.length}
                     </span>
+                    {flag('portalMenu') && (
+                        <button
+                            onClick={() => setMenuIsOpen(true)}
+                            type="button"
+                        >
+                            Menu
+                        </button>
+                    )}
                     <button
                         onClick={close}
                         type="button"
@@ -167,6 +178,19 @@ const App = () => {
             >
                 View the first image from the bottom of the page
             </button>
+            {menuIsOpen &&
+                createPortal(
+                    <button
+                        onClick={() => {
+                            document.title = 'Picked';
+                        }}
+                        style={{ left: 0, position: 'fixed', top: 80, zIndex: 500 }}
+                        type="button"
+                    >
+                        Portaled item
+                    </button>,
+                    document.body
+                )}
             {/* A transform traps position: fixed elements inside it */}
             <div style={flag('insideTransform') ? { transform: 'translateZ(0)' } : undefined}>{lightbox}</div>
         </main>

@@ -7,6 +7,10 @@ import { ImageStage, PageContainer, CreatePortal } from './components';
 export type ImagesListType = ImagesList;
 
 type ILightboxProps = {
+    /** Accessible name of the lightbox dialog, used when there is no visible title */
+    'aria-label'?: string;
+    /** Id of the element that holds the lightbox dialog's visible title */
+    'aria-labelledby'?: string;
     /** classnames are applied to the root lightbox component */
     className?: string;
     /** Index of image in images array that is currently shown */
@@ -55,6 +59,8 @@ type ILightboxProps = {
  * @see https://github.com/react-spring/react-spring
  */
 const Lightbox = ({
+    'aria-label': ariaLabel,
+    'aria-labelledby': ariaLabelledby,
     className = '',
     currentIndex,
     // oxlint-disable-next-line typescript/no-useless-default-assignment -- JavaScript callers can leave out images
@@ -140,6 +146,8 @@ const Lightbox = ({
     return (
         <CreatePortal>
             <PageContainer
+                aria-label={ariaLabel}
+                aria-labelledby={ariaLabelledby}
                 className={className}
                 isOpen={isOpen}
                 pageTransitionConfig={pageTransitionConfig}

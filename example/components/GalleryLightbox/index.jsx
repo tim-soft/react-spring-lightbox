@@ -127,9 +127,9 @@ class BlogImageGallery extends React.Component {
                     />
                 )}
                 <Lightbox
+                    aria-label={galleryTitle}
                     className="bg-accent/95 selection:bg-highlight"
                     currentIndex={currentImageIndex}
-                    galleryTitle={galleryTitle}
                     images={listboxImages}
                     isOpen={lightboxIsOpen}
                     onClose={this.closeLightbox}
