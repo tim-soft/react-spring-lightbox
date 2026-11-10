@@ -15,6 +15,16 @@ const openWithKeyboard = async (page: Page) => {
 const focusIsInLightbox = (page: Page) =>
     page.evaluate(() => Boolean(document.activeElement?.closest('[data-testid="lightbox-container"]')));
 
+/** Pages to the last image with Enter on Next, which turns disabled while it has focus */
+const pressNextToTheEnd = async (page: Page) => {
+    await openWithKeyboard(page);
+    await page.getByRole('button', { name: 'Next' }).focus();
+    await page.keyboard.press('Enter');
+    await page.keyboard.press('Enter');
+    await settle(page);
+    expect(await shownImage(page)).toBe('Image 5');
+};
+
 test.describe('with a keyboard', () => {
     test.skip(({ isMobile }) => isMobile, 'Keyboard input');
 
@@ -72,6 +82,34 @@ test.describe('with a keyboard', () => {
         await expect(page.getByTestId('lightbox-container')).toHaveCount(0);
         await expect(page.getByRole('button', { name: 'Open Image 3' })).toBeFocused();
     });
+
+    test('← and Esc still work after the Next button that had focus turns disabled on the last image', async ({
+        page,
+    }) => {
+        await pressNextToTheEnd(page);
+
+        await page.keyboard.press('ArrowLeft');
+        await settle(page);
+        expect(await shownImage(page)).toBe('Image 4');
+
+        await page.keyboard.press('Escape');
+        await expect(page.getByTestId('lightbox-container')).toHaveCount(0);
+        await expect(page.getByRole('button', { name: 'Open Image 3' })).toBeFocused();
+    });
+
+    for (const key of ['Tab', 'Shift+Tab']) {
+        test(`${key} goes back into the lightbox after the Next button that had focus turns disabled`, async ({
+            browserName,
+            page,
+        }) => {
+            test.skip(browserName === 'webkit', 'WebKit on macOS tabs only to text fields by default');
+            await pressNextToTheEnd(page);
+
+            await page.keyboard.press(key);
+
+            expect(await focusIsInLightbox(page)).toBe(true);
+        });
+    }
 
     test('an element portaled to the body after it opens can still be focused and clicked', async ({ page }) => {
         await openHarness(page, 'closed&portalMenu');

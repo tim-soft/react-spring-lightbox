@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
@@ -142,6 +142,64 @@ describe('closing', () => {
         expect(props.onClose).toHaveBeenCalledTimes(1);
     });
 
+    test('Esc in a text field inside asks to close', () => {
+        const props = lightboxProps({ renderFooter: () => <input aria-label="Caption" /> });
+        render(<Lightbox {...props} />);
+
+        pressKey('Escape', screen.getByRole('textbox', { name: 'Caption' }));
+
+        expect(props.onClose).toHaveBeenCalledTimes(1);
+    });
+
+    test('Esc that a control inside handles itself leaves it open', () => {
+        const props = lightboxProps({
+            renderHeader: () => (
+                <input
+                    aria-label="Search"
+                    onKeyDown={(event) => {
+                        if (event.key === 'Escape') {
+                            event.preventDefault();
+                        }
+                    }}
+                />
+            ),
+        });
+        render(<Lightbox {...props} />);
+
+        pressKey('Escape', screen.getByRole('textbox', { name: 'Search' }));
+
+        expect(props.onClose).not.toHaveBeenCalled();
+    });
+
+    test('Esc that cancels input method composition leaves it open', () => {
+        const props = lightboxProps({ renderFooter: () => <input aria-label="Caption" /> });
+        render(<Lightbox {...props} />);
+
+        pressKey('Escape', screen.getByRole('textbox', { name: 'Caption' }), { isComposing: true });
+
+        expect(props.onClose).not.toHaveBeenCalled();
+    });
+
+    test('ignores keys that reach it while it fades out', async () => {
+        const props = lightboxProps();
+        const { rerender } = render(<Lightbox {...props} />);
+        await settle();
+
+        rerender(
+            <Lightbox
+                {...props}
+                isOpen={false}
+            />
+        );
+        await advance(FRAME);
+        expect(lightboxContainer()).toHaveFocus();
+        pressKey('Escape');
+        pressKey('ArrowRight');
+
+        expect(props.onClose).not.toHaveBeenCalled();
+        expect(props.onNext).not.toHaveBeenCalled();
+    });
+
     test.each([
         ['clicking', mouse.click],
         ['tapping', touchscreen.tap],
@@ -271,22 +329,70 @@ describe('the page behind it', () => {
     test.each(['ArrowUp', 'ArrowDown', 'End', 'Home', 'PageUp', 'PageDown'])('does not scroll with %s', (key) => {
         render(<Lightbox {...lightboxProps()} />);
 
-        expect(pressKey(key)).toBe(false);
+        expect(pressKey(key).defaultPrevented).toBe(true);
+    });
+
+    test.each([
+        ['Meta+ArrowDown', 'ArrowDown', { metaKey: true }],
+        ['Alt+ArrowDown', 'ArrowDown', { altKey: true }],
+        ['Ctrl+End', 'End', { ctrlKey: true }],
+    ])('does not scroll with %s', (_, key, modifier) => {
+        render(<Lightbox {...lightboxProps()} />);
+
+        expect(pressKey(key, lightboxContainer(), modifier).defaultPrevented).toBe(true);
+    });
+
+    test('does not scroll with Space', () => {
+        render(<Lightbox {...lightboxProps()} />);
+
+        expect(pressKey(' ').defaultPrevented).toBe(true);
+    });
+
+    test.each([
+        ['Alt', { altKey: true }],
+        ['Ctrl', { ctrlKey: true }],
+        ['Meta', { metaKey: true }],
+    ])('leaves %s+Space alone, since it does not scroll', (_, modifier) => {
+        render(<Lightbox {...lightboxProps()} />);
+
+        expect(pressKey(' ', lightboxContainer(), modifier).defaultPrevented).toBe(false);
+    });
+
+    test.each([
+        ['a button', () => <button type="button">Press me</button>],
+        [
+            'a summary',
+            () => (
+                <details>
+                    <summary>Press me</summary>
+                </details>
+            ),
+        ],
+    ])('leaves Space to %s inside, which it presses', (_, renderFooter) => {
+        render(<Lightbox {...lightboxProps({ renderFooter })} />);
+
+        expect(pressKey(' ', screen.getByText('Press me')).defaultPrevented).toBe(false);
+    });
+
+    test('does not scroll as a held key repeats', () => {
+        render(<Lightbox {...lightboxProps()} />);
+
+        expect(fireEvent.keyDown(lightboxContainer(), { key: 'ArrowDown', repeat: true })).toBe(false);
     });
 
     test('scrolls with the keyboard again once closed', () => {
         render(<Lightbox {...lightboxProps({ isOpen: false })} />);
 
-        expect(pressKey('ArrowDown')).toBe(true);
+        expect(pressKey('ArrowDown').defaultPrevented).toBe(false);
     });
 
     test('still gets keys that do not scroll', () => {
         render(<Lightbox {...lightboxProps()} />);
 
-        expect(pressKey('a')).toBe(true);
+        expect(pressKey('a').defaultPrevented).toBe(false);
     });
 
-    test.fails('lets a text field inside the lightbox move its cursor with Home and End (#65)', () => {
+    test('lets a text field inside the lightbox move its cursor with Home and End (#65)', () => {
         render(
             <Lightbox
                 {...lightboxProps({
@@ -296,8 +402,8 @@ describe('the page behind it', () => {
         );
         const caption = screen.getByRole('textbox', { name: 'Caption' });
 
-        expect(pressKey('Home', caption)).toBe(true);
-        expect(pressKey('End', caption)).toBe(true);
+        expect(pressKey('Home', caption).defaultPrevented).toBe(false);
+        expect(pressKey('End', caption).defaultPrevented).toBe(false);
     });
 });
 

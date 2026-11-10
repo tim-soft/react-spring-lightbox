@@ -63,8 +63,20 @@ test.describe('with a mouse and keyboard', () => {
 
         await page.keyboard.press('PageDown');
 
-        test.fail();
         await expect.poll(() => scrollY(page), { timeout: 1000 }).toBeGreaterThan(before);
+    });
+
+    test('→ pages while its Next button has focus, and does nothing while the page has it', async ({ page }) => {
+        const carousel = await openCarousel(page);
+
+        await page.keyboard.press('ArrowRight');
+        await settle(page);
+        expect((await calls(page)).onNext).toBe(0);
+
+        await carousel.getByRole('button', { name: 'Next' }).focus();
+        await page.keyboard.press('ArrowRight');
+        await settle(page);
+        expect((await calls(page)).onNext).toBe(1);
     });
 });
 

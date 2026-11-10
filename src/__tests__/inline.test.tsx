@@ -9,6 +9,8 @@ import { CENTER, image, lightboxProps, mockLayout, pageOf, settle } from './help
 
 const inlineProps = (currentIndex = 0) => lightboxProps({ currentIndex, inline: true });
 
+const nextButton = () => <button type="button">Next</button>;
+
 describe('before the stage is measured', () => {
     test('shows only the current image', () => {
         render(<Lightbox {...inlineProps(1)} />);
@@ -108,10 +110,42 @@ describe('once measured', () => {
         expect(image(1)).toHaveStyle({ maxHeight: '600px' });
     });
 
-    test.fails('leaves the keyboard to the page around it (#65)', () => {
+    test('leaves the keyboard to the page around it (#65)', () => {
         render(<Lightbox {...inlineProps()} />);
 
-        expect(pressKey('ArrowDown')).toBe(true);
-        expect(pressKey('PageDown')).toBe(true);
+        expect(pressKey('ArrowDown').defaultPrevented).toBe(false);
+        expect(pressKey('PageDown').defaultPrevented).toBe(false);
     });
+
+    test('pages with → only while focus is inside it, as on its Next button', () => {
+        const props = inlineProps(2);
+        render(
+            <Lightbox
+                {...props}
+                renderNextButton={nextButton}
+            />
+        );
+
+        pressKey('ArrowRight');
+        expect(props.onNext).not.toHaveBeenCalled();
+
+        screen.getByRole('button', { name: 'Next' }).focus();
+        pressKey('ArrowRight');
+        expect(props.onNext).toHaveBeenCalledTimes(1);
+    });
+
+    test.each(['ArrowUp', 'ArrowDown', 'End', 'Home', 'PageUp', 'PageDown'])(
+        'leaves %s to the page while one of its controls has focus',
+        (key) => {
+            render(
+                <Lightbox
+                    {...inlineProps()}
+                    renderNextButton={nextButton}
+                />
+            );
+            screen.getByRole('button', { name: 'Next' }).focus();
+
+            expect(pressKey(key).defaultPrevented).toBe(false);
+        }
+    );
 });

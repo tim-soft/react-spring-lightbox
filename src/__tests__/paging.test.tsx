@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import React from 'react';
+import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import type { Point } from './helpers';
@@ -12,6 +13,7 @@ import {
     Gallery,
     advance,
     image,
+    lightboxContainer,
     lightboxProps,
     mockLayout,
     pageOf,
@@ -69,6 +71,22 @@ const imagesOnStage = () =>
 const openGallery = async (initialIndex = START) => {
     render(<Gallery initialIndex={initialIndex} />);
     await settle();
+};
+
+const HeaderMenu = () => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+        <>
+            <button
+                onClick={() => setIsOpen(true)}
+                type="button"
+            >
+                Menu
+            </button>
+            {isOpen && createPortal(<button type="button">Portaled item</button>, document.body)}
+        </>
+    );
 };
 
 describe('dragging with a mouse', () => {
@@ -504,6 +522,19 @@ describe('the keyboard', () => {
         expect(shownImage()).toBe('Image 2');
     });
 
+    test('→ pages once while an arrow button beside the image has focus', () => {
+        const props = lightboxProps({
+            currentIndex: START,
+            renderNextButton: () => <button type="button">Next</button>,
+        });
+        render(<Lightbox {...props} />);
+        screen.getByRole('button', { name: 'Next' }).focus();
+
+        pressKey('ArrowRight');
+
+        expect(props.onNext).toHaveBeenCalledTimes(1);
+    });
+
     test('arrow keys do nothing while closed', () => {
         const props = lightboxProps({ currentIndex: START, isOpen: false });
         render(<Lightbox {...props} />);
@@ -536,7 +567,7 @@ describe('the keyboard', () => {
         expect(props.onNext).not.toHaveBeenCalled();
     });
 
-    test.fails('leaves arrow keys to a text field inside the lightbox (#65)', () => {
+    test('leaves arrow keys to a text field inside the lightbox (#65)', () => {
         const props = lightboxProps({
             currentIndex: START,
             renderFooter: () => <input aria-label="Caption" />,
@@ -546,6 +577,64 @@ describe('the keyboard', () => {
         pressKey('ArrowRight', screen.getByRole('textbox', { name: 'Caption' }));
 
         expect(props.onNext).not.toHaveBeenCalled();
+    });
+
+    test.each([
+        ['a textarea', () => <textarea aria-label="Caption" />],
+        [
+            'a select',
+            () => (
+                <select aria-label="Caption">
+                    <option>One</option>
+                </select>
+            ),
+        ],
+        [
+            'an editable element',
+            () => (
+                <div
+                    aria-label="Caption"
+                    contentEditable
+                />
+            ),
+        ],
+    ])('also leaves arrow keys to %s', (_, renderFooter) => {
+        const props = lightboxProps({ currentIndex: START, renderFooter });
+        render(<Lightbox {...props} />);
+
+        pressKey('ArrowLeft', screen.getByLabelText('Caption'));
+        pressKey('ArrowRight', screen.getByLabelText('Caption'));
+
+        expect(props.onPrev).not.toHaveBeenCalled();
+        expect(props.onNext).not.toHaveBeenCalled();
+    });
+
+    test.each([
+        ['Alt', { altKey: true }],
+        ['Ctrl', { ctrlKey: true }],
+        ['Meta', { metaKey: true }],
+    ])('leaves %s+→ to the browser', (_, modifier) => {
+        const props = lightboxProps({ currentIndex: START });
+        render(<Lightbox {...props} />);
+
+        pressKey('ArrowRight', lightboxContainer(), modifier);
+
+        expect(props.onNext).not.toHaveBeenCalled();
+    });
+
+    test('keys in a menu that a header button portals to <body> neither page nor close', () => {
+        const props = lightboxProps({ currentIndex: START, renderHeader: () => <HeaderMenu /> });
+        render(<Lightbox {...props} />);
+        mouse.click(screen.getByRole('button', { name: 'Menu' }), CENTER);
+        screen.getByRole('button', { name: 'Portaled item' }).focus();
+
+        pressKey('ArrowRight');
+        pressKey('ArrowLeft');
+        pressKey('Escape');
+
+        expect(props.onNext).not.toHaveBeenCalled();
+        expect(props.onPrev).not.toHaveBeenCalled();
+        expect(props.onClose).not.toHaveBeenCalled();
     });
 });
 

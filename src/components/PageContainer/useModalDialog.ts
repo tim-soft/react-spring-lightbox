@@ -20,6 +20,28 @@ const makePageBehindInert = (dialog: Element) => {
     return () => madeInert.forEach((element) => element.removeAttribute('inert'));
 };
 
+// With the page inert, Tab from the last control would land on <body>
+const keepTabInside = (event: Pick<KeyboardEvent, 'key' | 'preventDefault' | 'shiftKey'>, dialog: HTMLElement) => {
+    if (event.key !== 'Tab') {
+        return;
+    }
+    const stops = tabStops(dialog);
+    const first = stops[0];
+    const last = stops[stops.length - 1];
+    const { activeElement } = document;
+
+    if (stops.length === 0) {
+        event.preventDefault();
+        dialog.focus();
+    } else if (event.shiftKey && (activeElement === first || activeElement === dialog)) {
+        event.preventDefault();
+        last.focus();
+    } else if (!event.shiftKey && activeElement === last) {
+        event.preventDefault();
+        first.focus();
+    }
+};
+
 const useModalDialog = (isOpen: boolean) => {
     const dialogRef = useRef<HTMLDivElement>(null);
     // A control with autoFocus inside the lightbox takes focus before effects run, so the element to
@@ -41,35 +63,24 @@ const useModalDialog = (isOpen: boolean) => {
         if (!dialog.contains(document.activeElement)) {
             dialog.focus();
         }
+        // A control that turns disabled or leaves the page while it has focus drops focus to <body>,
+        // and Tab from there finds no way back past the inert page
+        const takeFocusBack = (event: KeyboardEvent) => {
+            if (event.target === document.body) {
+                dialog.focus();
+                keepTabInside(event, dialog);
+            }
+        };
+        document.addEventListener('keydown', takeFocusBack);
 
         return () => {
+            document.removeEventListener('keydown', takeFocusBack);
             freePageBehind();
             returnFocusTo.focus();
         };
     }, [focusedBeforeOpen, isOpen]);
 
-    // With the page inert, Tab from the last control would land on <body>
-    const wrapTab = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        if (event.key !== 'Tab') {
-            return;
-        }
-        const dialog = event.currentTarget;
-        const stops = tabStops(dialog);
-        const first = stops[0];
-        const last = stops[stops.length - 1];
-        const { activeElement } = document;
-
-        if (stops.length === 0) {
-            event.preventDefault();
-            dialog.focus();
-        } else if (event.shiftKey && (activeElement === first || activeElement === dialog)) {
-            event.preventDefault();
-            last.focus();
-        } else if (!event.shiftKey && activeElement === last) {
-            event.preventDefault();
-            first.focus();
-        }
-    };
+    const wrapTab = (event: React.KeyboardEvent<HTMLDivElement>) => keepTabInside(event, event.currentTarget);
 
     return { dialogRef, wrapTab };
 };

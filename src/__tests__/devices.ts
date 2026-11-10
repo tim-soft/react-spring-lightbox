@@ -242,9 +242,12 @@ export const safariPinch = async (target: Element, { at, scales }: { at: Point; 
     safariGesture(target, 'gestureend', at, scales[scales.length - 1]);
 };
 
-/** Presses and releases `key`. Returns false when the lightbox blocked the key's default action, such as scrolling. */
-export const pressKey = (key: string, target: Element | Document = document) => {
-    const allowed = fireEvent.keyDown(target, { key });
-    fireEvent.keyUp(target, { key });
-    return allowed;
+export const pressKey = (
+    key: string,
+    target: Element | Document = document.activeElement ?? document,
+    init: Omit<KeyboardEventInit, 'key'> = {}
+) => {
+    const allowed = fireEvent.keyDown(target, { ...init, key });
+    fireEvent.keyUp(target, { ...init, key });
+    return { defaultPrevented: !allowed };
 };

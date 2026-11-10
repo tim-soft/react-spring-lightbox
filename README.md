@@ -22,7 +22,7 @@ React-spring-lightbox is a flexible image gallery lightbox with native-feeling t
 ## ✨ Features
 
 - :point_up: &nbsp;&nbsp;&nbsp;`Mousewheel`, swipe or click+drag to page photos
-- :keyboard: &nbsp;Keyboard controls <kbd>&leftarrow;</kbd> <kbd>&rightarrow;</kbd> <kbd>Esc</kbd>
+- :keyboard: &nbsp;Keyboard controls <kbd>&leftarrow;</kbd> <kbd>&rightarrow;</kbd> <kbd>Esc</kbd> that leave the rest of the page alone
 - :wheelchair: &nbsp;Opens as a modal dialog that takes focus and gives it back when it closes
 - :mouse2: &nbsp;<kbd>Ctrl</kbd> + `Mousewheel` or `Trackpad Pinch` to zoom
 - :mag_right: &nbsp;Double/Single-tap or double/single-click to zoom in/out
@@ -148,6 +148,11 @@ The lightbox opens as a modal dialog with `role="dialog"` and `aria-modal="true"
 - Name the dialog with `aria-label`, or with `aria-labelledby` and the `id` of a title in your header.
 - Give each button that you render a text label or an `aria-label`. An icon alone gives a screen reader nothing to announce.
 - Elements that you add to `<body>` after the lightbox opens, such as a menu that a header button portals to `<body>`, stay usable. Elements that were in `<body>` before it opened stay inert until it closes.
+
+The lightbox handles <kbd>&leftarrow;</kbd>, <kbd>&rightarrow;</kbd>, and <kbd>Esc</kbd> only while focus is inside it, or while the modal lightbox is open and nothing has focus, as after a focused Next button turns disabled on the last image. Text fields and selects inside it keep their arrow, <kbd>Home</kbd>, and <kbd>End</kbd> keys. While the modal lightbox is open, the keys that scroll a page don't scroll the page behind it when pressed in the lightbox.
+
+- To keep the lightbox open when a control inside it handles <kbd>Esc</kbd>, call `event.preventDefault()` in that control's `onKeyDown`.
+- An `inline` carousel takes <kbd>&leftarrow;</kbd> and <kbd>&rightarrow;</kbd> only while focus is inside it. Render buttons with `renderPrevButton` and `renderNextButton`, so keyboard users can move focus there. A button that turns `disabled` while it has focus, as at the first or last image, drops focus to the page, and the carousel then takes no keys until focus is back inside it.
 
 ## Local Development
 
