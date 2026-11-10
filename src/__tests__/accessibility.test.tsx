@@ -25,6 +25,10 @@ const pressTab = (shiftKey = false) => {
 // React calls a stable ref callback once, while it mounts the element, which is when it applies autoFocus
 const focusOnMount = (element: HTMLElement | null) => element?.focus();
 
+// A control that turns disabled or leaves the page while it has focus, as Next does on the last image,
+// drops focus to <body>. Blurring the focused element gets there in jsdom.
+const dropFocus = () => (document.activeElement as HTMLElement).blur();
+
 const Page = ({ focusCloseOnMount = false }) => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -378,5 +382,76 @@ describe('Tab', () => {
         pressKey('Enter', last);
 
         expect(last).toHaveFocus();
+    });
+
+    test('from <body> moves on from the dialog, so the browser goes to the first control', async () => {
+        await renderWithControls();
+        dropFocus();
+
+        expect(pressTab().defaultPrevented).toBe(false);
+
+        expect(document.activeElement).toBe(lightboxContainer());
+    });
+
+    test('from <body> with Shift goes to the last control', async () => {
+        await renderWithControls();
+        dropFocus();
+
+        expect(pressTab(true).defaultPrevented).toBe(true);
+
+        expect(screen.getByRole('button', { name: 'Last' })).toHaveFocus();
+    });
+});
+
+describe('a key pressed after focus falls to <body>', () => {
+    test.each([
+        ['Esc asks to close', 'Escape', 'onClose'],
+        ['← pages back', 'ArrowLeft', 'onPrev'],
+        ['→ pages on', 'ArrowRight', 'onNext'],
+    ] as const)('%s', async (_, key, callback) => {
+        const props = lightboxProps();
+        render(<Lightbox {...props} />);
+        await settle();
+        dropFocus();
+
+        pressKey(key);
+
+        expect(props[callback]).toHaveBeenCalledTimes(1);
+    });
+
+    test('moves focus back into the dialog', async () => {
+        render(<Lightbox {...lightboxProps()} />);
+        await settle();
+        dropFocus();
+        expect(document.activeElement).toBe(document.body);
+
+        pressKey('Shift');
+
+        expect(document.activeElement).toBe(lightboxContainer());
+    });
+
+    test('does not scroll the page behind', async () => {
+        render(<Lightbox {...lightboxProps()} />);
+        await settle();
+        dropFocus();
+
+        expect(pressKey('ArrowDown').defaultPrevented).toBe(true);
+    });
+
+    test('does nothing once the lightbox has closed', async () => {
+        const props = lightboxProps();
+        const { rerender } = render(<Lightbox {...props} />);
+        await settle();
+        rerender(
+            <Lightbox
+                {...props}
+                isOpen={false}
+            />
+        );
+        await settle();
+
+        expect(pressKey('ArrowDown', document.body).defaultPrevented).toBe(false);
+        pressKey('Escape', document.body);
+        expect(props.onClose).not.toHaveBeenCalled();
     });
 });
