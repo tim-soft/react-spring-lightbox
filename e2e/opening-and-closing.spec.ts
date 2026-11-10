@@ -117,8 +117,18 @@ test.describe('with a mouse and keyboard', () => {
         await page.waitForTimeout(300);
         const scrolled = await scrollY(page);
 
-        test.fail(true, 'Space is missing from the keys the lightbox blocks');
         expect(scrolled).toBe(0);
+    });
+
+    test('scroll keys with Alt, Ctrl, or Meta do not scroll the page behind', async ({ page }) => {
+        await openHarness(page);
+
+        for (const key of ['Meta+ArrowDown', 'Alt+ArrowDown', 'Control+End']) {
+            await page.keyboard.press(key);
+        }
+        await page.waitForTimeout(300);
+
+        expect(await scrollY(page)).toBe(0);
     });
 
     test('a text field in the footer keeps its Home and End keys (#65)', async ({ page }) => {
@@ -137,7 +147,6 @@ test.describe('with a mouse and keyboard', () => {
         await page.waitForTimeout(100);
         const prevented = await page.evaluate(() => (window as unknown as { prevented: boolean[] }).prevented);
 
-        test.fail();
         expect(prevented).toEqual([false, false]);
     });
 });

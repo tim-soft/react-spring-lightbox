@@ -368,7 +368,6 @@ test.describe('the keyboard', () => {
         await settle(page);
         const { onNext } = await calls(page);
 
-        test.fail();
         expect(onNext).toBe(0);
     });
 });

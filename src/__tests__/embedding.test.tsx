@@ -11,6 +11,7 @@ import {
     advance,
     containerAppearance,
     image,
+    lightboxContainer,
     lightboxProps,
     mockLayout,
     pageOf,
@@ -178,21 +179,23 @@ describe('at the last image, as a looping gallery sees it', () => {
     });
 });
 
-test('holding an arrow key pages once, when the key is released', () => {
+test('holding an arrow key pages once, when it goes down', () => {
     const props = lightboxProps({ currentIndex: 2 });
     render(<Lightbox {...props} />);
+    const dialog = lightboxContainer();
 
-    for (let repeat = 0; repeat < 5; repeat += 1) {
-        fireEvent.keyDown(document, { key: 'ArrowRight', repeat: repeat > 0 });
+    fireEvent.keyDown(dialog, { key: 'ArrowRight' });
+    expect(props.onNext).toHaveBeenCalledTimes(1);
+    for (let repeat = 0; repeat < 4; repeat += 1) {
+        fireEvent.keyDown(dialog, { key: 'ArrowRight', repeat: true });
     }
-    expect(props.onNext).not.toHaveBeenCalled();
-    fireEvent.keyUp(document, { key: 'ArrowRight' });
+    fireEvent.keyUp(dialog, { key: 'ArrowRight' });
 
     expect(props.onNext).toHaveBeenCalledTimes(1);
 });
 
 describe('more than one lightbox on a page', () => {
-    test.fails('a key press pages at most one of two inline carousels (#65)', () => {
+    test('a key press pages at most one of two inline carousels (#65)', () => {
         const firstNext = vi.fn();
         const secondNext = vi.fn();
         const first = lightboxProps({ inline: true, onNext: firstNext });
@@ -209,7 +212,7 @@ describe('more than one lightbox on a page', () => {
         expect(firstNext.mock.calls.length + secondNext.mock.calls.length).toBeLessThanOrEqual(1);
     });
 
-    test.fails('a key press pages only the open modal, not an inline carousel behind it (#65)', () => {
+    test('a key press pages only the open modal, not an inline carousel behind it (#65)', () => {
         const carousel = lightboxProps({ inline: true });
         const modal = lightboxProps();
         render(
