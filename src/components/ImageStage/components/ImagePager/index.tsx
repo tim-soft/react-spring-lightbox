@@ -112,15 +112,19 @@ const ImagePager = ({
             const x = ctrl.springs.x.get();
             const onStage = ctrl.springs.display.get() !== 'none' && Math.abs(x) < imageStageWidth;
             if (target.display === 'none') {
-                // The old image of a jump leaves opposite the jump, even a few pixels short of the center after
-                // an earlier page change. A page that now holds another image hides at once.
+                // A leaving page moves its goal a stage width, as the page that follows it does, so the two stay a
+                // stage width apart. A resize changes no page and leaves the goal in the old width, so the page
+                // slides off the side it is on. A page that now holds another image hides at once, and so does a
+                // page whose goal would land on the center, as the old image past the new one in a jump does.
                 const leaves = onStage && !(replaced && i === previous.index);
                 const edge = leaves ? -direction || Math.sign(x) : 0;
-                if (edge === 0) {
+                const exit =
+                    step === 0 ? edge * imageStageWidth : ctrl.springs.x.goal - (direction || step) * imageStageWidth;
+                if (edge === 0 || exit === 0) {
                     ctrl.set(target);
                     return null;
                 }
-                void ctrl.start({ display: 'flex', x: edge * imageStageWidth }).then(({ finished }) => {
+                void ctrl.start({ display: 'flex', x: exit }).then(({ finished }) => {
                     // An interrupted page does not finish, and the update that interrupted it decides where it goes
                     const { index, width } = placement.current;
                     if (finished && Math.abs(i - index) > 1) {
