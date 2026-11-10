@@ -180,6 +180,16 @@ describe('closing', () => {
         expect(props.onClose).not.toHaveBeenCalled();
     });
 
+    test('Esc that ends input method composition in Safari leaves it open', () => {
+        const props = lightboxProps({ renderFooter: () => <input aria-label="Caption" /> });
+        render(<Lightbox {...props} />);
+
+        // Safari fires compositionend first, so this keydown has isComposing false and keyCode 229
+        pressKey('Escape', screen.getByRole('textbox', { name: 'Caption' }), { isComposing: false, keyCode: 229 });
+
+        expect(props.onClose).not.toHaveBeenCalled();
+    });
+
     test('ignores keys that reach it while it fades out', async () => {
         const props = lightboxProps();
         const { rerender } = render(<Lightbox {...props} />);
