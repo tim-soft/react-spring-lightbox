@@ -23,6 +23,7 @@ React-spring-lightbox is a flexible image gallery lightbox with native-feeling t
 
 - :point_up: &nbsp;&nbsp;&nbsp;`Mousewheel`, swipe or click+drag to page photos
 - :keyboard: &nbsp;Keyboard controls <kbd>&leftarrow;</kbd> <kbd>&rightarrow;</kbd> <kbd>Esc</kbd>
+- :wheelchair: &nbsp;Opens as a modal dialog that takes focus and gives it back when it closes
 - :mouse2: &nbsp;<kbd>Ctrl</kbd> + `Mousewheel` or `Trackpad Pinch` to zoom
 - :mag_right: &nbsp;Double/Single-tap or double/single-click to zoom in/out
 - :ok_hand: &nbsp;&nbsp;&nbsp;Pinch to zoom
@@ -85,6 +86,8 @@ const CoolLightbox = () => {
             onNext={gotoNext}
             images={images}
             currentIndex={currentImageIndex}
+            /* Name the dialog for screen readers */
+            aria-label="Dark mode settings"
             /* Add your own UI */
             // renderHeader={() => (<CustomHeader />)}
             // renderFooter={() => (<CustomFooter />)}
@@ -135,6 +138,16 @@ export default CoolLightbox;
 | className            | Classes are applied to the root lightbox component                                                                 |
 | style                | Inline styles are applied to the root lightbox component                                                           |
 | pageTransitionConfig | React-Spring useTransition config for page open/close animation                                                    |
+| aria-label           | Names the lightbox dialog for screen readers. Use this or `aria-labelledby`                                        |
+| aria-labelledby      | The `id` of an element, such as a title in `renderHeader`, that names the lightbox dialog                          |
+
+## Accessibility
+
+The lightbox opens as a modal dialog with `role="dialog"` and `aria-modal="true"`. When it opens, focus moves into it, and <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> cycle through its controls. Until it closes, the other children of `<body>` are `inert`, so neither the keyboard nor a screen reader reaches the page behind it. When it closes, focus goes back to the element that had focus before it opened. With `inline`, the lightbox is part of the page and none of this applies.
+
+- Name the dialog with `aria-label`, or with `aria-labelledby` and the `id` of a title in your header.
+- Give each button that you render a text label or an `aria-label`. An icon alone gives a screen reader nothing to announce.
+- Elements that you add to `<body>` after the lightbox opens, such as a menu that a header button portals to `<body>`, stay usable. Elements that were in `<body>` before it opened stay inert until it closes.
 
 ## Local Development
 
