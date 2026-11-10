@@ -81,10 +81,14 @@ const startSampling = () => {
     const sample = (time) => {
         const pages = [...document.querySelectorAll('.lightbox-image-pager')]
             .filter((span) => getComputedStyle(span).display !== 'none')
-            .map((span) => [
-                Number(span.querySelector('img').alt.replace('Image ', '')),
-                Number(/translateX\((-?[\d.e+-]+)px\)/.exec(span.style.transform)?.[1]),
-            ]);
+            .map((span) => {
+                // A page writes translateX in pixels, or in percent of its own width
+                const [, value, unit] = /translateX\((-?[\d.e+-]+)(px|%)\)/.exec(span.style.transform) ?? [];
+                return [
+                    Number(span.querySelector('img').alt.replace('Image ', '')),
+                    unit === '%' ? (Number(value) / 100) * span.offsetWidth : Number(value),
+                ];
+            });
         state.frames.push({ pages, time });
         if (state.recording) {
             requestAnimationFrame(sample);

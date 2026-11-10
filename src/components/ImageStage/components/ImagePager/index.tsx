@@ -1,4 +1,4 @@
-import { animated, useSprings } from '@react-spring/web';
+import { animated, useSpringValue, useSprings } from '@react-spring/web';
 import { useGesture } from '@use-gesture/react';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -80,6 +80,9 @@ const ImagePager = ({
      * @see https://www.react-spring.io/docs/hooks/use-springs
      */
     const [pagerSprings, springsApi] = useSprings(images.length, (i) => getPagePositions(i));
+    // The stage width the pages' x was laid out for. Each page's transform is x as a percentage of it, so a wider
+    // window moves the pages in the same layout that widens them, before the pager learns the new width.
+    const layoutWidth = useSpringValue(imageStageWidth);
 
     // Animate page change if currentIndex changes
     useEffect(() => {
@@ -93,6 +96,12 @@ const ImagePager = ({
         // A new file for the same page, as progressive loading swaps in, moves nothing, even mid-drag
         if (currentIndex === previous.index && imageStageWidth === previous.width) {
             return;
+        }
+        if (imageStageWidth !== previous.width) {
+            // Rescale x with the width, so no page moves on screen. Pages at rest are then in their new places. The
+            // width changes first, because a page's transform reads it when its x changes.
+            layoutWidth.set(imageStageWidth);
+            springsApi.set((_, ctrl) => ({ x: (ctrl.springs.x.get() * imageStageWidth) / previous.width }));
         }
         const step = currentIndex - previous.index;
         // The old image's page holds another image now, as after images are added or swapped
@@ -143,7 +152,7 @@ const ImagePager = ({
             }
             return target;
         });
-    }, [currentIndex, getPagePositions, imageStageWidth, images, shownSrc, springsApi]);
+    }, [currentIndex, getPagePositions, imageStageWidth, images, layoutWidth, shownSrc, springsApi]);
 
     /**
      * Update each Image's visibility and translateX offset during dragging
@@ -300,7 +309,8 @@ const ImagePager = ({
                         right: 0,
                         top: 0,
                         touchAction: !inline ? 'none' : 'pan-y',
-                        transform: x.to((xInterp: number) => `translateX(${xInterp}px)`),
+                        // Observing only x keeps one observer per page. A resize changes x along with the width.
+                        transform: x.to((xValue: number) => `translateX(${(xValue / layoutWidth.get()) * 100}%)`),
                         width: '100%',
                         willChange: 'transform',
                     }}
