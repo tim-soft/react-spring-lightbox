@@ -14,5 +14,77 @@ The open lightbox is now a modal dialog that keyboard and screen reader users ca
 
 Upgrade notes:
 
+- If a screen reader announces your lightbox only as "dialog", the dialog has no name. Pass `aria-label`, or pass `aria-labelledby` with the `id` of a title in your header.
+
+    Before:
+
+    ```jsx
+    <Lightbox
+        isOpen={isOpen}
+        /* your other props */
+    />
+    ```
+
+    After:
+
+    ```jsx
+    <Lightbox
+        aria-label="Product photos"
+        isOpen={isOpen}
+        /* your other props */
+    />
+    ```
+
 - If your page keeps a control usable over the open lightbox, such as a toolbar that sits above it with a higher `z-index`, that control is now inert while the lightbox is open. Clicks and Tab skip it. To check, open the lightbox and look for an `inert` attribute on the control or one of its ancestors in your browser's element inspector. To keep the control usable, render it in `renderHeader`, `renderFooter`, or `renderImageOverlay`.
+
+    Before:
+
+    ```jsx
+    <>
+        <Toolbar style={{ position: 'fixed', top: 0, zIndex: 500 }} />
+        <Lightbox
+            isOpen={isOpen}
+            /* your other props */
+        />
+    </>
+    ```
+
+    After:
+
+    ```jsx
+    <Lightbox
+        isOpen={isOpen}
+        renderHeader={() => <Toolbar />}
+        /* your other props */
+    />
+    ```
+
 - If your `onClose` handler moves focus to another element, focus now ends on the element that opened the lightbox instead. The lightbox moves focus back after `onClose` returns, so it overrides a `focus()` call inside the handler. Move focus in a `useEffect` that runs when `isOpen` changes to `false`, in the component that renders `<Lightbox>`. That effect runs after the lightbox moves focus back.
+
+    Before:
+
+    ```jsx
+    const close = () => {
+        setIsOpen(false);
+        searchRef.current.focus();
+    };
+    ```
+
+    After:
+
+    ```jsx
+    const focusSearchAfterClose = useRef(false);
+    const close = () => {
+        focusSearchAfterClose.current = true;
+        setIsOpen(false);
+    };
+
+    useEffect(() => {
+        if (!isOpen && focusSearchAfterClose.current) {
+            focusSearchAfterClose.current = false;
+            searchRef.current.focus();
+        }
+    }, [isOpen]);
+    ```
+
+- In a browser that doesn't support the `inert` attribute, Tab and screen readers can still reach the page behind the open lightbox, as they could with 1.9.0. If your app supports such browsers, load an `inert` polyfill such as `wicg-inert`.
