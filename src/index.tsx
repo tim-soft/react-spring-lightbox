@@ -87,7 +87,9 @@ const Lightbox = ({
 }: ILightboxProps) => {
     const onKey = (event: KeyboardEvent) => {
         const target = event.target as Element;
-        if (!isOpen || event.defaultPrevented || event.isComposing) {
+        // Safari fires compositionend before the keydown that ends a composition, and marks that key
+        // only with keyCode 229
+        if (!isOpen || event.defaultPrevented || event.isComposing || event.keyCode === 229) {
             return;
         }
         const inTextField = target.closest(TEXT_FIELD) !== null;
