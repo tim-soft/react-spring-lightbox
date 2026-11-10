@@ -1,4 +1,4 @@
-import { animated, useSprings } from '@react-spring/web';
+import { animated, to, useSprings } from '@react-spring/web';
 import { useGesture } from '@use-gesture/react';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -79,7 +79,12 @@ const ImagePager = ({
      *
      * @see https://www.react-spring.io/docs/hooks/use-springs
      */
-    const [pagerSprings, springsApi] = useSprings(images.length, (i) => getPagePositions(i));
+    // Each page also keeps the stage width its x was laid out for. Its transform is x as a percentage of that width,
+    // so a wider window moves the pages in the same layout that widens them, before the pager learns the new width.
+    const [pagerSprings, springsApi] = useSprings(images.length, (i) => ({
+        ...getPagePositions(i),
+        width: imageStageWidth,
+    }));
 
     // Animate page change if currentIndex changes
     useEffect(() => {
@@ -93,6 +98,13 @@ const ImagePager = ({
         // A new file for the same page, as progressive loading swaps in, moves nothing, even mid-drag
         if (currentIndex === previous.index && imageStageWidth === previous.width) {
             return;
+        }
+        if (imageStageWidth !== previous.width) {
+            // Rescale x with the width, so no page moves on screen. Pages at rest are then in their new places.
+            springsApi.set((_, ctrl) => ({
+                width: imageStageWidth,
+                x: (ctrl.springs.x.get() * imageStageWidth) / previous.width,
+            }));
         }
         const step = currentIndex - previous.index;
         // The old image's page holds another image now, as after images are added or swapped
@@ -277,7 +289,7 @@ const ImagePager = ({
 
     return (
         <div style={{ height: '100%', width: '100%' }}>
-            {pagerSprings.map(({ display, x }, i) => (
+            {pagerSprings.map(({ display, width, x }, i) => (
                 <animated.span
                     {...bind()}
                     className="lightbox-image-pager"
@@ -300,7 +312,10 @@ const ImagePager = ({
                         right: 0,
                         top: 0,
                         touchAction: !inline ? 'none' : 'pan-y',
-                        transform: x.to((xInterp: number) => `translateX(${xInterp}px)`),
+                        transform: to(
+                            [x, width],
+                            (xValue, widthValue) => `translateX(${(xValue / widthValue) * 100}%)`
+                        ),
                         width: '100%',
                         willChange: 'transform',
                     }}
