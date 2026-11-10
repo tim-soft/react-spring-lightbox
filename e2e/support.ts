@@ -132,6 +132,37 @@ export const sampleFrames = (locator: Locator, sampled: Sampled, frames = 12) =>
         [sampled, frames] as const
     );
 
+type Recording = { frames: string[][]; stopped: boolean };
+
+/**
+ * Records, on every animation frame, the alt text of each image that overlaps the viewport by more than a
+ * pixel. The returned function stops the recording and returns the frames.
+ */
+export const recordImagesOnScreen = async (page: Page) => {
+    await page.evaluate(() => {
+        const recording: Recording = { frames: [], stopped: false };
+        Object.assign(window, { imagesOnScreen: recording });
+        const record = () => {
+            recording.frames.push(
+                [...document.querySelectorAll('img')].flatMap((img) => {
+                    const { left, right, width } = img.getBoundingClientRect();
+                    return width > 0 && right > 1 && left < window.innerWidth - 1 ? [img.alt] : [];
+                })
+            );
+            if (!recording.stopped) {
+                requestAnimationFrame(record);
+            }
+        };
+        requestAnimationFrame(record);
+    });
+    return () =>
+        page.evaluate(() => {
+            const recording = (window as unknown as { imagesOnScreen: Recording }).imagesOnScreen;
+            recording.stopped = true;
+            return recording.frames;
+        });
+};
+
 /**
  * Chromium input through the DevTools protocol: real mouse, touch, wheel and
  * trackpad events with explicit timestamps, so gesture speeds don't depend on
