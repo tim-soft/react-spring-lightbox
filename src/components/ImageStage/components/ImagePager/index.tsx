@@ -29,6 +29,12 @@ type IImagePager = {
     singleClickToZoom: boolean;
 };
 
+// Where page i rests while page `index` is shown: in a row, with pages past the neighbors hidden
+const getRestingPosition = (i: number, index: number, width: number) => {
+    const x = (i - index) * width;
+    return { display: Math.abs(i - index) > 1 ? ('none' as const) : ('flex' as const), x };
+};
+
 /**
  * Gesture controlled surface that animates prev/next page changes via spring physics.
  */
@@ -45,6 +51,9 @@ const ImagePager = ({
     singleClickToZoom,
 }: IImagePager) => {
     const firstRender = useRef(true);
+    const shownSrc = images[currentIndex]?.src;
+    // Where the last page change put the pages
+    const placement = useRef({ index: currentIndex, src: shownSrc, width: imageStageWidth });
 
     const [disableDrag, setDisableDrag] = useState<boolean>(false);
     const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -55,13 +64,8 @@ const ImagePager = ({
     // Generate page positions based on current index
     const getPagePositions = React.useCallback(
         (i: number, down = false, xDelta = 0) => {
-            const x = (i - currentIndex) * imageStageWidth;
-
-            // Pages past the neighbors are hidden, so drags skip them and a page change sets them in place
-            if (i < currentIndex - 1 || i > currentIndex + 1) {
-                return { display: 'none', x };
-            }
-            return { display: 'flex', x: x + (down ? xDelta : 0) };
+            const { display, x } = getRestingPosition(i, currentIndex, imageStageWidth);
+            return { display, x: display === 'flex' && down ? x + xDelta : x };
         },
         [currentIndex, imageStageWidth]
     );
@@ -84,17 +88,58 @@ const ImagePager = ({
             firstRender.current = false;
             return;
         }
+        const previous = placement.current;
+        placement.current = { index: currentIndex, src: shownSrc, width: imageStageWidth };
+        // A new file for the same page, as progressive loading swaps in, moves nothing, even mid-drag
+        if (currentIndex === previous.index && imageStageWidth === previous.width) {
+            return;
+        }
+        const step = currentIndex - previous.index;
+        // The old image's page holds another image now, as after images are added or swapped
+        const replaced = images[previous.index]?.src !== previous.src;
+        // Keeping the same image in view while images are added before it is no page change
+        const moved = step !== 0 && shownSrc === previous.src && replaced;
+        // A change of more than one page slides like a page turn
+        const direction = Math.abs(step) > 1 && !moved ? Math.sign(step) : 0;
         // Update page positions after prev/next page state change. Hidden pages move with set(), because
         // react-spring searches its whole frame queue for each spring that start() adds to it.
         springsApi.start((i, ctrl) => {
-            const position = getPagePositions(i);
-            if (position.display === 'none') {
-                ctrl.set(position);
+            const target = getPagePositions(i);
+            if (moved) {
+                ctrl.set(target);
                 return null;
             }
-            return position;
+            const x = ctrl.springs.x.get();
+            const onStage = ctrl.springs.display.get() !== 'none' && Math.abs(x) < imageStageWidth;
+            if (target.display === 'none') {
+                // The old image of a jump leaves opposite the jump, even a few pixels short of the center after
+                // an earlier page change. A page that now holds another image hides at once.
+                const leaves = onStage && !(replaced && i === previous.index);
+                const edge = leaves ? -direction || Math.sign(x) : 0;
+                if (edge === 0) {
+                    ctrl.set(target);
+                    return null;
+                }
+                void ctrl.start({ display: 'flex', x: edge * imageStageWidth }).then(({ finished }) => {
+                    // An interrupted page does not finish, and the update that interrupted it decides where it goes
+                    const { index, width } = placement.current;
+                    if (finished && Math.abs(i - index) > 1) {
+                        ctrl.set(getRestingPosition(i, index, width));
+                    }
+                });
+                return null;
+            }
+            if (direction !== 0 && !onStage) {
+                // Only the new image slides on, from the side the jump came from
+                if (i !== currentIndex) {
+                    ctrl.set(target);
+                    return null;
+                }
+                ctrl.set({ ...target, x: direction * imageStageWidth });
+            }
+            return target;
         });
-    }, [currentIndex, getPagePositions, springsApi]);
+    }, [currentIndex, getPagePositions, imageStageWidth, images, shownSrc, springsApi]);
 
     /**
      * Update each Image's visibility and translateX offset during dragging
