@@ -1111,6 +1111,18 @@ describe('page layout', () => {
         expect(translateX(pageOf(4))).toBe(1000);
     });
 
+    test('a wider window puts the images beside the current one in their new places at once', async () => {
+        await openGallery();
+
+        layout.stage.width = 1000;
+        fireEvent(window, new Event('resize'));
+        await advance(FRAME);
+
+        expect(translateX(pageOf(2))).toBe(-1000);
+        expect(translateX(pageOf(3))).toBe(0);
+        expect(translateX(pageOf(4))).toBe(1000);
+    });
+
     test('fits images to the stage height, minus 50px of room for controls', () => {
         render(<Lightbox {...lightboxProps()} />);
 

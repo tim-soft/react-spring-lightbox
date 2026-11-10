@@ -468,3 +468,26 @@ test('keeps the current image centered when the window resizes', async ({ page }
 
     expect(await shownImage(page)).toBe('Image 3');
 });
+
+test.describe('widening the window', () => {
+    test.skip(({ isMobile }) => isMobile, 'A desktop window');
+
+    test('keeps the images beside the current one off the screen', async ({ page }) => {
+        await page.setViewportSize({ height: 720, width: 1280 });
+        // The Panorama beside the Portrait is wide enough to reach into a stage that grows
+        await openHarness(page, 'variety&index=2');
+        const stop = await recordImagesOnScreen(page);
+
+        await page.setViewportSize({ height: 720, width: 1600 });
+        await page.waitForTimeout(300);
+        for (let width = 1640; width <= 1920; width += 40) {
+            await page.setViewportSize({ height: 720, width });
+            await page.waitForTimeout(40);
+        }
+        await settle(page);
+        const frames = await stop();
+
+        expect(frames.length).toBeGreaterThan(0);
+        expect(frames.filter((alts) => alts.some((alt) => alt !== 'Portrait'))).toEqual([]);
+    });
+});

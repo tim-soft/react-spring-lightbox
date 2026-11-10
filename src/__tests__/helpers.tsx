@@ -115,9 +115,11 @@ export const lightboxContainer = () => screen.getByTestId('lightbox-container');
 
 const NUMBER = '(-?[\\d.]+(?:e[-+]?\\d+)?)';
 
-/** Pixel offset of an element's `translateX(...)` transform */
-export const translateX = (element: HTMLElement) =>
-    Number(new RegExp(`translateX\\(${NUMBER}px\\)`).exec(element.style.transform)?.[1]);
+/** Pixel offset of an element's `translateX(...)` transform, written in pixels or in percent of its width */
+export const translateX = (element: HTMLElement) => {
+    const [, value, unit] = new RegExp(`translateX\\(${NUMBER}(px|%)\\)`).exec(element.style.transform) ?? [];
+    return unit === '%' ? (Number(value) / 100) * element.clientWidth : Number(value);
+};
 
 /** The alt text of the image the pager has centered */
 export const shownImage = () =>
