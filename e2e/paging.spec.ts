@@ -9,6 +9,7 @@ import {
     imageTransform,
     openHarness,
     pointIn,
+    recordImagesOnScreen,
     sampleFrames,
     settle,
     shownImage,
@@ -358,6 +359,22 @@ test.describe('the keyboard', () => {
         await page.keyboard.press('ArrowLeft');
         await settle(page);
         expect(await shownImage(page)).toBe('Image 2');
+    });
+
+    test('→ pressed three times quickly never shows more than two images at once', async ({ page }) => {
+        await openHarness(page, 'index=0');
+        const stopRecording = await recordImagesOnScreen(page);
+
+        for (let press = 0; press < 3; press += 1) {
+            await page.keyboard.press('ArrowRight');
+            await page.waitForTimeout(80);
+        }
+        await settle(page);
+        const frames = await stopRecording();
+
+        expect(frames.some((shown) => shown.length === 2)).toBe(true);
+        expect(frames.filter((shown) => shown.length > 2)).toEqual([]);
+        expect(await shownImage(page)).toBe('Image 4');
     });
 
     test('arrow keys in a text field move the caret, not the gallery (#65)', async ({ page }) => {

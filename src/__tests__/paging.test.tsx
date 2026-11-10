@@ -906,6 +906,100 @@ describe('when currentIndex changes', () => {
         expect(shownImage()).toBe('Image 3');
         expect(pageOf(1)).toHaveStyle({ display: 'none' });
     });
+
+    test('a quick second page change keeps the first image a stage width ahead of the second', async () => {
+        const props = lightboxProps({ currentIndex: 0 });
+        const { rerender } = render(<Lightbox {...props} />);
+        await settle();
+
+        rerender(
+            <Lightbox
+                {...props}
+                currentIndex={1}
+            />
+        );
+        await advance(FRAME * 4);
+        rerender(
+            <Lightbox
+                {...props}
+                currentIndex={2}
+            />
+        );
+        const frames: number[][][] = [];
+        const gaps: number[] = [];
+        for (let frame = 0; frame < 60; frame += 1) {
+            await advance(FRAME);
+            frames.push(imagesOnStage());
+            if ([1, 2].every((n) => pageOf(n).style.display !== 'none')) {
+                gaps.push(translateX(pageOf(1)) - translateX(pageOf(2)));
+            }
+        }
+
+        expect(gaps.length).toBeGreaterThan(0);
+        // jsdom keeps six significant digits of a transform
+        expect(gaps.filter((gap) => Math.abs(gap + 800) > 0.01)).toEqual([]);
+        expect(frames.filter((frame) => frame.length > 2)).toEqual([]);
+    });
+
+    test('a jump soon after a page change keeps the two images that leave a stage width apart', async () => {
+        const props = lightboxProps({ currentIndex: 0 });
+        const { rerender } = render(<Lightbox {...props} />);
+        await settle();
+
+        rerender(
+            <Lightbox
+                {...props}
+                currentIndex={1}
+            />
+        );
+        await advance(FRAME * 4);
+        rerender(
+            <Lightbox
+                {...props}
+                currentIndex={4}
+            />
+        );
+        const gaps: number[] = [];
+        for (let frame = 0; frame < 60; frame += 1) {
+            await advance(FRAME);
+            if ([1, 2].every((n) => pageOf(n).style.display !== 'none')) {
+                gaps.push(translateX(pageOf(1)) - translateX(pageOf(2)));
+            }
+        }
+
+        expect(gaps.length).toBeGreaterThan(0);
+        // jsdom keeps six significant digits of a transform
+        expect(gaps.filter((gap) => Math.abs(gap + 800) > 0.01)).toEqual([]);
+    });
+
+    test('a jump right after a step back hides the old image behind it instead of sliding it under the new one', async () => {
+        const props = lightboxProps({ currentIndex: 2 });
+        const { rerender } = render(<Lightbox {...props} />);
+        await settle();
+
+        rerender(
+            <Lightbox
+                {...props}
+                currentIndex={1}
+            />
+        );
+        await advance(FRAME * 4);
+        rerender(
+            <Lightbox
+                {...props}
+                currentIndex={4}
+            />
+        );
+        const frames: number[][][] = [];
+        for (let frame = 0; frame < 60; frame += 1) {
+            await advance(FRAME);
+            frames.push(imagesOnStage());
+        }
+
+        expect(frames.filter((frame) => frame.length > 2)).toEqual([]);
+        await settle();
+        expect(shownImage()).toBe('Image 5');
+    });
 });
 
 describe('page layout', () => {
