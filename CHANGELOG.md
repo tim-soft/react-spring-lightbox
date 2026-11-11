@@ -4,6 +4,25 @@
 
 _Released 2026-11-11_
 
+### Summary
+
+This release makes large galleries much faster and moves the lightbox to current dependencies. The entries below give the details. Read their upgrade notes for the `exports` map and the Node.js minimum before you upgrade.
+
+**Performance.** Each number comes from the entry below that describes it, measured in Chromium with the CPU slowed down 4x, median of 6 runs, against 1.9.0 unless it says otherwise.
+
+- Only the current image and its neighbors animate now. A 1.3-second drag over 1,000 images writes 351 CSS transforms instead of 117,000, and holding a drag over 100 images takes 163ms of main-thread time instead of 503ms.
+- Images more than one page from the current one re-render only when their props change. Four arrow-key presses over 1,000 images render images 16 times instead of 4,000, and add 136 event listeners instead of 32,008.
+- Hidden images move without starting a spring. On top of the change that animates only the shown images, that cuts the JavaScript for four arrow-key presses over 1,000 images from 780ms to 429ms.
+- Opening the lightbox renders each image once instead of twice. Opening 1,000 images runs 472ms of JavaScript instead of 644ms, and the JavaScript heap with them open is 27MB instead of 37MB.
+
+**Dependency upgrades.** Each one comes from its entry below.
+
+- `@react-spring/web` goes from `^9.7.3` to `^10.1.2`, so the lightbox installs next to React 19 without peer dependency warnings. React 18 keeps working.
+- `@use-gesture/react` `^10.3.1` replaces the deprecated `react-use-gesture` `9.1.3`, so installing the lightbox no longer prints a deprecation warning.
+- `@babel/runtime` is gone. Rolldown and TypeScript 7 now build the package, and its bundles need no Babel helpers.
+- The package adds an ES module build, `dist/index.mjs`, and an `exports` map. Bundlers load the ES module build, so they can drop the lightbox from an app that imports it without rendering it. `dist/index.cjs.js` is now `dist/index.cjs`, and imports of other files inside `dist/` fail.
+- `engines` now requires Node.js `^22.18.0 || ^24.11.0 || >=26.0.0` and npm `>=10.9.0`, up from Node.js `>=16` and npm `>=7`.
+
 ### Minor Changes
 
 - 3a4933c: Add an ES module build and an `exports` map, so `import` and `require` each load their own bundle with matching types.
