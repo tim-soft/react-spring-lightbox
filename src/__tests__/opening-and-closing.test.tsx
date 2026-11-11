@@ -463,6 +463,34 @@ describe('the page behind it', () => {
         expect(root.style.paddingRight).toBe('');
     });
 
+    test('stays locked until the last of two open lightboxes closes, whichever closes first', async () => {
+        const root = document.documentElement;
+        const first = lightboxProps();
+        const second = lightboxProps();
+        const page = (firstIsOpen: boolean, secondIsOpen: boolean) => (
+            <>
+                <Lightbox
+                    {...first}
+                    isOpen={firstIsOpen}
+                />
+                <Lightbox
+                    {...second}
+                    isOpen={secondIsOpen}
+                />
+            </>
+        );
+        const { rerender } = render(page(true, true));
+        await settle();
+
+        rerender(page(false, true));
+        await settle();
+        expect(root.style.overflow).toBe('hidden');
+
+        rerender(page(false, false));
+        await settle();
+        expect(root.style.overflow).toBe('');
+    });
+
     test('is left alone by an inline carousel', async () => {
         render(<Lightbox {...lightboxProps({ inline: true })} />);
         await settle();
