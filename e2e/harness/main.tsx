@@ -12,6 +12,13 @@ import Lightbox from '../../src/index';
 const params = new URLSearchParams(window.location.search);
 const flag = (name: string) => params.has(name);
 
+// A styled scrollbar takes up space in Chromium and WebKit, as classic scrollbars on Windows and Linux do
+if (flag('classicScrollbar')) {
+    const style = document.createElement('style');
+    style.textContent = '::-webkit-scrollbar { width: 15px; } ::-webkit-scrollbar-thumb { background: #888; }';
+    document.head.append(style);
+}
+
 const images: ImagesListType = flag('variety')
     ? [
           { alt: 'Tiny image', src: '/images/tiny.svg' },

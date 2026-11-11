@@ -20,6 +20,36 @@ const makePageBehindInert = (dialog: Element) => {
     return () => madeInert.forEach((element) => element.removeAttribute('inert'));
 };
 
+// Every open modal shares one lock, so the page gets its own styles back only when the last one closes,
+// in whatever order they close
+const pageLock = { openModals: 0, overflow: '', paddingRight: '' };
+
+// Inert content still scrolls, as with the keys that a text field or a menu portaled to <body> leaves
+// to the browser, and with touches outside the image stage. Hiding the page's overflow stops them all.
+const lockPageScroll = () => {
+    const root = document.documentElement;
+    if (pageLock.openModals === 0) {
+        pageLock.overflow = root.style.overflow;
+        pageLock.paddingRight = root.style.paddingRight;
+        const widthWithScrollbar = root.clientWidth;
+        root.style.overflow = 'hidden';
+        // A scrollbar that took up space goes away with the overflow, so padding takes its place
+        const scrollbarWidth = root.clientWidth - widthWithScrollbar;
+        if (scrollbarWidth > 0) {
+            const padding = parseFloat(getComputedStyle(root).paddingRight) || 0;
+            root.style.paddingRight = `${padding + scrollbarWidth}px`;
+        }
+    }
+    pageLock.openModals += 1;
+    return () => {
+        pageLock.openModals -= 1;
+        if (pageLock.openModals === 0) {
+            root.style.overflow = pageLock.overflow;
+            root.style.paddingRight = pageLock.paddingRight;
+        }
+    };
+};
+
 // With the page inert, Tab from the last control would land on <body>
 const keepTabInside = (event: Pick<KeyboardEvent, 'key' | 'preventDefault' | 'shiftKey'>, dialog: HTMLElement) => {
     if (event.key !== 'Tab') {
@@ -60,6 +90,7 @@ const useModalDialog = (isOpen: boolean) => {
         const dialog = dialogRef.current!;
         const returnFocusTo = focusedBeforeOpen as HTMLElement;
         const freePageBehind = makePageBehindInert(dialog);
+        const unlockPageScroll = lockPageScroll();
         if (!dialog.contains(document.activeElement)) {
             dialog.focus();
         }
@@ -76,6 +107,7 @@ const useModalDialog = (isOpen: boolean) => {
         return () => {
             document.removeEventListener('keydown', takeFocusBack);
             freePageBehind();
+            unlockPageScroll();
             returnFocusTo.focus();
         };
     }, [focusedBeforeOpen, isOpen]);

@@ -415,6 +415,88 @@ describe('the page behind it', () => {
         expect(pressKey('Home', caption).defaultPrevented).toBe(false);
         expect(pressKey('End', caption).defaultPrevented).toBe(false);
     });
+
+    test('cannot scroll while it is open, and can again once it closes', async () => {
+        const root = document.documentElement;
+        const props = lightboxProps();
+        const { rerender } = render(<Lightbox {...props} />);
+        await settle();
+        expect(root.style.overflow).toBe('hidden');
+
+        rerender(
+            <Lightbox
+                {...props}
+                isOpen={false}
+            />
+        );
+        await settle();
+
+        expect(root.style.overflow).toBe('');
+    });
+
+    test('gets back the overflow and padding that the page set on <html>', async () => {
+        const root = document.documentElement;
+        root.style.overflow = 'scroll';
+        root.style.paddingRight = '3px';
+        const { unmount } = render(<Lightbox {...lightboxProps()} />);
+        await settle();
+
+        unmount();
+
+        expect(root.style.overflow).toBe('scroll');
+        expect(root.style.paddingRight).toBe('3px');
+        root.removeAttribute('style');
+    });
+
+    test('stays in place when the scrollbar it hides took up space', async () => {
+        const root = document.documentElement;
+        // A classic scrollbar takes 15px from the page until overflow: hidden removes it
+        vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(function (this: HTMLElement) {
+            return this === root && root.style.overflow !== 'hidden' ? 785 : 800;
+        });
+        const { unmount } = render(<Lightbox {...lightboxProps()} />);
+        await settle();
+        expect(root.style.paddingRight).toBe('15px');
+
+        unmount();
+
+        expect(root.style.paddingRight).toBe('');
+    });
+
+    test('stays locked until the last of two open lightboxes closes, whichever closes first', async () => {
+        const root = document.documentElement;
+        const first = lightboxProps();
+        const second = lightboxProps();
+        const page = (firstIsOpen: boolean, secondIsOpen: boolean) => (
+            <>
+                <Lightbox
+                    {...first}
+                    isOpen={firstIsOpen}
+                />
+                <Lightbox
+                    {...second}
+                    isOpen={secondIsOpen}
+                />
+            </>
+        );
+        const { rerender } = render(page(true, true));
+        await settle();
+
+        rerender(page(false, true));
+        await settle();
+        expect(root.style.overflow).toBe('hidden');
+
+        rerender(page(false, false));
+        await settle();
+        expect(root.style.overflow).toBe('');
+    });
+
+    test('is left alone by an inline carousel', async () => {
+        render(<Lightbox {...lightboxProps({ inline: true })} />);
+        await settle();
+
+        expect(document.documentElement.style.overflow).toBe('');
+    });
 });
 
 test('reopens on the new currentIndex at full size', async () => {

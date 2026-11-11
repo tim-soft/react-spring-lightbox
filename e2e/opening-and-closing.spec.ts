@@ -149,6 +149,47 @@ test.describe('with a mouse and keyboard', () => {
 
         expect(prevented).toEqual([false, false]);
     });
+
+    test('keys in a menu portaled out of the lightbox do not scroll the page behind', async ({ page }) => {
+        await openHarness(page, 'portalMenu');
+        await page.getByRole('button', { name: 'Menu' }).click();
+        await page.getByRole('button', { name: 'Portaled item' }).focus();
+
+        for (const key of ['ArrowDown', 'PageDown', 'End']) {
+            await page.keyboard.press(key);
+        }
+        await page.waitForTimeout(300);
+
+        expect(await scrollY(page)).toBe(0);
+    });
+
+    test('keys in a text field in the footer do not scroll the page behind', async ({ page }) => {
+        await openHarness(page, 'footerInput');
+        await page.getByRole('textbox', { name: 'Caption' }).click();
+
+        for (const key of ['End', 'PageDown', 'ArrowDown']) {
+            await page.keyboard.press(key);
+        }
+        await page.waitForTimeout(300);
+
+        expect(await scrollY(page)).toBe(0);
+    });
+
+    test('opening keeps the page behind in place when its scrollbar takes up space', async ({ browserName, page }) => {
+        test.skip(
+            browserName !== 'webkit',
+            "Playwright's Chromium hides scrollbars, and Firefox ignores ::-webkit-scrollbar, so only WebKit gets one that takes up space"
+        );
+        await openHarness(page, 'closed&classicScrollbar');
+        const pageWidth = () => page.evaluate(() => document.querySelector('h1')?.getBoundingClientRect().width);
+        const before = await pageWidth();
+
+        await page.getByRole('button', { name: 'Open Image 3' }).click();
+        await settle(page);
+
+        expect(before).toBe((page.viewportSize()?.width ?? 0) - 15);
+        expect(await pageWidth()).toBe(before);
+    });
 });
 
 test.describe('on a touchscreen', () => {
@@ -185,7 +226,6 @@ test.describe('on a touchscreen', () => {
         await page.waitForTimeout(600);
         const scrolled = await scrollY(page);
 
-        test.fail(true, 'Only the image stage sets touch-action: none');
         expect(scrolled).toBe(0);
     });
 });

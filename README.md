@@ -143,13 +143,13 @@ export default CoolLightbox;
 
 ## Accessibility
 
-The lightbox opens as a modal dialog with `role="dialog"` and `aria-modal="true"`. When it opens, focus moves into it, and <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> cycle through its controls. Until it closes, the other children of `<body>` are `inert`, so neither the keyboard nor a screen reader reaches the page behind it. When it closes, focus goes back to the element that had focus before it opened. With `inline`, the lightbox is part of the page and none of this applies.
+The lightbox opens as a modal dialog with `role="dialog"` and `aria-modal="true"`. When it opens, focus moves into it, and <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> cycle through its controls. Until it closes, the other children of `<body>` are `inert`, so neither the keyboard nor a screen reader reaches the page behind it, and `<html>` has `overflow: hidden`, so the page behind it doesn't scroll. When it closes, focus goes back to the element that had focus before it opened. With `inline`, the lightbox is part of the page and none of this applies.
 
 - Name the dialog with `aria-label`, or with `aria-labelledby` and the `id` of a title in your header.
 - Give each button that you render a text label or an `aria-label`. An icon alone gives a screen reader nothing to announce.
 - Elements that you add to `<body>` after the lightbox opens, such as a menu that a header button portals to `<body>`, stay usable. Elements that were in `<body>` before it opened stay inert until it closes.
 
-The lightbox handles <kbd>&leftarrow;</kbd>, <kbd>&rightarrow;</kbd>, and <kbd>Esc</kbd> only while focus is inside it, or while the modal lightbox is open and nothing has focus, as after a focused Next button turns disabled on the last image. Text fields and selects inside it keep their arrow, <kbd>Home</kbd>, and <kbd>End</kbd> keys. While the modal lightbox is open, the keys that scroll a page don't scroll the page behind it when pressed in the lightbox.
+The lightbox handles <kbd>&leftarrow;</kbd>, <kbd>&rightarrow;</kbd>, and <kbd>Esc</kbd> only while focus is inside it, or while the modal lightbox is open and nothing has focus, as after a focused Next button turns disabled on the last image. Text fields and selects inside it keep their arrow, <kbd>Home</kbd>, and <kbd>End</kbd> keys.
 
 - To keep the lightbox open when a control inside it handles <kbd>Esc</kbd>, call `event.preventDefault()` in that control's `onKeyDown`.
 - An `inline` carousel takes <kbd>&leftarrow;</kbd> and <kbd>&rightarrow;</kbd> only while focus is inside it. Render buttons with `renderPrevButton` and `renderNextButton`, so keyboard users can move focus there. A button that turns `disabled` while it has focus, as at the first or last image, drops focus to the page, and the carousel then takes no keys until focus is back inside it.
