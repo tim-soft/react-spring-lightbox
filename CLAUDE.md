@@ -12,7 +12,7 @@ This file tells coding agents how to work in this repository. `react-spring-ligh
 
 ## Commands
 
-Use npm, not Yarn. `package.json` requires Node.js `^22.18.0 || ^24.11.0 || >=26.0.0`, and CI runs Node.js 24.
+Use npm, not Yarn. `package.json` requires Node.js `^22.18.0 || ^24.11.0 || >=26.0.0`, and CI runs Node.js 26.
 
 | Command            | What it does                                                                                      |
 | ------------------ | ------------------------------------------------------------------------------------------------- |
